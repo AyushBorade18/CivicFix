@@ -37,7 +37,7 @@ MIN_WORKS = 318
 MIN_REPORTS = 400
 MIN_ISSUES = 333
 MIN_MATCHES = 27  # was 28; a concurrent session's activity took it to 27 - see comment above
-MIN_SENSITIVE_SITES = 861
+MIN_SENSITIVE_SITES = 3124  # 861 OSM + 2,263 PMC/PMPML bus stops (app/ingest/pmc_bus_stops.py)
 MIN_SIGNALS = 36
 MIN_DRAINAGE_SEWAGE_ISSUES = 81  # was 82; a legitimate recurrence merge (issue #24 reopened, absorbing a
 # duplicate at the same MPLADS anchor point) correctly reduced the open-issue count by one - see recurrence.py
