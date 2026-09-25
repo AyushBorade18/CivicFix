@@ -1,0 +1,64 @@
+{
+  "base_model": "paraphrase-multilingual-MiniLM-L12-v2",
+  "output_dir": "models/civicfix-encoder-v1",
+  "data": "training/synthetic/paraphrase_groups.csv (synthetic)",
+  "seed": 42,
+  "epochs": 3,
+  "batch_size": 16,
+  "max_seq_length": 128,
+  "learning_rate": 2e-05,
+  "train_groups": 352,
+  "test_groups": 48,
+  "epoch_losses": [
+    1.0742,
+    0.2743,
+    0.1512
+  ],
+  "before": {
+    "top1_same_problem": {
+      "all": 0.389,
+      "english": 0.379,
+      "hindi": 0.6,
+      "hinglish": 0.722,
+      "marathi": 0.25,
+      "marathi_english": 0.462,
+      "romanized_hindi": 0.333,
+      "romanized_marathi": 0.233
+    },
+    "mean_cos_same_problem": 0.446,
+    "mean_cos_different_problem": 0.28,
+    "mean_cos_same_place_different_problem": 0.292,
+    "probes": {
+      "same: english-marathi": 0.787,
+      "same: english-hinglish": 0.739,
+      "same: romanized_marathi-english": 0.213,
+      "different: same place": 0.391,
+      "different: marathi-marathi": 0.225
+    },
+    "english_classification_macro_f1": 0.707
+  },
+  "after": {
+    "top1_same_problem": {
+      "all": 0.965,
+      "english": 0.966,
+      "hindi": 1.0,
+      "hinglish": 0.944,
+      "marathi": 0.95,
+      "marathi_english": 1.0,
+      "romanized_hindi": 1.0,
+      "romanized_marathi": 0.933
+    },
+    "mean_cos_same_problem": 0.781,
+    "mean_cos_different_problem": 0.13,
+    "mean_cos_same_place_different_problem": 0.473,
+    "probes": {
+      "same: english-marathi": 0.806,
+      "same: english-hinglish": 0.918,
+      "same: romanized_marathi-english": 0.83,
+      "different: same place": 0.38,
+      "different: marathi-marathi": 0.18
+    },
+    "english_classification_macro_f1": 0.709
+  },
+  "note": "Test groups are synthetic too; real-world accuracy must be measured on the human test set."
+}
