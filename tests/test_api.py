@@ -38,7 +38,8 @@ MIN_REPORTS = 400
 MIN_ISSUES = 320  # was 333; the 2026-09-25 demo regen re-clustered 400 reports into
 # 320 issues and reassigned every issue id (backups/civicfix_before_demo_regen.dump)
 MIN_MATCHES = 27  # was 28; a concurrent session's activity took it to 27 - see comment above
-MIN_SENSITIVE_SITES = 3124  # 861 OSM + 2,263 PMC/PMPML bus stops (app/ingest/pmc_bus_stops.py)
+MIN_SENSITIVE_SITES = 3456  # 861 OSM + 2,263 PMC/PMPML bus stops + 332 L08 hospitals/schools
+                             # (app/ingest/pmc_bus_stops.py, app/ingest/l08_sensitive_sites.py)
 MIN_SIGNALS = 36
 MIN_DRAINAGE_SEWAGE_ISSUES = 78  # was 81; same 2026-09-25 demo regen as MIN_ISSUES above.
 # (Before that: 82 -> 81 via a legitimate recurrence merge - see recurrence.py)
