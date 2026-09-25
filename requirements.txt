@@ -8,7 +8,6 @@ fastapi
 uvicorn[standard]
 python-multipart
 langdetect
-deep-translator
 Pillow
 pytest
 xlrd
