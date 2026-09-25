@@ -19,3 +19,4 @@ training/icmyc_mapped.csv
 graphify-out/
 !data/cache/overpass_gazetteer.json
 models/civicfix-encoder-*/
+backups/
