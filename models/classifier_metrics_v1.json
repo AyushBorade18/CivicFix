@@ -1,0 +1,166 @@
+{
+  "encoder": "models/civicfix-encoder-v1",
+  "seed": 42,
+  "test_share": 0.15,
+  "trained_on": {
+    "icmyc_bengaluru": 14281,
+    "synthetic_complaints": 1680,
+    "synthetic_groups": 1200
+  },
+  "held_out": {
+    "n": 2538,
+    "macro_f1": 0.752,
+    "keyword_baseline_macro_f1": 0.528,
+    "macro_f1_by_source": {
+      "icmyc_bengaluru": 0.675,
+      "synthetic_complaints": 0.844,
+      "synthetic_groups": 0.869
+    },
+    "macro_f1_by_language": {
+      "english": 0.693,
+      "hindi": 0.934,
+      "hinglish": 0.892,
+      "marathi": 0.806,
+      "marathi_english": 0.867,
+      "romanized_hindi": 0.804,
+      "romanized_marathi": 0.696
+    },
+    "f1_by_category": {
+      "pothole_road": 0.821,
+      "drainage_sewage": 0.661,
+      "water_supply": 0.765,
+      "streetlight": 0.846,
+      "garbage_waste": 0.867,
+      "footpath": 0.787,
+      "traffic_signage": 0.507,
+      "other": 0.762
+    },
+    "confusion_matrix": {
+      "labels": [
+        "pothole_road",
+        "drainage_sewage",
+        "water_supply",
+        "streetlight",
+        "garbage_waste",
+        "footpath",
+        "traffic_signage",
+        "other"
+      ],
+      "rows_true_cols_pred": [
+        [
+          488,
+          47,
+          11,
+          11,
+          14,
+          18,
+          36,
+          21
+        ],
+        [
+          12,
+          117,
+          11,
+          1,
+          2,
+          1,
+          0,
+          6
+        ],
+        [
+          1,
+          3,
+          93,
+          1,
+          0,
+          0,
+          0,
+          4
+        ],
+        [
+          5,
+          2,
+          3,
+          219,
+          1,
+          5,
+          9,
+          14
+        ],
+        [
+          9,
+          22,
+          10,
+          4,
+          517,
+          18,
+          7,
+          49
+        ],
+        [
+          4,
+          3,
+          0,
+          0,
+          2,
+          148,
+          3,
+          5
+        ],
+        [
+          3,
+          0,
+          0,
+          6,
+          1,
+          0,
+          52,
+          1
+        ],
+        [
+          21,
+          10,
+          13,
+          18,
+          20,
+          21,
+          35,
+          380
+        ]
+      ]
+    },
+    "confidence_thresholds": [
+      {
+        "threshold": 0.3,
+        "coverage": 0.984,
+        "accuracy": 0.802
+      },
+      {
+        "threshold": 0.4,
+        "coverage": 0.938,
+        "accuracy": 0.822
+      },
+      {
+        "threshold": 0.5,
+        "coverage": 0.865,
+        "accuracy": 0.854
+      },
+      {
+        "threshold": 0.6,
+        "coverage": 0.792,
+        "accuracy": 0.879
+      },
+      {
+        "threshold": 0.7,
+        "coverage": 0.703,
+        "accuracy": 0.895
+      },
+      {
+        "threshold": 0.8,
+        "coverage": 0.59,
+        "accuracy": 0.919
+      }
+    ]
+  },
+  "note": "Held-out rows are Bengaluru (real, English) or synthetic. Report real-world accuracy from the human test set only."
+}
