@@ -1,9 +1,9 @@
 complaints written: 1580/1580 (+100 pilot)
-group variants written: 630/1200
+group variants written: 735/1200
 category: {'pothole_road': 202, 'drainage_sewage': 234, 'water_supply': 232, 'streetlight': 202, 'garbage_waste': 198, 'footpath': 210, 'traffic_signage': 218, 'other': 184}
 language: {'english': 193, 'romanized_hindi': 206, 'hinglish': 246, 'romanized_marathi': 319, 'marathi': 273, 'hindi': 220, 'marathi_english': 223}
-script: {'latin': 1456, 'devanagari': 647, 'mixed': 207}
-words per text: min 2, max 61, mean 21.1
-most repeated openers: [('fc road', 27), ('viman nagar', 26), ('market yard', 26), ('gokhale nagar', 25), ('salunke vihar', 25)]
+script: {'latin': 1530, 'devanagari': 670, 'mixed': 215}
+words per text: min 2, max 61, mean 20.9
+most repeated openers: [('viman nagar', 29), ('fc road', 29), ('gokhale nagar', 27), ('salunke vihar', 27), ('rasta peth', 26)]
 'urgent' used in 4 texts
 problems: 0
