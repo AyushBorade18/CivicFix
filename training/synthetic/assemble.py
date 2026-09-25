@@ -23,6 +23,10 @@ BATCH_DIR = HERE / "batches"
 PILOT_CSV = Path.home() / "civicfix-data/raw/synthetic_pune_pilot_100.csv"
 ICMYC_CSV = HERE.parent / "icmyc_mapped.csv"
 NEAR_DUP = 0.6
+HUMAN_CSV = HERE.parent.parent / "data/labelling/lo2_gold_complaints.csv"
+HUMAN_NEAR = 0.5  # style-matched rows must not paraphrase any real (seed or test) complaint
+STYLE_FIELDS = ["id", "text", "category", "severity", "language", "script", "locality", "scenario",
+                "register", "source", "is_synthetic", "review_status", "generated_by"]
 
 # Pilot used a coarser taxonomy; relabelled once, by reading each row.
 # Loanwords (road, light, footpath, signal, drainage...) don't make text code-mixed;
@@ -130,6 +134,7 @@ def assemble() -> list[str]:
     plan_a, plan_b = _read_csv(HERE / "plan_complaints.csv"), _read_csv(HERE / "plan_groups.csv")
     texts, problems = _read_texts()
     known = {r["id"] for r in plan_a} | {r["id"] for r in plan_b}
+    known |= {r["id"] for r in _read_csv(HERE / "plan_style.csv")} if (HERE / "plan_style.csv").exists() else set()
     problems += [f"{i}: text for an id not in any plan" for i in texts if i not in known]
 
     complaints = _pilot_rows()
@@ -157,7 +162,23 @@ def assemble() -> list[str]:
                        "text": text, "script": detect_script(text), "source": "synthetic_claude",
                        "is_synthetic": "true", "review_status": "unreviewed", "generated_by": "claude"})
 
-    everything = [(r["id"], r["text"]) for r in complaints] + [(r["id"], r["text"]) for r in groups]
+    plan_s = _read_csv(HERE / "plan_style.csv") if (HERE / "plan_style.csv").exists() else []
+    style = []
+    for p in plan_s:
+        if p["id"] not in texts:
+            continue
+        text = texts[p["id"]]
+        issue = script_problem(p["language"], p["script_hint"], text)
+        if issue:
+            problems.append(f"{p['id']}: {issue}")
+        style.append({**{k: p[k] for k in ("id", "category", "severity", "language", "locality",
+                                           "scenario", "register")},
+                      "text": text, "script": detect_script(text), "source": "synthetic_style_matched",
+                      "is_synthetic": "true", "review_status": "unreviewed", "generated_by": "claude"})
+    known |= {p["id"] for p in plan_s}
+
+    everything = ([(r["id"], r["text"]) for r in complaints] + [(r["id"], r["text"]) for r in groups]
+                  + [(r["id"], r["text"]) for r in style])
     problems += [f"{i}: possible personal information" for i, t in everything if has_pii(t)]
     problems += [f"{i}: unexpected characters {odd_characters(t)!r}" for i, t in everything if odd_characters(t)]
 
@@ -177,9 +198,21 @@ def assemble() -> list[str]:
         icmyc = {r["text"].lower() for r in _read_csv(ICMYC_CSV)}
         problems += [f"{i}: copied from iCMyC" for i, t in everything if t.lower() in icmyc]
 
+    if HUMAN_CSV.exists():
+        humans = [(r["gold_id"], _shingles(r["text"])) for r in _read_csv(HUMAN_CSV)]
+        for i, t in [(r["id"], r["text"]) for r in style]:
+            st = _shingles(t)
+            for gold_id, sh in humans:
+                if st and sh and len(st & sh) / len(st | sh) >= HUMAN_NEAR:
+                    problems.append(f"{i} ~ human {gold_id}: too close to a real complaint")
+
     _write(HERE / "complaints.csv", FIELDS, complaints)
+    if style:
+        _write(HERE / "style_matched.csv", STYLE_FIELDS, style)
     _write(HERE / "paraphrase_groups.csv", GROUP_FIELDS, groups)
     report = _report(complaints, groups, plan_a, plan_b, problems)
+    if plan_s:
+        report = f"style-matched written: {len(style)}/{len(plan_s)}\n" + report
     (HERE / "qc_report.txt").write_text(report)
     print(report)
     return problems

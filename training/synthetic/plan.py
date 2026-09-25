@@ -242,6 +242,66 @@ def plan_groups(rng: random.Random) -> list[dict]:
     return rows
 
 
+# --- Style-matched set (plan_style.csv) -------------------------------------
+# Modelled on the 42 "seed" rows of data/labelling/lo2_gold_complaints.csv
+# only (the 22 "test" rows stay unseen). Real people write short, lowercase,
+# unpunctuated English/Hinglish, name hyper-local landmarks, misspell place
+# names, mention a second problem, and sometimes tell a personal story.
+STYLE_COUNT = 400
+STYLE_LANGUAGE_SHARE = {
+    "english": 0.38, "hinglish": 0.16, "romanized_hindi": 0.12, "marathi": 0.12,
+    "romanized_marathi": 0.10, "marathi_english": 0.06, "hindi": 0.06,
+}
+# Weighted toward the weakest categories on the human set (other, footpath, streetlight).
+STYLE_CATEGORY_QUOTA = {
+    "other": 70, "footpath": 60, "streetlight": 55, "drainage_sewage": 50,
+    "pothole_road": 45, "garbage_waste": 40, "water_supply": 40, "traffic_signage": 40,
+}
+# terse: <=10 words, mostly lowercase, little punctuation; narrative: personal, long.
+REGISTERS = ["terse"] * 50 + ["plain"] * 35 + ["narrative"] * 15
+LANDMARK_TYPES = [
+    "temple lane", "talim", "chowk", "bus stop", "society gate", "supermarket",
+    "school gate", "hospital", "subway", "flyover", "lake", "park", "college",
+    "railway station", "market", "ward office", "petrol pump", "none",
+]
+# Real "other" complaints seen in the seed rows, beyond the first set's list.
+STYLE_EXTRA_OTHER = [
+    ("construction_noise_early_morning", "cosmetic"),
+    ("construction_material_blocking_road", "moderate"),
+    ("dry_branch_hanging_over_footpath", "moderate"),
+]
+
+
+def plan_style(rng: random.Random) -> list[dict]:
+    rows = []
+    for category, quota in STYLE_CATEGORY_QUOTA.items():
+        languages = [lang for lang, n in _split(quota, STYLE_LANGUAGE_SHARE).items() for _ in range(n)]
+        rng.shuffle(languages)
+        scenarios = SCENARIOS[category] + (STYLE_EXTRA_OTHER if category == "other" else [])
+        for i, language in enumerate(languages):
+            scenario, severity = scenarios[i % len(scenarios)]
+            register = rng.choice(REGISTERS)
+            rows.append({
+                "category": category,
+                "secondary_category": "",
+                "second_problem_mentioned": "yes" if rng.random() < 0.12 else "",
+                "severity": severity,
+                "language": language,
+                "script_hint": _script_hint(language, rng),
+                "locality": "" if rng.random() < 0.2 else rng.choice(LOCALITIES),
+                "landmark_type": rng.choice(LANDMARK_TYPES),
+                "scenario": scenario,
+                "register": register,
+                "typos": "yes" if language not in ("hindi", "marathi") and rng.random() < 0.25 else "",
+                "tone": rng.choice(TONES),
+                "voice": rng.choice(VOICES),
+            })
+    rng.shuffle(rows)
+    for n, row in enumerate(rows, 1):
+        row["id"] = f"SYN-S-{n:04d}"
+    return rows
+
+
 def _write(path: Path, rows: list[dict]) -> None:
     with open(path, "w", newline="") as f:
         writer = csv.DictWriter(f, fieldnames=list(rows[0]))
@@ -254,4 +314,6 @@ if __name__ == "__main__":
     complaints, groups = plan_complaints(rng), plan_groups(rng)
     _write(OUT_DIR / "plan_complaints.csv", complaints)
     _write(OUT_DIR / "plan_groups.csv", groups)
+    # Drawn after the first two plans, so their committed output is unchanged.
+    _write(OUT_DIR / "plan_style.csv", plan_style(rng))
     print(len(complaints), "complaint rows,", len(groups), "group rows")

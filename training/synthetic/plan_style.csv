@@ -1,0 +1,401 @@
+category,secondary_category,second_problem_mentioned,severity,language,script_hint,locality,landmark_type,scenario,register,typos,tone,voice,id
+garbage_waste,,,moderate,english,latin,Dhankawadi,railway station,hotel_waste_dumped_at_night,plain,yes,angry,commuter,SYN-S-0001
+streetlight,,,moderate,hindi,devanagari,Narayan Peth,subway,lamp_broken,terse,,tired,woman_walking_alone,SYN-S-0002
+other,,yes,moderate,english,latin,Karve Nagar,none,illegal_construction,terse,,matter_of_fact,woman_walking_alone,SYN-S-0003
+pothole_road,,,critical,english,latin,JM Road,supermarket,potholes_near_school,terse,yes,polite,parent,SYN-S-0004
+water_supply,,,moderate,marathi_english,mixed,Magarpatta,flyover,pipeline_burst_on_road,narrative,,frustrated,two_wheeler_rider,SYN-S-0005
+drainage_sewage,,yes,moderate,english,latin,Balewadi,college,blocked_drain_waterlogging,terse,yes,sarcastic,two_wheeler_rider,SYN-S-0006
+traffic_signage,,,moderate,marathi_english,latin,Baner,flyover,one_way_board_missing,terse,,worried,senior_citizen,SYN-S-0007
+streetlight,,,moderate,hinglish,mixed,Viman Nagar,park,dark_near_bus_stop_unsafe,terse,,frustrated,delivery_rider,SYN-S-0008
+footpath,,,cosmetic,hinglish,latin,Gokhale Nagar,school gate,tree_roots_broke_footpath,plain,,sarcastic,commuter,SYN-S-0009
+pothole_road,,,moderate,hinglish,mixed,Kalyani Nagar,temple lane,metro_work_damaged_road,terse,yes,worried,shopkeeper,SYN-S-0010
+drainage_sewage,,,moderate,hinglish,mixed,Kondhwa,temple lane,sewage_overflow_on_road,plain,,pleading,student,SYN-S-0011
+water_supply,,,moderate,marathi,devanagari,Viman Nagar,lake,valve_not_opened,terse,,sarcastic,two_wheeler_rider,SYN-S-0012
+garbage_waste,,,moderate,marathi,devanagari,Warje,subway,garbage_not_collected_days,plain,,sarcastic,delivery_rider,SYN-S-0013
+drainage_sewage,,yes,moderate,hinglish,mixed,Vadgaon Budruk,subway,chamber_overflows_every_morning,narrative,,polite,delivery_rider,SYN-S-0014
+drainage_sewage,,,critical,romanized_hindi,latin,Gokhale Nagar,subway,open_manhole,terse,,polite,office_goer,SYN-S-0015
+other,,,moderate,hinglish,mixed,Karve Nagar,railway station,dry_branch_hanging_over_footpath,terse,yes,worried,commuter,SYN-S-0016
+other,,,moderate,marathi,devanagari,Market Yard,lake,illegal_construction,terse,,polite,shopkeeper,SYN-S-0017
+pothole_road,,,critical,marathi,devanagari,Mundhwa,school gate,pothole_at_turn_accident_risk,plain,,matter_of_fact,senior_citizen,SYN-S-0018
+footpath,,,moderate,hinglish,latin,,bus stop,not_wheelchair_accessible,plain,yes,frustrated,resident,SYN-S-0019
+drainage_sewage,,,moderate,english,latin,,college,nala_choked,terse,,worried,student,SYN-S-0020
+water_supply,,,moderate,english,latin,Karve Nagar,supermarket,supply_only_short_time,terse,,polite,resident,SYN-S-0021
+drainage_sewage,,,moderate,marathi,devanagari,Vishrantwadi,petrol pump,chamber_overflows_every_morning,plain,,worried,parent,SYN-S-0022
+streetlight,,,cosmetic,english,latin,Erandwane,market,light_flickering,terse,,matter_of_fact,delivery_rider,SYN-S-0023
+water_supply,,,critical,marathi,devanagari,,subway,dirty_yellow_tap_water,plain,,tired,parent,SYN-S-0024
+footpath,,,moderate,romanized_hindi,latin,Parvati,flyover,footpath_ends_suddenly,terse,yes,pleading,shopkeeper,SYN-S-0025
+footpath,,,moderate,romanized_marathi,latin,FC Road,subway,hawkers_on_footpath,plain,yes,frustrated,office_goer,SYN-S-0026
+pothole_road,,,critical,english,latin,Gokhale Nagar,market,road_caved_in,terse,yes,angry,shopkeeper,SYN-S-0027
+other,,,moderate,english,latin,Gokhale Nagar,hospital,illegal_construction,terse,,pleading,commuter,SYN-S-0028
+pothole_road,,,critical,english,latin,Erandwane,school gate,deep_potholes_main_road,terse,,angry,senior_citizen,SYN-S-0029
+other,,,moderate,english,latin,Narayan Peth,petrol pump,public_toilet_dirty,narrative,,sarcastic,auto_driver,SYN-S-0030
+pothole_road,,,critical,english,latin,,college,road_caved_in,plain,,sarcastic,auto_driver,SYN-S-0031
+traffic_signage,,,cosmetic,romanized_marathi,latin,,railway station,sign_hidden_by_tree_or_hoarding,plain,,sarcastic,commuter,SYN-S-0032
+traffic_signage,,,critical,hindi,devanagari,Bibwewadi,supermarket,speed_breaker_unpainted,plain,,matter_of_fact,society_secretary,SYN-S-0033
+traffic_signage,,,moderate,romanized_marathi,latin,Senapati Bapat Road,ward office,one_way_board_missing,plain,,worried,two_wheeler_rider,SYN-S-0034
+other,,,moderate,romanized_marathi,latin,Bavdhan,talim,stray_cattle_on_road,terse,,pleading,society_secretary,SYN-S-0035
+pothole_road,,,critical,romanized_marathi,latin,Balewadi,temple lane,deep_potholes_main_road,narrative,,frustrated,senior_citizen,SYN-S-0036
+drainage_sewage,,,critical,hinglish,latin,,subway,storm_drain_cover_missing,terse,,sarcastic,senior_citizen,SYN-S-0037
+footpath,,,moderate,hindi,devanagari,,petrol pump,broken_paver_blocks,terse,,polite,office_goer,SYN-S-0038
+streetlight,,,moderate,english,latin,Camp,flyover,lights_switch_off_midnight,terse,yes,polite,senior_citizen,SYN-S-0039
+footpath,,,moderate,english,latin,,bus stop,not_wheelchair_accessible,terse,,pleading,office_goer,SYN-S-0040
+footpath,,,cosmetic,hinglish,mixed,Dhankawadi,subway,tree_roots_broke_footpath,terse,,sarcastic,two_wheeler_rider,SYN-S-0041
+other,,,moderate,english,latin,Yerawada,ward office,construction_material_blocking_road,plain,,frustrated,two_wheeler_rider,SYN-S-0042
+footpath,,,moderate,romanized_marathi,latin,Sahakar Nagar,ward office,bikes_parked_on_footpath,terse,yes,tired,woman_walking_alone,SYN-S-0043
+streetlight,,,moderate,english,latin,Baner,market,dark_underpass,narrative,,angry,delivery_rider,SYN-S-0044
+footpath,,,moderate,marathi_english,latin,Sahakar Nagar,none,footpath_dug_and_left,terse,,tired,parent,SYN-S-0045
+streetlight,,,moderate,hindi,devanagari,Sadashiv Peth,park,dark_near_bus_stop_unsafe,terse,,frustrated,student,SYN-S-0046
+pothole_road,,,cosmetic,hindi,devanagari,,flyover,small_cracks_surface,terse,,frustrated,senior_citizen,SYN-S-0047
+traffic_signage,,,cosmetic,english,latin,Pashan,bus stop,road_name_board_missing,plain,,sarcastic,two_wheeler_rider,SYN-S-0048
+footpath,,,moderate,hinglish,mixed,Katraj,chowk,footpath_blocked_by_shop_extension,terse,,pleading,parent,SYN-S-0049
+other,,,moderate,hinglish,latin,,none,fallen_tree_branch,terse,,pleading,parent,SYN-S-0050
+other,,,cosmetic,romanized_hindi,latin,Camp,supermarket,construction_noise_early_morning,terse,yes,matter_of_fact,auto_driver,SYN-S-0051
+streetlight,,,moderate,english,latin,Wadgaon Sheri,temple lane,only_few_lights_working,plain,,pleading,auto_driver,SYN-S-0052
+drainage_sewage,,,critical,english,latin,,supermarket,broken_manhole_cover,terse,,worried,resident,SYN-S-0053
+footpath,,,moderate,hinglish,mixed,Senapati Bapat Road,society gate,hawkers_on_footpath,plain,,polite,commuter,SYN-S-0054
+pothole_road,,,moderate,marathi,devanagari,Magarpatta,college,water_filled_potholes,plain,,tired,two_wheeler_rider,SYN-S-0055
+other,,,cosmetic,marathi,devanagari,Yerawada,railway station,encroachment_open_space,narrative,,polite,student,SYN-S-0056
+garbage_waste,,,moderate,romanized_hindi,latin,Hadapsar,lake,collection_vehicle_not_coming,plain,,matter_of_fact,parent,SYN-S-0057
+streetlight,,,critical,marathi,devanagari,Model Colony,hospital,pole_leaning,terse,,worried,auto_driver,SYN-S-0058
+traffic_signage,,,moderate,hinglish,mixed,Shaniwar Peth,railway station,pedestrian_signal_too_short,plain,,worried,resident,SYN-S-0059
+water_supply,,,moderate,hinglish,latin,Gokhale Nagar,supermarket,alternate_day_supply_missed,narrative,,worried,auto_driver,SYN-S-0060
+other,,,cosmetic,english,latin,,subway,loud_music_noise,plain,yes,frustrated,senior_citizen,SYN-S-0061
+streetlight,,,critical,romanized_marathi,latin,Narayan Peth,park,exposed_wires_at_pole,plain,,sarcastic,student,SYN-S-0062
+garbage_waste,,,cosmetic,romanized_marathi,latin,Shaniwar Peth,subway,street_not_swept,terse,yes,tired,parent,SYN-S-0063
+other,,,cosmetic,romanized_marathi,latin,Kothrud,flyover,construction_noise_early_morning,terse,,worried,office_goer,SYN-S-0064
+footpath,,,moderate,english,latin,Parvati,chowk,no_footpath_walk_on_road,plain,,worried,delivery_rider,SYN-S-0065
+streetlight,,,moderate,english,latin,Kharadi,talim,lights_switch_off_midnight,plain,yes,pleading,delivery_rider,SYN-S-0066
+garbage_waste,,yes,moderate,hinglish,latin,,college,dumping_in_open_plot,terse,,frustrated,senior_citizen,SYN-S-0067
+other,,yes,cosmetic,romanized_hindi,latin,Vishrantwadi,none,construction_noise_early_morning,plain,,angry,office_goer,SYN-S-0068
+pothole_road,,,moderate,english,latin,Kalyani Nagar,flyover,patch_work_failed_again,terse,,polite,resident,SYN-S-0069
+other,,,moderate,marathi,devanagari,Kharadi,none,construction_material_blocking_road,terse,,sarcastic,student,SYN-S-0070
+footpath,,yes,moderate,english,latin,Wanowrie,lake,slippery_tiles,terse,,polite,office_goer,SYN-S-0071
+drainage_sewage,,,moderate,romanized_hindi,latin,Market Yard,college,blocked_drain_waterlogging,terse,yes,sarcastic,parent,SYN-S-0072
+other,,,cosmetic,marathi_english,mixed,Magarpatta,railway station,illegal_hoardings,narrative,,pleading,resident,SYN-S-0073
+other,,,moderate,english,latin,Ganesh Peth,supermarket,stray_dogs,plain,,worried,delivery_rider,SYN-S-0074
+drainage_sewage,,,moderate,hindi,devanagari,Pashan,talim,stagnant_drain_mosquitoes,plain,,sarcastic,shopkeeper,SYN-S-0075
+water_supply,,,moderate,hinglish,latin,,talim,upper_floors_no_water,plain,,angry,commuter,SYN-S-0076
+drainage_sewage,,,moderate,english,latin,Undri,society gate,chamber_smell,terse,,worried,woman_walking_alone,SYN-S-0077
+footpath,,,moderate,romanized_hindi,latin,Magarpatta,school gate,footpath_ends_suddenly,terse,,frustrated,resident,SYN-S-0078
+streetlight,,,moderate,romanized_hindi,latin,Baner,hospital,lights_switch_off_midnight,plain,yes,angry,resident,SYN-S-0079
+footpath,,,moderate,marathi,devanagari,Wadgaon Sheri,school gate,footpath_ends_suddenly,plain,,pleading,student,SYN-S-0080
+garbage_waste,,yes,moderate,hindi,devanagari,Balewadi,society gate,market_waste_left_after_bazaar,terse,,frustrated,society_secretary,SYN-S-0081
+water_supply,,,critical,marathi_english,mixed,,school gate,smell_in_drinking_water,narrative,yes,polite,resident,SYN-S-0082
+streetlight,,,cosmetic,romanized_hindi,latin,Sahakar Nagar,chowk,light_flickering,terse,yes,pleading,commuter,SYN-S-0083
+other,,,cosmetic,hindi,devanagari,,subway,broken_park_equipment,terse,,worried,two_wheeler_rider,SYN-S-0084
+footpath,,,moderate,english,latin,Yerawada,bus stop,slippery_tiles,terse,,frustrated,auto_driver,SYN-S-0085
+other,,yes,moderate,english,latin,Undri,market,mosquito_fogging_needed,terse,yes,matter_of_fact,resident,SYN-S-0086
+water_supply,,,critical,romanized_hindi,latin,Kothrud,talim,no_water_for_days,narrative,,angry,auto_driver,SYN-S-0087
+other,,,moderate,marathi_english,latin,Erandwane,bus stop,mosquito_fogging_needed,terse,yes,angry,delivery_rider,SYN-S-0088
+other,,,moderate,english,latin,Koregaon Park,temple lane,construction_material_blocking_road,plain,yes,matter_of_fact,parent,SYN-S-0089
+drainage_sewage,,,critical,marathi,devanagari,,flyover,broken_manhole_cover,plain,,sarcastic,delivery_rider,SYN-S-0090
+pothole_road,,,critical,hinglish,latin,FC Road,chowk,deep_potholes_main_road,terse,,matter_of_fact,auto_driver,SYN-S-0091
+traffic_signage,,,critical,romanized_hindi,latin,Dhayari,ward office,no_speed_breaker_near_school,plain,,polite,shopkeeper,SYN-S-0092
+streetlight,,,moderate,marathi,devanagari,Swargate,subway,lights_switch_off_midnight,narrative,,frustrated,woman_walking_alone,SYN-S-0093
+drainage_sewage,,,moderate,english,latin,Ganesh Peth,ward office,sewage_line_leak_near_society_gate,plain,yes,tired,senior_citizen,SYN-S-0094
+water_supply,,,moderate,hindi,devanagari,Hadapsar,market,supply_only_late_night,terse,,matter_of_fact,woman_walking_alone,SYN-S-0095
+water_supply,,,moderate,hinglish,mixed,,railway station,supply_only_late_night,plain,,angry,shopkeeper,SYN-S-0096
+footpath,,,moderate,english,latin,Dhankawadi,park,construction_material_on_footpath,terse,,angry,shopkeeper,SYN-S-0097
+footpath,,yes,moderate,english,latin,Dhayari,flyover,not_wheelchair_accessible,narrative,yes,tired,two_wheeler_rider,SYN-S-0098
+water_supply,,,cosmetic,english,latin,Karve Nagar,society gate,public_tap_left_running,plain,,pleading,student,SYN-S-0099
+garbage_waste,,,moderate,romanized_marathi,latin,Katraj,railway station,garbage_not_collected_days,terse,,angry,office_goer,SYN-S-0100
+streetlight,,,moderate,romanized_hindi,latin,Warje,society gate,whole_lane_dark,terse,,pleading,student,SYN-S-0101
+water_supply,,,moderate,hinglish,mixed,Ganesh Peth,subway,supply_only_short_time,plain,yes,frustrated,auto_driver,SYN-S-0102
+traffic_signage,,yes,critical,romanized_hindi,latin,Dhanori,none,speed_breaker_unpainted,terse,yes,sarcastic,shopkeeper,SYN-S-0103
+footpath,,yes,moderate,english,latin,Kharadi,talim,footpath_dug_and_left,plain,yes,worried,resident,SYN-S-0104
+traffic_signage,,,cosmetic,english,latin,Yerawada,temple lane,sign_board_missing,plain,,tired,parent,SYN-S-0105
+drainage_sewage,,,critical,hinglish,latin,JM Road,supermarket,broken_manhole_cover,plain,,sarcastic,society_secretary,SYN-S-0106
+water_supply,,,moderate,english,latin,Mundhwa,petrol pump,low_pressure,plain,,worried,two_wheeler_rider,SYN-S-0107
+water_supply,,,moderate,romanized_marathi,latin,Deccan Gymkhana,talim,pipeline_burst_on_road,terse,,matter_of_fact,two_wheeler_rider,SYN-S-0108
+footpath,,,moderate,marathi_english,latin,,petrol pump,construction_material_on_footpath,terse,,pleading,society_secretary,SYN-S-0109
+other,,,moderate,english,latin,Baner,temple lane,dry_branch_hanging_over_footpath,plain,yes,polite,two_wheeler_rider,SYN-S-0110
+other,,,moderate,romanized_marathi,latin,Wadgaon Sheri,none,dry_branch_hanging_over_footpath,terse,,polite,society_secretary,SYN-S-0111
+drainage_sewage,,,moderate,romanized_hindi,latin,Shivajinagar,petrol pump,sewage_overflow_on_road,terse,,worried,student,SYN-S-0112
+traffic_signage,,,moderate,hinglish,mixed,Rasta Peth,ward office,lane_markings_faded,terse,,worried,society_secretary,SYN-S-0113
+pothole_road,,,moderate,marathi,devanagari,Kondhwa,school gate,service_road_broken,terse,,pleading,commuter,SYN-S-0114
+streetlight,,,cosmetic,english,latin,Sinhagad Road,railway station,lights_on_during_day,terse,yes,matter_of_fact,shopkeeper,SYN-S-0115
+footpath,,,moderate,english,latin,,railway station,no_footpath_walk_on_road,plain,yes,worried,resident,SYN-S-0116
+streetlight,,,moderate,marathi_english,mixed,Deccan Gymkhana,park,whole_lane_dark,plain,,frustrated,two_wheeler_rider,SYN-S-0117
+streetlight,,,cosmetic,romanized_marathi,latin,Kothrud,talim,light_flickering,terse,,sarcastic,office_goer,SYN-S-0118
+footpath,,,moderate,english,latin,Deccan Gymkhana,railway station,construction_material_on_footpath,plain,,angry,commuter,SYN-S-0119
+pothole_road,,,critical,romanized_hindi,latin,Market Yard,petrol pump,potholes_near_school,plain,,matter_of_fact,woman_walking_alone,SYN-S-0120
+footpath,,,moderate,hinglish,latin,Kothrud,park,no_footpath_walk_on_road,terse,,frustrated,office_goer,SYN-S-0121
+traffic_signage,,,moderate,hinglish,latin,,ward office,lane_markings_faded,terse,,pleading,parent,SYN-S-0122
+garbage_waste,,,moderate,english,latin,,chowk,burning_garbage_smoke,plain,,frustrated,parent,SYN-S-0123
+traffic_signage,,,cosmetic,english,latin,Narayan Peth,society gate,sign_hidden_by_tree_or_hoarding,narrative,,worried,shopkeeper,SYN-S-0124
+streetlight,,,moderate,romanized_marathi,latin,Ganesh Peth,supermarket,dark_underpass,plain,,polite,senior_citizen,SYN-S-0125
+drainage_sewage,,,critical,romanized_marathi,latin,Baner,society gate,sewage_into_houses,terse,yes,sarcastic,delivery_rider,SYN-S-0126
+footpath,,,moderate,romanized_hindi,latin,Kondhwa,supermarket,bikes_parked_on_footpath,terse,,polite,senior_citizen,SYN-S-0127
+drainage_sewage,,,cosmetic,romanized_hindi,latin,Undri,subway,drain_slab_sunk,terse,,angry,society_secretary,SYN-S-0128
+streetlight,,,moderate,hinglish,latin,Sahakar Nagar,ward office,dark_underpass,plain,yes,tired,delivery_rider,SYN-S-0129
+footpath,,yes,moderate,english,latin,Chandannagar,subway,construction_material_on_footpath,terse,,tired,resident,SYN-S-0130
+footpath,,,moderate,english,latin,,ward office,construction_material_on_footpath,terse,,frustrated,two_wheeler_rider,SYN-S-0131
+pothole_road,,,critical,english,latin,Undri,railway station,pothole_at_turn_accident_risk,plain,yes,worried,commuter,SYN-S-0132
+traffic_signage,,,cosmetic,marathi,devanagari,Deccan Gymkhana,flyover,confusing_direction_board,plain,,sarcastic,senior_citizen,SYN-S-0133
+streetlight,,,moderate,english,latin,Wadgaon Sheri,school gate,new_road_no_lights,plain,,angry,delivery_rider,SYN-S-0134
+garbage_waste,,,critical,marathi,devanagari,NIBM Road,park,garbage_near_school,plain,,angry,auto_driver,SYN-S-0135
+streetlight,,,moderate,marathi,devanagari,Tilak Road,hospital,lamp_broken,plain,,polite,resident,SYN-S-0136
+traffic_signage,,,moderate,hinglish,latin,,park,pedestrian_signal_too_short,terse,,pleading,office_goer,SYN-S-0137
+water_supply,,,moderate,romanized_hindi,latin,Market Yard,chowk,timing_changed_no_notice,narrative,,pleading,office_goer,SYN-S-0138
+streetlight,,,critical,marathi,devanagari,Dhayari,bus stop,exposed_wires_at_pole,terse,,frustrated,shopkeeper,SYN-S-0139
+garbage_waste,,yes,cosmetic,english,latin,FC Road,society gate,collectors_refuse_unsegregated,terse,yes,matter_of_fact,office_goer,SYN-S-0140
+drainage_sewage,,,critical,english,latin,Sutarwadi,bus stop,sewage_into_houses,terse,,matter_of_fact,senior_citizen,SYN-S-0141
+garbage_waste,,,cosmetic,romanized_hindi,latin,Chandannagar,college,street_not_swept,terse,yes,sarcastic,office_goer,SYN-S-0142
+other,,,moderate,english,latin,Kothrud,none,home_power_cut_msedcl,plain,yes,tired,auto_driver,SYN-S-0143
+drainage_sewage,,,moderate,hindi,devanagari,Wanowrie,subway,sewage_line_leak_near_society_gate,terse,,worried,senior_citizen,SYN-S-0144
+streetlight,,yes,moderate,english,latin,Pashan,ward office,only_few_lights_working,plain,yes,polite,parent,SYN-S-0145
+drainage_sewage,,,moderate,english,latin,Market Yard,lake,stagnant_drain_mosquitoes,terse,,sarcastic,delivery_rider,SYN-S-0146
+streetlight,,,moderate,hinglish,latin,,school gate,whole_lane_dark,terse,,worried,commuter,SYN-S-0147
+garbage_waste,,,moderate,romanized_hindi,latin,Dhayari,school gate,burning_garbage_smoke,terse,,tired,office_goer,SYN-S-0148
+water_supply,,,moderate,english,latin,Senapati Bapat Road,talim,alternate_day_supply_missed,plain,yes,pleading,two_wheeler_rider,SYN-S-0149
+drainage_sewage,,,cosmetic,english,latin,Senapati Bapat Road,college,drain_slab_sunk,narrative,,matter_of_fact,office_goer,SYN-S-0150
+pothole_road,,,critical,hinglish,mixed,Market Yard,flyover,loose_gravel_bikes_skid,terse,,pleading,office_goer,SYN-S-0151
+other,,,moderate,english,latin,Koregaon Park,chowk,home_power_cut_msedcl,terse,,frustrated,shopkeeper,SYN-S-0152
+streetlight,,,cosmetic,english,latin,Bavdhan,temple lane,light_hidden_by_branches,terse,,angry,office_goer,SYN-S-0153
+other,,,moderate,marathi,devanagari,Yerawada,temple lane,fallen_tree_branch,terse,,polite,resident,SYN-S-0154
+other,,,cosmetic,english,latin,Kothrud,talim,broken_park_equipment,terse,yes,matter_of_fact,parent,SYN-S-0155
+garbage_waste,,,moderate,hinglish,latin,,society gate,bin_overflowing,narrative,,angry,auto_driver,SYN-S-0156
+drainage_sewage,,,moderate,romanized_marathi,latin,Undri,market,drain_not_cleaned_before_monsoon,terse,yes,polite,resident,SYN-S-0157
+other,,,moderate,marathi,devanagari,Hadapsar,college,stray_dogs,narrative,,angry,office_goer,SYN-S-0158
+drainage_sewage,,,moderate,romanized_hindi,latin,Wadgaon Sheri,ward office,sewage_overflow_on_road,terse,,matter_of_fact,society_secretary,SYN-S-0159
+streetlight,,,moderate,romanized_marathi,latin,Kharadi,talim,whole_lane_dark,terse,,worried,woman_walking_alone,SYN-S-0160
+other,,,moderate,hinglish,latin,Shaniwar Peth,flyover,illegal_construction,plain,,frustrated,student,SYN-S-0161
+other,,,cosmetic,english,latin,,market,broken_park_equipment,terse,,pleading,society_secretary,SYN-S-0162
+traffic_signage,,,critical,english,latin,Kharadi,chowk,signal_not_working,plain,,angry,office_goer,SYN-S-0163
+footpath,,,moderate,marathi,devanagari,Ganesh Peth,none,hawkers_on_footpath,terse,,angry,senior_citizen,SYN-S-0164
+drainage_sewage,,,critical,romanized_marathi,latin,Kalyani Nagar,talim,open_manhole,terse,,pleading,auto_driver,SYN-S-0165
+other,,,moderate,hindi,devanagari,Vishrantwadi,none,dead_animal_on_road,plain,,angry,senior_citizen,SYN-S-0166
+drainage_sewage,,,moderate,english,latin,Parvati,chowk,stagnant_drain_mosquitoes,plain,,pleading,commuter,SYN-S-0167
+footpath,,,moderate,english,latin,Sahakar Nagar,society gate,footpath_blocked_by_shop_extension,terse,,sarcastic,student,SYN-S-0168
+water_supply,,yes,critical,romanized_marathi,latin,,park,smell_in_drinking_water,terse,,angry,resident,SYN-S-0169
+streetlight,,,moderate,english,latin,,supermarket,only_few_lights_working,plain,yes,polite,society_secretary,SYN-S-0170
+traffic_signage,,yes,moderate,hinglish,mixed,JM Road,market,blinking_yellow_all_night,plain,yes,matter_of_fact,auto_driver,SYN-S-0171
+other,,,moderate,english,latin,Hadapsar,none,dead_animal_on_road,narrative,,pleading,senior_citizen,SYN-S-0172
+pothole_road,,,moderate,romanized_marathi,latin,Deccan Gymkhana,supermarket,patch_work_failed_again,terse,,frustrated,student,SYN-S-0173
+pothole_road,,,moderate,english,latin,Wadgaon Sheri,petrol pump,metro_work_damaged_road,plain,,frustrated,parent,SYN-S-0174
+footpath,,,moderate,hinglish,latin,Tilak Road,ward office,broken_paver_blocks,terse,,angry,two_wheeler_rider,SYN-S-0175
+streetlight,,,cosmetic,hinglish,latin,,talim,lights_on_during_day,terse,,pleading,woman_walking_alone,SYN-S-0176
+other,,,cosmetic,romanized_marathi,latin,Aundh,subway,illegal_hoardings,terse,,frustrated,auto_driver,SYN-S-0177
+other,,,cosmetic,romanized_hindi,latin,Vishrantwadi,college,encroachment_open_space,terse,,tired,woman_walking_alone,SYN-S-0178
+other,,yes,moderate,hinglish,latin,Rasta Peth,subway,mosquito_fogging_needed,plain,,angry,parent,SYN-S-0179
+pothole_road,,,moderate,marathi_english,mixed,Pashan,society gate,patch_work_failed_again,plain,yes,worried,two_wheeler_rider,SYN-S-0180
+water_supply,,,moderate,english,latin,Ganesh Peth,flyover,main_line_leakage,terse,yes,tired,senior_citizen,SYN-S-0181
+pothole_road,,,moderate,hinglish,mixed,Bavdhan,hospital,potholes_after_rain,narrative,yes,polite,parent,SYN-S-0182
+other,,,moderate,hinglish,mixed,Hadapsar,petrol pump,fallen_tree_branch,terse,,tired,parent,SYN-S-0183
+streetlight,,,moderate,marathi_english,latin,Model Colony,none,dark_near_bus_stop_unsafe,plain,yes,frustrated,woman_walking_alone,SYN-S-0184
+other,,,moderate,english,latin,,park,public_toilet_dirty,terse,,matter_of_fact,two_wheeler_rider,SYN-S-0185
+pothole_road,,,moderate,romanized_hindi,latin,Dhayari,subway,road_dug_not_restored,terse,,matter_of_fact,resident,SYN-S-0186
+pothole_road,,,moderate,hinglish,latin,Fursungi,bus stop,road_dug_not_restored,plain,yes,sarcastic,woman_walking_alone,SYN-S-0187
+streetlight,,,cosmetic,marathi,devanagari,Salunke Vihar,temple lane,lights_on_during_day,plain,,polite,two_wheeler_rider,SYN-S-0188
+garbage_waste,,yes,moderate,marathi_english,mixed,Model Colony,school gate,hotel_waste_dumped_at_night,plain,yes,frustrated,senior_citizen,SYN-S-0189
+water_supply,,,moderate,english,latin,Dhankawadi,park,upper_floors_no_water,plain,,sarcastic,resident,SYN-S-0190
+drainage_sewage,,,critical,marathi_english,latin,Kalyani Nagar,market,open_manhole,narrative,yes,pleading,society_secretary,SYN-S-0191
+footpath,,,cosmetic,english,latin,Model Colony,society gate,footpath_too_high_for_seniors,plain,,tired,resident,SYN-S-0192
+pothole_road,,,critical,english,latin,Shaniwar Peth,lake,deep_potholes_main_road,terse,,polite,two_wheeler_rider,SYN-S-0193
+footpath,,,moderate,romanized_marathi,latin,Wadgaon Sheri,college,footpath_ends_suddenly,plain,yes,tired,resident,SYN-S-0194
+water_supply,,,cosmetic,english,latin,Kharadi,temple lane,public_tap_left_running,terse,,angry,society_secretary,SYN-S-0195
+drainage_sewage,,,moderate,english,latin,Dhankawadi,none,chamber_smell,plain,,pleading,office_goer,SYN-S-0196
+drainage_sewage,,yes,moderate,hinglish,mixed,Ganesh Peth,petrol pump,backflow_in_bathroom,terse,,polite,student,SYN-S-0197
+pothole_road,,yes,moderate,english,latin,Swargate,hospital,unpaved_mud_road_new_colony,terse,,polite,auto_driver,SYN-S-0198
+streetlight,,,cosmetic,marathi,devanagari,,hospital,light_hidden_by_branches,plain,,tired,two_wheeler_rider,SYN-S-0199
+pothole_road,,,moderate,hindi,devanagari,Shivajinagar,supermarket,service_road_broken,plain,,angry,office_goer,SYN-S-0200
+pothole_road,,,cosmetic,english,latin,Magarpatta,flyover,uneven_road_after_resurfacing,terse,,worried,auto_driver,SYN-S-0201
+traffic_signage,,,cosmetic,marathi,devanagari,,talim,confusing_direction_board,terse,,worried,commuter,SYN-S-0202
+footpath,,,moderate,romanized_marathi,latin,Kasba Peth,ward office,footpath_ends_suddenly,plain,,polite,delivery_rider,SYN-S-0203
+other,,,cosmetic,english,latin,Magarpatta,supermarket,loud_music_noise,terse,,pleading,commuter,SYN-S-0204
+drainage_sewage,,,moderate,hinglish,mixed,Tilak Road,school gate,backflow_in_bathroom,narrative,,angry,parent,SYN-S-0205
+footpath,,,moderate,romanized_marathi,latin,Lohegaon,supermarket,bikes_parked_on_footpath,plain,yes,matter_of_fact,delivery_rider,SYN-S-0206
+drainage_sewage,,,moderate,romanized_hindi,latin,NIBM Road,hospital,sewage_line_leak_near_society_gate,terse,,sarcastic,parent,SYN-S-0207
+streetlight,,,moderate,english,latin,,hospital,whole_lane_dark,plain,,matter_of_fact,society_secretary,SYN-S-0208
+other,,,moderate,hinglish,latin,Wadgaon Sheri,hospital,mosquito_fogging_needed,plain,,pleading,two_wheeler_rider,SYN-S-0209
+traffic_signage,,,critical,hinglish,mixed,,hospital,signal_not_working,terse,,angry,shopkeeper,SYN-S-0210
+garbage_waste,,,moderate,english,latin,Kothrud,park,bin_overflowing,terse,,pleading,two_wheeler_rider,SYN-S-0211
+garbage_waste,,,moderate,english,latin,JM Road,subway,garbage_pile_at_corner,terse,,pleading,senior_citizen,SYN-S-0212
+streetlight,,,critical,english,latin,Gokhale Nagar,lake,pole_leaning,plain,,tired,two_wheeler_rider,SYN-S-0213
+footpath,,yes,moderate,english,latin,,college,footpath_blocked_by_shop_extension,terse,,matter_of_fact,shopkeeper,SYN-S-0214
+drainage_sewage,,,critical,english,latin,,petrol pump,storm_drain_cover_missing,terse,yes,frustrated,auto_driver,SYN-S-0215
+garbage_waste,,,critical,english,latin,Pashan,society gate,garbage_near_school,plain,,frustrated,shopkeeper,SYN-S-0216
+footpath,,,moderate,english,latin,Karve Nagar,market,no_footpath_walk_on_road,terse,,pleading,parent,SYN-S-0217
+other,,,moderate,english,latin,Rasta Peth,ward office,stray_cattle_on_road,plain,,polite,commuter,SYN-S-0218
+other,,,moderate,english,latin,,market,dry_branch_hanging_over_footpath,narrative,,pleading,parent,SYN-S-0219
+garbage_waste,,,moderate,hindi,devanagari,Tilak Road,lake,dumping_in_open_plot,narrative,,sarcastic,woman_walking_alone,SYN-S-0220
+footpath,,,moderate,english,latin,,school gate,footpath_blocked_by_shop_extension,plain,,polite,delivery_rider,SYN-S-0221
+footpath,,yes,cosmetic,english,latin,,none,tree_roots_broke_footpath,terse,,tired,delivery_rider,SYN-S-0222
+other,,,moderate,english,latin,Magarpatta,hospital,fallen_tree_branch,plain,,pleading,delivery_rider,SYN-S-0223
+pothole_road,,,moderate,english,latin,Baner,talim,potholes_after_rain,plain,,sarcastic,commuter,SYN-S-0224
+garbage_waste,,,cosmetic,romanized_hindi,latin,JM Road,temple lane,street_not_swept,terse,yes,angry,parent,SYN-S-0225
+streetlight,,,moderate,romanized_hindi,latin,,park,dark_stretch_near_park,narrative,,polite,resident,SYN-S-0226
+traffic_signage,,,cosmetic,english,latin,,hospital,sign_hidden_by_tree_or_hoarding,terse,,matter_of_fact,commuter,SYN-S-0227
+traffic_signage,,,moderate,marathi,devanagari,Camp,talim,one_way_board_missing,plain,,tired,two_wheeler_rider,SYN-S-0228
+drainage_sewage,,,moderate,english,latin,,none,backflow_in_bathroom,terse,,matter_of_fact,student,SYN-S-0229
+footpath,,,moderate,romanized_marathi,latin,Sadashiv Peth,college,footpath_dug_and_left,terse,,frustrated,student,SYN-S-0230
+drainage_sewage,,,critical,marathi,devanagari,,school gate,storm_drain_cover_missing,plain,,pleading,two_wheeler_rider,SYN-S-0231
+pothole_road,,,cosmetic,romanized_hindi,latin,Kalyani Nagar,lake,uneven_road_after_resurfacing,plain,,tired,woman_walking_alone,SYN-S-0232
+streetlight,,,moderate,hinglish,latin,,market,new_road_no_lights,terse,,polite,delivery_rider,SYN-S-0233
+other,,yes,moderate,hinglish,latin,Undri,chowk,dead_animal_on_road,plain,,angry,senior_citizen,SYN-S-0234
+other,,,moderate,romanized_hindi,latin,Camp,ward office,illegal_construction,terse,,tired,commuter,SYN-S-0235
+streetlight,,,cosmetic,marathi,devanagari,Kondhwa,park,light_flickering,plain,,frustrated,society_secretary,SYN-S-0236
+footpath,,,cosmetic,hinglish,latin,Sahakar Nagar,talim,tree_roots_broke_footpath,plain,,angry,resident,SYN-S-0237
+footpath,,,moderate,english,latin,,chowk,footpath_dug_and_left,terse,,pleading,senior_citizen,SYN-S-0238
+streetlight,,,moderate,hinglish,mixed,Bibwewadi,lake,dark_stretch_near_park,terse,,tired,student,SYN-S-0239
+traffic_signage,,,moderate,english,latin,Senapati Bapat Road,school gate,zebra_crossing_faded,terse,,matter_of_fact,society_secretary,SYN-S-0240
+other,,,cosmetic,english,latin,Rasta Peth,chowk,encroachment_open_space,terse,,frustrated,parent,SYN-S-0241
+footpath,,,moderate,marathi_english,latin,Aundh,market,footpath_dug_and_left,terse,,matter_of_fact,delivery_rider,SYN-S-0242
+drainage_sewage,,,critical,marathi,devanagari,,market,broken_manhole_cover,narrative,,polite,shopkeeper,SYN-S-0243
+drainage_sewage,,,critical,english,latin,Kondhwa,bus stop,storm_drain_cover_missing,narrative,,pleading,parent,SYN-S-0244
+drainage_sewage,,yes,moderate,marathi_english,mixed,,ward office,chamber_overflows_every_morning,narrative,,worried,parent,SYN-S-0245
+footpath,,,moderate,english,latin,Dhanori,petrol pump,broken_paver_blocks,plain,,pleading,auto_driver,SYN-S-0246
+streetlight,,,cosmetic,hinglish,latin,Bavdhan,market,light_hidden_by_branches,terse,,worried,resident,SYN-S-0247
+water_supply,,,critical,english,latin,Gokhale Nagar,railway station,no_water_for_days,narrative,,sarcastic,parent,SYN-S-0248
+garbage_waste,,,moderate,romanized_hindi,latin,,college,garbage_pile_at_corner,narrative,yes,matter_of_fact,auto_driver,SYN-S-0249
+other,,,cosmetic,romanized_marathi,latin,Camp,society gate,loud_music_noise,terse,yes,frustrated,two_wheeler_rider,SYN-S-0250
+pothole_road,,,critical,marathi,devanagari,NIBM Road,talim,potholes_near_school,terse,,matter_of_fact,student,SYN-S-0251
+water_supply,,,moderate,english,latin,Warje,college,valve_not_opened,terse,,polite,resident,SYN-S-0252
+streetlight,,,moderate,romanized_hindi,latin,,supermarket,dark_near_bus_stop_unsafe,terse,,angry,senior_citizen,SYN-S-0253
+drainage_sewage,,,moderate,romanized_marathi,latin,Koregaon Park,supermarket,chamber_smell,plain,yes,sarcastic,resident,SYN-S-0254
+other,,yes,cosmetic,english,latin,Sadashiv Peth,park,loud_music_noise,terse,yes,polite,resident,SYN-S-0255
+streetlight,,,moderate,romanized_hindi,latin,,school gate,lamp_broken,plain,,matter_of_fact,delivery_rider,SYN-S-0256
+water_supply,,,moderate,english,latin,Kothrud,lake,supply_only_short_time,plain,,frustrated,resident,SYN-S-0257
+water_supply,,,critical,hinglish,latin,Magarpatta,petrol pump,no_water_for_days,terse,,angry,student,SYN-S-0258
+pothole_road,,,moderate,romanized_hindi,latin,Chandannagar,hospital,potholes_after_rain,terse,,sarcastic,delivery_rider,SYN-S-0259
+garbage_waste,,,moderate,english,latin,Senapati Bapat Road,bus stop,garbage_pile_at_corner,plain,,tired,woman_walking_alone,SYN-S-0260
+traffic_signage,,,critical,english,latin,Hadapsar,park,signal_not_working,terse,,polite,student,SYN-S-0261
+garbage_waste,,,cosmetic,marathi,devanagari,Aundh,ward office,collectors_refuse_unsegregated,terse,,frustrated,parent,SYN-S-0262
+drainage_sewage,,,cosmetic,hinglish,latin,Magarpatta,school gate,drain_slab_sunk,terse,,angry,resident,SYN-S-0263
+footpath,,,moderate,hindi,devanagari,Koregaon Park,market,hawkers_on_footpath,plain,,pleading,senior_citizen,SYN-S-0264
+water_supply,,,critical,english,latin,Dhankawadi,flyover,smell_in_drinking_water,terse,,angry,woman_walking_alone,SYN-S-0265
+drainage_sewage,,,moderate,hinglish,latin,Baner,flyover,drain_not_cleaned_before_monsoon,terse,,angry,student,SYN-S-0266
+garbage_waste,,,moderate,english,latin,,ward office,dogs_tearing_bags_smell,plain,,worried,student,SYN-S-0267
+traffic_signage,,,moderate,english,latin,Bavdhan,supermarket,pedestrian_signal_broken,terse,,angry,shopkeeper,SYN-S-0268
+streetlight,,,moderate,english,latin,Bavdhan,petrol pump,dark_stretch_near_park,terse,,matter_of_fact,resident,SYN-S-0269
+other,,,moderate,english,latin,Camp,society gate,public_toilet_dirty,narrative,,pleading,office_goer,SYN-S-0270
+drainage_sewage,,,critical,marathi_english,latin,,park,sewage_into_houses,plain,,frustrated,commuter,SYN-S-0271
+traffic_signage,,,critical,romanized_hindi,latin,Market Yard,none,speed_breaker_unpainted,plain,,worried,student,SYN-S-0272
+traffic_signage,,yes,moderate,english,latin,Market Yard,subway,pedestrian_signal_too_short,plain,,worried,woman_walking_alone,SYN-S-0273
+footpath,,,moderate,romanized_hindi,latin,Gokhale Nagar,park,bikes_parked_on_footpath,terse,,angry,society_secretary,SYN-S-0274
+traffic_signage,,,cosmetic,english,latin,Fursungi,none,sign_board_missing,terse,,worried,two_wheeler_rider,SYN-S-0275
+other,,,cosmetic,english,latin,FC Road,subway,broken_park_equipment,plain,,pleading,shopkeeper,SYN-S-0276
+other,,,cosmetic,english,latin,Magarpatta,railway station,loud_music_noise,plain,yes,tired,two_wheeler_rider,SYN-S-0277
+garbage_waste,,,moderate,english,latin,,railway station,collection_vehicle_not_coming,terse,,worried,resident,SYN-S-0278
+streetlight,,,moderate,marathi_english,latin,Kothrud,school gate,dark_near_bus_stop_unsafe,narrative,,frustrated,resident,SYN-S-0279
+garbage_waste,,yes,critical,english,latin,Dhayari,none,garbage_near_school,terse,,tired,parent,SYN-S-0280
+garbage_waste,,,moderate,english,latin,Kasba Peth,talim,market_waste_left_after_bazaar,plain,,pleading,commuter,SYN-S-0281
+water_supply,,,moderate,english,latin,Mundhwa,lake,society_depends_on_tanker,terse,yes,frustrated,society_secretary,SYN-S-0282
+other,,,moderate,hinglish,mixed,,bus stop,home_power_cut_msedcl,narrative,yes,frustrated,society_secretary,SYN-S-0283
+pothole_road,,,moderate,hindi,devanagari,Tilak Road,market,metro_work_damaged_road,terse,,worried,society_secretary,SYN-S-0284
+streetlight,,,moderate,romanized_hindi,latin,Aundh,chowk,lamp_broken,plain,,angry,senior_citizen,SYN-S-0285
+pothole_road,,yes,cosmetic,romanized_marathi,latin,Wadgaon Sheri,railway station,small_cracks_surface,terse,,pleading,shopkeeper,SYN-S-0286
+other,,,moderate,romanized_hindi,latin,Bhavani Peth,flyover,stray_dogs,terse,,pleading,society_secretary,SYN-S-0287
+other,,,moderate,hinglish,latin,Kothrud,none,home_power_cut_msedcl,plain,yes,polite,commuter,SYN-S-0288
+drainage_sewage,,,moderate,english,latin,Kondhwa,supermarket,chamber_smell,terse,,frustrated,commuter,SYN-S-0289
+footpath,,,moderate,english,latin,Warje,park,footpath_blocked_by_shop_extension,terse,yes,tired,resident,SYN-S-0290
+garbage_waste,,,moderate,english,latin,,none,hotel_waste_dumped_at_night,terse,,sarcastic,commuter,SYN-S-0291
+streetlight,,yes,cosmetic,english,latin,Katraj,school gate,light_hidden_by_branches,terse,,frustrated,shopkeeper,SYN-S-0292
+traffic_signage,,,cosmetic,romanized_hindi,latin,,chowk,road_name_board_missing,plain,,sarcastic,woman_walking_alone,SYN-S-0293
+other,,,cosmetic,marathi,devanagari,Narayan Peth,market,encroachment_open_space,terse,,polite,commuter,SYN-S-0294
+streetlight,,,cosmetic,hindi,devanagari,,bus stop,light_flickering,terse,,tired,two_wheeler_rider,SYN-S-0295
+pothole_road,,,moderate,english,latin,Pashan,temple lane,unpaved_mud_road_new_colony,terse,yes,tired,shopkeeper,SYN-S-0296
+water_supply,,,moderate,hinglish,latin,,market,timing_changed_no_notice,plain,yes,pleading,two_wheeler_rider,SYN-S-0297
+garbage_waste,,,moderate,marathi,devanagari,Bavdhan,college,burning_garbage_smoke,plain,,pleading,woman_walking_alone,SYN-S-0298
+pothole_road,,,moderate,english,latin,Erandwane,temple lane,water_filled_potholes,terse,yes,worried,shopkeeper,SYN-S-0299
+footpath,,,cosmetic,english,latin,Swargate,flyover,tree_roots_broke_footpath,plain,yes,angry,auto_driver,SYN-S-0300
+water_supply,,,moderate,marathi,devanagari,Ganesh Peth,chowk,main_line_leakage,terse,,tired,student,SYN-S-0301
+water_supply,,,moderate,romanized_marathi,latin,Bhavani Peth,bus stop,valve_not_opened,terse,,frustrated,student,SYN-S-0302
+water_supply,,,moderate,marathi,devanagari,Tilak Road,petrol pump,low_pressure,plain,,pleading,woman_walking_alone,SYN-S-0303
+footpath,,,cosmetic,romanized_hindi,latin,JM Road,bus stop,footpath_too_high_for_seniors,plain,,frustrated,student,SYN-S-0304
+garbage_waste,,,moderate,english,latin,Deccan Gymkhana,supermarket,bin_overflowing,terse,yes,polite,auto_driver,SYN-S-0305
+garbage_waste,,,moderate,hinglish,latin,Sahakar Nagar,petrol pump,garbage_not_collected_days,terse,,worried,resident,SYN-S-0306
+other,,,moderate,hinglish,latin,,supermarket,fallen_tree_branch,narrative,yes,angry,commuter,SYN-S-0307
+garbage_waste,,,cosmetic,romanized_marathi,latin,Senapati Bapat Road,railway station,collectors_refuse_unsegregated,terse,yes,angry,auto_driver,SYN-S-0308
+drainage_sewage,,,moderate,romanized_marathi,latin,,lake,blocked_drain_waterlogging,plain,,matter_of_fact,two_wheeler_rider,SYN-S-0309
+other,,,moderate,english,latin,Deccan Gymkhana,college,mosquito_fogging_needed,plain,yes,frustrated,parent,SYN-S-0310
+footpath,,,cosmetic,marathi,devanagari,,railway station,footpath_too_high_for_seniors,terse,,pleading,society_secretary,SYN-S-0311
+streetlight,,,moderate,romanized_marathi,latin,FC Road,none,only_few_lights_working,narrative,,angry,shopkeeper,SYN-S-0312
+other,,,moderate,romanized_marathi,latin,Mundhwa,subway,home_power_cut_msedcl,plain,,worried,senior_citizen,SYN-S-0313
+pothole_road,,,moderate,marathi_english,latin,Shaniwar Peth,chowk,road_dug_not_restored,plain,,matter_of_fact,office_goer,SYN-S-0314
+other,,,moderate,romanized_marathi,latin,Bhavani Peth,college,stray_cattle_on_road,plain,,angry,senior_citizen,SYN-S-0315
+water_supply,,,moderate,romanized_hindi,latin,Fursungi,hospital,upper_floors_no_water,plain,,matter_of_fact,student,SYN-S-0316
+pothole_road,,,moderate,english,latin,Narayan Peth,society gate,water_filled_potholes,terse,,pleading,senior_citizen,SYN-S-0317
+streetlight,,,critical,english,latin,,none,pole_leaning,terse,,pleading,two_wheeler_rider,SYN-S-0318
+other,,,moderate,marathi_english,latin,,chowk,stray_dogs,plain,,pleading,two_wheeler_rider,SYN-S-0319
+drainage_sewage,,,critical,english,latin,Balewadi,bus stop,sewage_into_houses,plain,,polite,two_wheeler_rider,SYN-S-0320
+footpath,,,moderate,romanized_hindi,latin,,ward office,not_wheelchair_accessible,plain,,frustrated,office_goer,SYN-S-0321
+footpath,,,moderate,marathi_english,latin,Camp,supermarket,broken_paver_blocks,terse,,frustrated,auto_driver,SYN-S-0322
+garbage_waste,,,moderate,marathi_english,latin,Warje,hospital,construction_debris_dumped,terse,,worried,shopkeeper,SYN-S-0323
+drainage_sewage,,,moderate,english,latin,Warje,park,blocked_drain_waterlogging,terse,,tired,two_wheeler_rider,SYN-S-0324
+traffic_signage,,yes,moderate,english,latin,Mundhwa,flyover,blinking_yellow_all_night,plain,,polite,commuter,SYN-S-0325
+garbage_waste,,,moderate,marathi,devanagari,,subway,construction_debris_dumped,terse,,worried,senior_citizen,SYN-S-0326
+footpath,,,cosmetic,marathi,devanagari,Sutarwadi,talim,footpath_too_high_for_seniors,terse,,pleading,auto_driver,SYN-S-0327
+streetlight,,,critical,english,latin,,bus stop,exposed_wires_at_pole,terse,yes,pleading,office_goer,SYN-S-0328
+drainage_sewage,,,moderate,marathi,devanagari,Sahakar Nagar,bus stop,nala_choked,terse,,frustrated,commuter,SYN-S-0329
+other,,,cosmetic,hinglish,mixed,Katraj,supermarket,broken_park_equipment,plain,,pleading,two_wheeler_rider,SYN-S-0330
+water_supply,,,moderate,english,latin,NIBM Road,temple lane,society_depends_on_tanker,narrative,,tired,office_goer,SYN-S-0331
+pothole_road,,,critical,hinglish,mixed,Deccan Gymkhana,lake,loose_gravel_bikes_skid,terse,,matter_of_fact,resident,SYN-S-0332
+drainage_sewage,,,moderate,english,latin,,park,sewage_overflow_on_road,terse,,tired,society_secretary,SYN-S-0333
+traffic_signage,,,critical,romanized_hindi,latin,Karve Nagar,bus stop,no_speed_breaker_near_school,plain,,sarcastic,society_secretary,SYN-S-0334
+footpath,,,moderate,hinglish,latin,,chowk,no_footpath_walk_on_road,terse,,pleading,delivery_rider,SYN-S-0335
+water_supply,,,critical,hindi,devanagari,Mundhwa,college,dirty_yellow_tap_water,terse,,matter_of_fact,society_secretary,SYN-S-0336
+garbage_waste,,,moderate,hinglish,mixed,Viman Nagar,market,garbage_not_collected_days,terse,yes,tired,woman_walking_alone,SYN-S-0337
+water_supply,,,critical,english,latin,Ghorpadi,chowk,dirty_yellow_tap_water,terse,,frustrated,woman_walking_alone,SYN-S-0338
+garbage_waste,,,moderate,romanized_marathi,latin,,railway station,market_waste_left_after_bazaar,narrative,yes,matter_of_fact,woman_walking_alone,SYN-S-0339
+other,,,cosmetic,hindi,devanagari,,ward office,illegal_hoardings,plain,,matter_of_fact,senior_citizen,SYN-S-0340
+other,,,moderate,english,latin,Vadgaon Budruk,none,public_toilet_dirty,terse,,frustrated,delivery_rider,SYN-S-0341
+water_supply,,,moderate,romanized_marathi,latin,Camp,temple lane,low_pressure,terse,,matter_of_fact,parent,SYN-S-0342
+streetlight,,,cosmetic,english,latin,Kalyani Nagar,ward office,lights_on_during_day,plain,yes,frustrated,society_secretary,SYN-S-0343
+streetlight,,,moderate,english,latin,JM Road,talim,new_road_no_lights,terse,yes,frustrated,student,SYN-S-0344
+other,,yes,moderate,english,latin,Sahakar Nagar,temple lane,stray_cattle_on_road,plain,,worried,commuter,SYN-S-0345
+traffic_signage,,,moderate,english,latin,Dhayari,lake,blinking_yellow_all_night,terse,yes,frustrated,two_wheeler_rider,SYN-S-0346
+pothole_road,,,moderate,marathi,devanagari,Karve Nagar,park,road_dug_not_restored,terse,,tired,society_secretary,SYN-S-0347
+garbage_waste,,yes,moderate,english,latin,Viman Nagar,chowk,construction_debris_dumped,plain,yes,angry,resident,SYN-S-0348
+footpath,,,moderate,english,latin,,market,not_wheelchair_accessible,plain,yes,pleading,auto_driver,SYN-S-0349
+garbage_waste,,,moderate,hinglish,latin,Bibwewadi,subway,dumping_in_open_plot,narrative,,angry,senior_citizen,SYN-S-0350
+traffic_signage,,,critical,romanized_marathi,latin,Sahakar Nagar,talim,signal_not_working,terse,yes,frustrated,office_goer,SYN-S-0351
+other,,,moderate,marathi_english,mixed,Wadgaon Sheri,market,construction_material_blocking_road,narrative,,matter_of_fact,student,SYN-S-0352
+pothole_road,,,moderate,romanized_marathi,latin,Sutarwadi,lake,service_road_broken,terse,,tired,resident,SYN-S-0353
+drainage_sewage,,,moderate,english,latin,Wanowrie,society gate,drain_not_cleaned_before_monsoon,terse,,pleading,parent,SYN-S-0354
+streetlight,,,critical,english,latin,Sinhagad Road,chowk,exposed_wires_at_pole,narrative,,pleading,auto_driver,SYN-S-0355
+pothole_road,,,cosmetic,english,latin,Camp,supermarket,small_cracks_surface,narrative,,tired,shopkeeper,SYN-S-0356
+traffic_signage,,,critical,marathi,devanagari,Swargate,supermarket,no_speed_breaker_near_school,terse,,angry,auto_driver,SYN-S-0357
+footpath,,,moderate,marathi,devanagari,,hospital,hawkers_on_footpath,plain,,angry,resident,SYN-S-0358
+other,,,moderate,romanized_hindi,latin,Pashan,bus stop,stray_dogs,plain,yes,polite,parent,SYN-S-0359
+water_supply,,,moderate,english,latin,,ward office,main_line_leakage,terse,,frustrated,shopkeeper,SYN-S-0360
+footpath,,,cosmetic,romanized_hindi,latin,,flyover,footpath_too_high_for_seniors,terse,,angry,shopkeeper,SYN-S-0361
+footpath,,yes,moderate,marathi,devanagari,Kharadi,flyover,slippery_tiles,terse,,worried,woman_walking_alone,SYN-S-0362
+other,,,cosmetic,marathi,devanagari,NIBM Road,flyover,construction_noise_early_morning,terse,,matter_of_fact,resident,SYN-S-0363
+other,,,cosmetic,romanized_hindi,latin,Wanowrie,society gate,encroachment_open_space,plain,yes,matter_of_fact,student,SYN-S-0364
+traffic_signage,,,cosmetic,romanized_marathi,latin,Kasba Peth,supermarket,confusing_direction_board,plain,,polite,society_secretary,SYN-S-0365
+drainage_sewage,,,critical,english,latin,Dhanori,college,open_manhole,terse,,frustrated,society_secretary,SYN-S-0366
+pothole_road,,,critical,romanized_hindi,latin,Salunke Vihar,school gate,loose_gravel_bikes_skid,plain,,matter_of_fact,shopkeeper,SYN-S-0367
+footpath,,,moderate,hindi,devanagari,JM Road,lake,slippery_tiles,plain,,sarcastic,woman_walking_alone,SYN-S-0368
+pothole_road,,,critical,english,latin,Koregaon Park,flyover,road_caved_in,plain,,frustrated,society_secretary,SYN-S-0369
+drainage_sewage,,yes,moderate,hindi,devanagari,Swargate,petrol pump,nala_choked,terse,,polite,resident,SYN-S-0370
+footpath,,,moderate,hinglish,latin,Lohegaon,bus stop,slippery_tiles,plain,,tired,auto_driver,SYN-S-0371
+streetlight,,,moderate,hinglish,latin,,temple lane,dark_stretch_near_park,plain,yes,matter_of_fact,delivery_rider,SYN-S-0372
+other,,,moderate,hindi,devanagari,,ward office,public_toilet_dirty,plain,,worried,senior_citizen,SYN-S-0373
+traffic_signage,,yes,moderate,english,latin,Vishrantwadi,park,lane_markings_faded,plain,,tired,shopkeeper,SYN-S-0374
+streetlight,,,critical,english,latin,Warje,ward office,pole_leaning,terse,,matter_of_fact,delivery_rider,SYN-S-0375
+traffic_signage,,,cosmetic,hinglish,latin,,market,sign_board_missing,terse,,pleading,student,SYN-S-0376
+traffic_signage,,,moderate,marathi,devanagari,,none,zebra_crossing_faded,plain,,pleading,parent,SYN-S-0377
+garbage_waste,,yes,moderate,english,latin,,petrol pump,collection_vehicle_not_coming,terse,,polite,senior_citizen,SYN-S-0378
+streetlight,,,moderate,hinglish,latin,,railway station,dark_underpass,narrative,,angry,shopkeeper,SYN-S-0379
+other,,,moderate,romanized_hindi,latin,,supermarket,dead_animal_on_road,narrative,yes,polite,auto_driver,SYN-S-0380
+traffic_signage,,,cosmetic,marathi_english,mixed,Market Yard,market,road_name_board_missing,terse,,tired,parent,SYN-S-0381
+other,,,cosmetic,marathi,devanagari,,bus stop,illegal_hoardings,narrative,,frustrated,society_secretary,SYN-S-0382
+drainage_sewage,,,moderate,marathi,devanagari,Wanowrie,chowk,nala_choked,narrative,,tired,woman_walking_alone,SYN-S-0383
+traffic_signage,,,moderate,english,latin,Karve Nagar,talim,pedestrian_signal_broken,plain,yes,worried,office_goer,SYN-S-0384
+water_supply,,,moderate,romanized_hindi,latin,Parvati,railway station,society_depends_on_tanker,plain,,matter_of_fact,auto_driver,SYN-S-0385
+footpath,,,moderate,marathi,devanagari,Chandannagar,lake,bikes_parked_on_footpath,terse,,frustrated,resident,SYN-S-0386
+pothole_road,,,critical,hinglish,latin,Swargate,college,pothole_at_turn_accident_risk,terse,,frustrated,shopkeeper,SYN-S-0387
+pothole_road,,,moderate,marathi_english,latin,JM Road,society gate,unpaved_mud_road_new_colony,narrative,,angry,resident,SYN-S-0388
+streetlight,,,moderate,english,latin,,school gate,new_road_no_lights,terse,,matter_of_fact,commuter,SYN-S-0389
+footpath,,,moderate,english,latin,Bibwewadi,none,broken_paver_blocks,terse,,tired,woman_walking_alone,SYN-S-0390
+other,,yes,moderate,romanized_hindi,latin,Aundh,hospital,dead_animal_on_road,terse,,angry,senior_citizen,SYN-S-0391
+water_supply,,,moderate,romanized_hindi,latin,Hadapsar,railway station,timing_changed_no_notice,narrative,,sarcastic,commuter,SYN-S-0392
+water_supply,,,moderate,marathi,devanagari,,none,pipeline_burst_on_road,terse,,sarcastic,student,SYN-S-0393
+water_supply,,,moderate,hinglish,latin,,chowk,supply_only_late_night,terse,yes,angry,senior_citizen,SYN-S-0394
+garbage_waste,,,moderate,hinglish,latin,Pashan,supermarket,dogs_tearing_bags_smell,plain,,angry,resident,SYN-S-0395
+pothole_road,,,cosmetic,romanized_marathi,latin,Shivajinagar,school gate,uneven_road_after_resurfacing,plain,,matter_of_fact,delivery_rider,SYN-S-0396
+traffic_signage,,,moderate,hindi,devanagari,Vadgaon Budruk,society gate,zebra_crossing_faded,terse,,tired,office_goer,SYN-S-0397
+pothole_road,,,moderate,english,latin,Erandwane,petrol pump,potholes_after_rain,narrative,,pleading,senior_citizen,SYN-S-0398
+garbage_waste,,,moderate,hinglish,mixed,JM Road,talim,dogs_tearing_bags_smell,narrative,,frustrated,office_goer,SYN-S-0399
+traffic_signage,,,moderate,english,latin,,market,pedestrian_signal_broken,terse,,matter_of_fact,shopkeeper,SYN-S-0400

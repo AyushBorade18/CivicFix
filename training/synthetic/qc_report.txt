@@ -1,3 +1,4 @@
+style-matched written: 0/400
 complaints written: 1580/1580 (+100 pilot)
 group variants written: 1200/1200
 category: {'pothole_road': 202, 'drainage_sewage': 234, 'water_supply': 232, 'streetlight': 202, 'garbage_waste': 198, 'footpath': 210, 'traffic_signage': 218, 'other': 184}
