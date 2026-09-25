@@ -1,1 +1,65 @@
-gold_id,split,writer_code,text,language,script,locality,reported_date,dup_group,category_a,category_b,final_category,secondary_category,severity,source,is_synthetic,notes
+gold_id,split,text,locality,reported_date,dup_group,category,secondary_category,severity,source
+G001,test,"Drainage chamber near Kelewadi bus stop overflowing since 4 days, whole lane smells, kids walk through this to school",Kelewadi Kothrud,2026-09-12,D01,drainage_sewage,,critical,team_written
+G002,test,kachra gadi not coming since 1 week on sb road near ncc hq stray dogs spreading it everywhere,SB Road near NCC HQ,2026-08-15,D03,garbage_waste,other,moderate,team_written
+G003,test,D mart baner ke samne bohot bada pothole hai 2 log gir gaye kal. please fix immediately!,Baner,2026-09-01,D06,pothole_road,,critical,team_written
+G004,test,no water supply in shastrinagar for two days,Shastrinagar Kothrud,2026-09-22,,water_supply,,moderate,team_written
+G005,test,footpath broken tiles missing,,2026-08-30,,footpath,,cosmetic,team_written
+G006,seed,Sutardara main road pothole is getting bigger everyday my car got damaged,Sutardara Kothrud,2026-09-03,D02,pothole_road,,moderate,team_written
+G007,seed,Sai ganesh park lohegaon street light is off very dark at night,Sai Ganesh Park Lohegaon,2026-09-10,D05,streetlight,,moderate,team_written
+G008,seed,jm road footpath encroached by stalls cant walk,JM Road,2026-08-05,D08,footpath,,cosmetic,team_written
+G009,seed,nal stop signal not working completely chaotic,Nal Stop,2026-09-18,D09,traffic_signage,,moderate,team_written
+G010,seed,Kelewadi bus stop pe streetlight band hai 1 mahine se. raat ko unsafe lagta hai.,Kelewadi Kothrud,2026-08-20,,streetlight,,moderate,team_written
+G011,seed,ganesh peth mari aai mata mandir lane kachra bohot hai smelling bad,Mari Aai Mata Mandir lane Ganesh Peth,2026-09-24,,garbage_waste,,cosmetic,team_written
+G012,seed,PMC dumping waste in the open plot behind hanumannagar.,Hanumannagar Kothrud,2026-08-12,,garbage_waste,,moderate,team_written
+G013,seed,stray dogs howling all night cannot sleep,Yerwada,2026-09-25,,other,,cosmetic,team_written
+G014,seed,pipe leaking near shivramdada talim drinking water is being wasted,Shivramdada Talim Ganesh Peth,2026-09-20,,water_supply,,moderate,team_written
+G015,seed,open manhole on DP road someone will fall inside and die,DP Road Aundh,2026-09-05,,drainage_sewage,,critical,team_written
+G016,test,kelewadi mein gutter ka paani road pe aa raha hai koi dekhne nahi aaya bus stop k paas,Kelewadi Kothrud,2026-09-14,D01,drainage_sewage,,moderate,team_written
+G017,test,NCC HQ SB road pe kachra jala rahe hai. Dhua hi dhua hai.,SB Road near NCC HQ,2026-08-16,D03,garbage_waste,,critical,team_written
+G018,test,Sutardara main road tap water is muddy and smells like sewage,Sutardara Kothrud,2026-09-05,,water_supply,drainage_sewage,critical,team_written
+G019,test,zebra crossing faded at karve statue junction vehicles dont stop,Karve Statue Kothrud,2026-09-10,,traffic_signage,,cosmetic,team_written
+G020,test,fallen tree blocking the main gate society,,2026-08-25,,other,,moderate,team_written
+G021,seed,ganesh peth shivramdada talim area has no water since morning,Shivramdada Talim Ganesh Peth,2026-09-18,D04,water_supply,,moderate,team_written
+G022,seed,lohegaon sai ganesh park light pole is broken wires hanging,Sai Ganesh Park Lohegaon,2026-09-11,D05,streetlight,,critical,team_written
+G023,seed,Aundh gaon main chowk gutter blocked water everywhere,Aundh Gaon,2026-09-21,D07,drainage_sewage,,moderate,team_written
+G024,seed,walking track on JM road is broken people tripping,JM Road,2026-08-06,D08,footpath,,moderate,team_written
+G025,seed,Katraj lake area garbage dumps stinking very badly,Katraj Lake,2026-08-19,D10,garbage_waste,,moderate,team_written
+G026,seed,Lohegaon sai ganesh park mein stray dogs ka bohot problem hai bacche darte hai,Sai Ganesh Park Lohegaon,2026-09-12,,other,,moderate,team_written
+G027,seed,bibvewadi main road huge pothole,Bibvewadi,2026-08-22,,pothole_road,,moderate,team_written
+G028,seed,no go signal at swargate chowk causing huge jams,Swargate Chowk,2026-09-15,,traffic_signage,,moderate,team_written
+G029,seed,kishkindhanagar drainage overflowing into houses please help,Kishkindhanagar Kothrud,2026-09-02,,drainage_sewage,,critical,team_written
+G030,seed,water pressure is too low for last 10 days,Shelar Complex Kothrud,2026-09-23,,water_supply,,cosmetic,team_written
+G031,test,garbage piled up near NCC headquarter on SB road PMC hasn't cleared it for days,SB Road near NCC HQ,2026-08-15,D03,garbage_waste,,moderate,team_written
+G032,test,baner dmart road dug up by mseb and left open accidents happening,Baner D Mart,2026-09-02,D06,pothole_road,,critical,team_written
+G033,test,live wire on footpath near viman nagar symbiosys,Viman Nagar,2026-09-01,,streetlight,,critical,team_written
+G034,test,light not working for a week and garbage piling up below the same pole,,2026-09-20,,streetlight,garbage_waste,cosmetic,team_written
+G035,test,paani nahi aa raha shravandhara society mein kal raat se,Shravandhara Kothrud,2026-09-10,,water_supply,,moderate,team_written
+G036,seed,सुतारदरा रस्त्यावर मोठे खड्डे पडले आहेत रात्री बाइक घसरते,Sutardara Kothrud,2026-09-03,D02,pothole_road,,moderate,team_written
+G037,seed,शिवरामदादा तालीम गणेश पेठ येथे पाण्याचा दाब खूप कमी आहे,Shivramdada Talim Ganesh Peth,2026-09-19,D04,water_supply,,cosmetic,team_written
+G038,seed,aundh gaon sewage mixing with road mud terrible condition,Aundh Gaon,2026-09-22,D07,drainage_sewage,,moderate,team_written
+G039,seed,traffic lights at nal stop totally blank since morning,Nal Stop,2026-09-18,D09,traffic_signage,,moderate,team_written
+G040,seed,katraj talav ke pass plastic waste jalaya jaa raha hai,Katraj Lake,2026-08-20,D10,garbage_waste,,moderate,team_written
+G041,seed,SB road NCC hq ke bahar rasta kharab hai pothole hi pothole,SB Road near NCC HQ,2026-08-16,,pothole_road,,moderate,team_written
+G042,seed,wakdewadi subway flooded knee deep water,Wakdewadi,2026-07-28,,drainage_sewage,,critical,team_written
+G043,seed,footpath slab missing near pune station bus stand,Pune Station,2026-08-11,,footpath,,moderate,team_written
+G044,seed,रस्त्यावर कचरा पडला आहे आणि साफ सफाई नाही,Kharadi,2026-09-14,,garbage_waste,,cosmetic,team_written
+G045,seed,no right turn sign missing at warje flyover,Warje Flyover,2026-09-21,,traffic_signage,,cosmetic,team_written
+G046,seed,"उघडे मॅनहोल आहे मारी आई माता मंदिर गल्लीत, काल एक मुलगा जवळजवळ पडला होता","Mari Aai Mata Mandir lane, Ganesh Peth",2024-04-24,,drainage_sewage,,critical,real
+G047,seed,Pole outside a housing society gate has been flickering for over a week,"SunCity, Ambegaon",2024-10-17,,streetlight,,moderate,real
+G048,seed,"ek bulb off reh jata hai mere ghar ke samne wale sadak pe, jo raat ke time pe kaafi inconvinient hojata hai kyuki vaha ek general purpose store hai jaha se hum saman lete hai, usko fix karaye","Shastrinagar, Kothrud",2026-05-12,,streetlight,,critical,real
+G049,test,आमच्या इथे काल रात्री एक अजोबा अजब घडले कारण संपूर्ण लॅनमध्ये वीज गेली होती.,"Kimaya Co-Op Housing Society, Bibwewadi",2026-06-13,,streetlight,,critical,real
+G050,test,Stray dogs chasing morning walkers near a park entrance,Kasba peth,2023-01-13,,other,,moderate,real
+G051,seed,Pichli bhaari baarish se ek sookhi hui ped ki daal footpath ke oopar latak rahi hai.,Hadapsar,2023-05-20,,other,,moderate,real
+G052,test,"Road ke kinare construction ka malba phenka gaya hai, jisne aadhi lane block kar di hai.",Kondhwa,2026-05-12,,other,,moderate,real
+G053,seed,"नल से मैला और गंदा पानी आ रहा है, बच्चे बीमार पड़ गए हैं.  बिजली भी आज कल बहुत बार जा रही है।",Viman Nagar,2026-01-30,,water_supply,streetlight,moderate,real
+G054,test,"शाळेसमोर तुटलेल्या टाईल्स आहेत, लहान मुलं सारखी पडत राहतात",laxmi road,2025-11-11,,footpath,,moderate,real
+G055,seed,"Deep pothole caused a two-wheeler to skid at night, rider got hurt",Balewadi,2022-08-11,,pothole_road,,critical,real
+G056,seed,saare footpath pe stalls lage hue hai jis wajeh se logo ko sadak pe chalna pad raha hai jo kaafi khatarnak aur ghatak hai,FC road,2025-04-10,,footpath,,critical,real
+G057,test,"School gate ke bilkul paas ek khula nala hai, jisme se bohot gandi badboo aati hai aur bacche roz uske paas se guzarte hain",PCMC,2025-03-13,,drainage_sewage,,cosmetic,real
+G058,seed,कचरा उचलणारी गाडी गेली २ आठवडे आली नाहीये,"Shelar Complex, Kothurd",2025-10-24,,garbage_waste,,cosmetic,real
+G059,test,"MNGL dug up the road for gas pipeline work weeks ago, never refilled properly, left loose and uneven",,2025-06-02,,pothole_road,,moderate,real
+G060,seed,"घरासमोरील कन्स्ट्रक्शन साईटमुळे रस्त्यावर वाळू आणि सिमेंट टाकून ठेवले आहे, गेल्या काही आठवड्यांपासून ते कोणीही उचललेले नाही आणि त्यामुळे अर्धा रस्ता बंद झाला आहे.",,2026-05-12,,other,,critical,real
+G061,test,"Raat ke samay MNGL gas line ka khadda khula aur bina kisi marking ke chhod diya gaya, jisme ek scooter gir gayi.",Warje,2026-01-30,,pothole_road,,critical,real
+G062,seed,"Hamare society ke back gate ke vaha logo ne dumping spot create karke rakha hai aur uske vajeh se macchar, gandegi fail rahi hai jo hamari health ko affect kar raha hahi. Bohut dino se kachre ki gadi bhi nahi ayi hai.",,2026-09-08,,garbage_waste,,critical,real
+G063,seed,"lane ke speed breaker ke markings chale gaye hai, samne agar speed breaker aa raha ho toh dikhai nahai deta. 2 log gir gaye hai already","Kimaya Co-Op Housing Society, Bibwewadi",2025-06-02,,traffic_signage,,critical,real
+G064,seed,"Loud construction noise starting very early morning, disturbing sleep",Aundh,2026-05-12,,footpath,,moderate,real
