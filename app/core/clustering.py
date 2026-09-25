@@ -6,14 +6,20 @@ from sklearn.cluster import DBSCAN
 
 from app.db import get_connection
 
-COSINE_THRESHOLD = 0.82
+# PROVISIONAL for the fine-tuned encoder (models/civicfix-encoder-v1). On the
+# 48 held-out synthetic paraphrase groups, same-category pairs: at 0.80, 51% of
+# true duplicates pass on text alone at 96% precision; same-place different
+# problems pass 3/27. Distance and time gates below remove most other false
+# merges. Conservative on purpose (a wrong merge is worse than a missed one).
+# Re-tune on the human-labelled pairs in data/labelling/lo3_dedup_pairs.csv.
+COSINE_THRESHOLD = 0.80
 DISTANCE_THRESHOLD_M = 100
 TIME_WINDOW_DAYS = 7
 
 # Distance assigned to any pair that fails category/spatial/time gating, so
 # they can never land in the same DBSCAN cluster (must exceed _EPS).
 _DISQUALIFIED = 10.0
-_EPS = 1.0 - COSINE_THRESHOLD  # 0.18
+_EPS = 1.0 - COSINE_THRESHOLD
 
 
 def _parse_embedding(raw) -> np.ndarray:

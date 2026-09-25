@@ -1,6 +1,7 @@
 import csv
 import pickle
 import sys
+from pathlib import Path
 
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import f1_score
@@ -8,9 +9,13 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 
 from app.categories import CIVIC_CATEGORIES
+from app.nlp.embeddings import EMBEDDING_MODEL
 from app.nlp.embeddings import get_embedding_model as _get_embedding_model
 
-MODEL_PATH = "models/classifier.pkl"
+_ROOT = Path(__file__).resolve().parents[2]
+# Trained by training/train_classifier.py (iCMyC + synthetic Pune, 7 language
+# styles) on the fine-tuned encoder; metrics in models/classifier_metrics_v1.json.
+MODEL_PATH = str(_ROOT / "models/classifier_v1.pkl")
 CONFIDENCE_THRESHOLD = 0.5
 
 # Real trained-and-evaluated model, held OUT of MODEL_PATH deliberately.
@@ -138,7 +143,7 @@ def _load_training_data(nyc311_csv: str) -> tuple[list[str], list[str]]:
     return texts, labels
 
 
-def train_classifier(nyc311_csv: str, model_path: str = MODEL_PATH) -> None:
+def train_classifier(nyc311_csv: str, model_path: str = ARCHIVED_MODEL_PATH) -> None:
     """Trains the MiniLM-embedding + LogisticRegression classifier on NYC 311
     data, per ARCHITECTURE.md 5.2, and saves it to model_path. Trains on the
     full dataset - for a held-out accuracy number, use evaluate_classifier
@@ -146,7 +151,7 @@ def train_classifier(nyc311_csv: str, model_path: str = MODEL_PATH) -> None:
     to save the production model on everything).
     """
     texts, labels = _load_training_data(nyc311_csv)
-    embeddings = _get_embedding_model().encode(texts, show_progress_bar=False)
+    embeddings = _get_embedding_model().encode(texts, normalize_embeddings=True, show_progress_bar=False)
 
     label_encoder = LabelEncoder()
     y = label_encoder.fit_transform(labels)
@@ -155,7 +160,7 @@ def train_classifier(nyc311_csv: str, model_path: str = MODEL_PATH) -> None:
     model.fit(embeddings, y)
 
     with open(model_path, "wb") as f:
-        pickle.dump({"model": model, "label_encoder": label_encoder}, f)
+        pickle.dump({"model": model, "label_encoder": label_encoder, "encoder": EMBEDDING_MODEL}, f)
 
 
 def evaluate_classifier(
@@ -176,8 +181,8 @@ def evaluate_classifier(
     )
 
     embed = _get_embedding_model()
-    train_embeddings = embed.encode(train_texts, show_progress_bar=False)
-    test_embeddings = embed.encode(test_texts, show_progress_bar=False)
+    train_embeddings = embed.encode(train_texts, normalize_embeddings=True, show_progress_bar=False)
+    test_embeddings = embed.encode(test_texts, normalize_embeddings=True, show_progress_bar=False)
 
     label_encoder = LabelEncoder()
     label_encoder.fit(labels)
@@ -204,6 +209,21 @@ def evaluate_classifier(
     }
 
 
+def _check_encoder(trained_with: str | None) -> None:
+    """A classifier only understands vectors from the encoder it was trained
+    on. Refuse loudly rather than return confident nonsense."""
+    if trained_with is None:
+        return  # pickles from before encoders were recorded
+    as_path = _ROOT / trained_with
+    trained = str(as_path.resolve()) if as_path.exists() else trained_with
+    current = str(Path(EMBEDDING_MODEL).resolve()) if Path(EMBEDDING_MODEL).exists() else EMBEDDING_MODEL
+    if trained != current:
+        raise RuntimeError(
+            f"Classifier {MODEL_PATH} was trained with encoder {trained_with!r}, but the app uses "
+            f"{EMBEDDING_MODEL!r}. Retrain it: python -m training.train_classifier"
+        )
+
+
 def classify(text: str) -> tuple[str, float]:
     """Classifies citizen complaint text into a civic_category with a
     confidence. Uses the trained MiniLM+LogisticRegression model if
@@ -224,12 +244,13 @@ def classify(text: str) -> tuple[str, float]:
             with open(MODEL_PATH, "rb") as f:
                 _cached_model = pickle.load(f)
             _cached_model_path = MODEL_PATH
-        embedding = _get_embedding_model().encode([text], show_progress_bar=False)
+            _check_encoder(_cached_model.get("encoder"))
+        embedding = _get_embedding_model().encode([text], normalize_embeddings=True, show_progress_bar=False)
         model = _cached_model["model"]
         label_encoder = _cached_model["label_encoder"]
         probs = model.predict_proba(embedding)[0]
         best_idx = probs.argmax()
-        category = label_encoder.inverse_transform([best_idx])[0]
+        category = str(label_encoder.inverse_transform([best_idx])[0])
         confidence = float(probs[best_idx])
     else:
         category, confidence = classify_keywords(text)

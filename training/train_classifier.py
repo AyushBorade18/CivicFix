@@ -192,14 +192,21 @@ def train_and_save(encoder: str) -> dict:
 
 
 def evaluate_human(csv_path: str, model_path: Path = MODEL_OUT) -> dict:
-    """Scores the saved classifier on the human-written test set
-    (columns: text, final_category, language)."""
+    """Scores the saved classifier on the human-written test set. Label from
+    final_category (template) or category; language from `language` if given,
+    else the detected script; `source` (e.g. team_written / real) is kept."""
     from sentence_transformers import SentenceTransformer
+
+    from training.synthetic.assemble import detect_script
     with open(model_path, "rb") as f:
         saved = pickle.load(f)
-    rows = [{"text": r["text"], "category": r["final_category"], "language": r["language"],
-             "source": "human_test_set", "group_id": ""}
-            for r in _read(Path(csv_path)) if r.get("final_category") and r.get("text")]
+    rows = []
+    for r in _read(Path(csv_path)):
+        label = r.get("final_category") or r.get("category")
+        if label and r.get("text"):
+            rows.append({"text": r["text"], "category": label,
+                         "language": r.get("language") or f"script:{detect_script(r['text'])}",
+                         "source": r.get("source") or "human_test_set", "group_id": ""})
     encoder = saved["encoder"]
     encoder = str(ROOT / encoder) if (ROOT / encoder).exists() else encoder
     x = SentenceTransformer(encoder).encode([r["text"] for r in rows], normalize_embeddings=True,

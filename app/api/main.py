@@ -752,7 +752,11 @@ def create_report(payload: ReportCreateRequest, db=Depends(get_db)):
     translated_text = translate_to_english(payload.raw_text, language) if language and language != "en" else None
     pipeline_text = translated_text or payload.raw_text
 
-    category, category_conf = classify(pipeline_text)
+    # The fine-tuned encoder reads Hindi/Marathi/romanized/code-mixed text
+    # directly, so category and embedding use the original words. Severity and
+    # location still use the English translation until their keyword lists and
+    # gazetteer cover Hindi/Marathi.
+    category, category_conf = classify(payload.raw_text)
     severity_band = severity(pipeline_text, category)
     lat, lon, geom_conf, ward_id, location_phrase = resolve_report_location(pipeline_text, conn=db)
 
@@ -786,7 +790,7 @@ def create_report(payload: ReportCreateRequest, db=Depends(get_db)):
             geom_conf = 0.4
             ward_id = payload.ward_id
 
-    embedding = _get_embedding_model().encode([pipeline_text], show_progress_bar=False)[0]
+    embedding = _get_embedding_model().encode([payload.raw_text], show_progress_bar=False)[0]
     embedding_literal = "[" + ",".join(str(float(v)) for v in embedding) + "]"
     # timestamptz columns round-trip as timezone-aware datetimes; datetime.now()
     # alone is naive and can't be subtracted from them (_time_ok does exactly

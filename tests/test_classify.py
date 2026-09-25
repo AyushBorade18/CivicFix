@@ -95,3 +95,30 @@ def test_evaluate_classifier_smoke_test_with_fixture(tmp_path):
     assert 0.0 <= result["baseline_macro_f1"] <= 1.0
     assert result["n_train"] + result["n_test"] == result["n_total"]
     assert model_path.exists()
+
+
+def test_classify_refuses_a_model_trained_with_a_different_encoder(tmp_path, monkeypatch):
+    # Vectors from two encoders aren't comparable; a silent mismatch would give
+    # confident nonsense instead of an error.
+    import pickle
+
+    import pytest
+
+    model_path = tmp_path / "classifier.pkl"
+    train_classifier(NYC311_FIXTURE, model_path=str(model_path))
+    with open(model_path, "rb") as f:
+        bundle = pickle.load(f)
+    bundle["encoder"] = "some-other-encoder"
+    with open(model_path, "wb") as f:
+        pickle.dump(bundle, f)
+    monkeypatch.setattr("app.nlp.classify.MODEL_PATH", str(model_path))
+    monkeypatch.setattr("app.nlp.classify._cached_model", None)
+    with pytest.raises(RuntimeError, match="encoder"):
+        classify("There is a large pothole on my street")
+
+
+def test_nyc_trainer_never_overwrites_the_live_model_by_default():
+    import inspect
+
+    from app.nlp.classify import ARCHIVED_MODEL_PATH
+    assert inspect.signature(train_classifier).parameters["model_path"].default == ARCHIVED_MODEL_PATH
