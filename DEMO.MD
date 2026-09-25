@@ -50,10 +50,17 @@ funded to prevent it."
   clustering and matching logic, the priority formula, all computed live.
 - **Seeded, labelled as such:** ~400 synthetic Pune complaints, deliberately
   placed near real MPLADS locations so links are findable. The UI marks these.
+- **Built since this script was written (verify against `CONTEXT.md` before
+  the demo, this file is stale on scope):** multilingual intake (Hindi/Marathi,
+  romanized and code-mixed, via the fine-tuned encoder — no translation
+  step needed for classification).
 - **Not built today, shown only in the deck:** WhatsApp/call-centre intake,
-  multilingual handling, confirm-before-dispatch, reviewer console, SLA
-  tracking, MahaTenders. If asked, say plainly: "that's architecture, not built
-  in this prototype — here's what we prioritised instead and why."
+  confirm-before-dispatch, reviewer console, SLA tracking. If asked, say
+  plainly: "that's architecture, not built in this prototype — here's what we
+  prioritised instead and why."
+- **MahaTenders:** audited manually, not wired into matching — see
+  `MAHATENDERS.MD` for the two numbers worth citing and why a tender isn't
+  treated as a completed work.
 
 ---
 
