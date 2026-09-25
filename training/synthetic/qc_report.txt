@@ -1,9 +1,9 @@
 complaints written: 1580/1580 (+100 pilot)
-group variants written: 0/1200
+group variants written: 105/1200
 category: {'pothole_road': 202, 'drainage_sewage': 234, 'water_supply': 232, 'streetlight': 202, 'garbage_waste': 198, 'footpath': 210, 'traffic_signage': 218, 'other': 184}
 language: {'english': 193, 'romanized_hindi': 206, 'hinglish': 246, 'romanized_marathi': 319, 'marathi': 273, 'hindi': 220, 'marathi_english': 223}
-script: {'latin': 1031, 'devanagari': 493, 'mixed': 156}
-words per text: min 2, max 61, mean 21.4
-most repeated openers: [('salunke vihar', 18), ('tilak road', 18), ('sadashiv peth', 17), ('market yard', 17), ('gokhale nagar', 15)]
+script: {'latin': 1098, 'devanagari': 520, 'mixed': 167}
+words per text: min 2, max 61, mean 21.3
+most repeated openers: [('tilak road', 20), ('salunke vihar', 19), ('jm road', 19), ('market yard', 19), ('gokhale nagar', 18)]
 'urgent' used in 4 texts
 problems: 0
