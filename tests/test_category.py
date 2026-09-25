@@ -25,3 +25,40 @@ def test_unrelated_community_work_falls_back_to_other():
 def test_empty_description_falls_back_to_other():
     assert map_work_category("") == "other"
     assert map_work_category(None) == "other"
+
+
+def test_real_mplads_road_phrasings_map_to_pothole_road():
+    for text in [
+        "Construction of internal road at Vadar Galli, Prabhag 2, Daund City",
+        "Construction A Road At Kalewadi Adarshnagar in Ganaraj Colony No 2",
+        "Construction Of Raod Between Main Road to Praim Square Socity",
+        "Construction of Concrete Road from Pachangre Sakat Vasti to Akshay Ghodake Vasti",
+        "To concretize the road from Ganeshpeth Hussain Bakery to Vegetable Market.",
+        "Sai Ganesh Park S.No. 122, Khandvenagar Lohegaon, road in front of Shri Aaij Niwas to be concretized.",
+        "Road-related works at Dhor Galli, Ganesh Peth, within the Pune Lok Sabha constituency.",
+        "Concretization of Galli No. 04 in Mauli Kripa Housing Society, Talwade",
+    ]:
+        assert map_work_category(text) == "pothole_road", text
+
+
+def test_work_merely_located_on_a_road_is_not_a_road_work():
+    assert map_work_category(
+        "Construction of a defensive wall at Senapati Bapat Road Public Works Department"
+    ) == "other"
+    assert map_work_category("Construction a hall ARAI Road, Hanuman Nagar, Kothrud") == "other"
+
+
+def test_paving_blocks_map_to_footpath_and_solar_lamps_to_streetlight():
+    assert map_work_category("Installation of paving blocks near Rambagh Colony") == "footpath"
+    assert map_work_category("Fitting of Paver Blocks beside Rokdai Temple") == "footpath"
+    assert map_work_category("Fixing A Solar High Mast Lamp In Dongarwadi") == "streetlight"
+    assert map_work_category("Fixing A 6 Solar Lamp pol Towrds Kalubai Road") == "streetlight"
+
+
+def test_bus_stops_and_toilets_stay_other():
+    assert map_work_category("Ward 11 Establishment of a bus stop at Ashish Garden, Kothrud Up") == "other"
+    assert map_work_category("Repair of toilets in Chaitraban Colony, Hadapsar") == "other"
+
+
+def test_hall_project_with_incidental_paving_stays_other():
+    assert map_work_category("Construction of Community Hall along with Paving Block") == "other"
