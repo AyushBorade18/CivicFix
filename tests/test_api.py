@@ -623,6 +623,9 @@ def test_post_reports_translates_hindi_and_analyzes_uploaded_photo(real_client, 
         assert report["photo_severity_score"] is not None
         assert report["photo_severity_band"] in ("cosmetic", "moderate", "critical")
         assert 0.0 <= report["photo_severity_score"] <= 1.0
+        # Photo is evidence only: severity (and so priority) comes from text + category.
+        from app.nlp.severity import severity
+        assert report["severity"] == severity(report["translated_text"] or hindi_text, body["category"])
     finally:
         issue_id = body["issue_id"]
         with real_conn.cursor() as cur:

@@ -4,9 +4,10 @@ no learned weights, nothing fit to labeled data. In the same spirit as
 app/core/priority.py's fixed formula and app/nlp/severity.py's keyword
 bands: every number here comes from the actual image bytes at request time.
 
-This intentionally supersedes ARCHITECTURE.md 5.4 / the original "no photo
-severity model" rule, by explicit product decision: a photo-derived signal
-is now shown as a first-class severity input, not a disclaimed experiment.
+Evidence only (hard rule 3, re-confirmed 2026-09-25): the score is stored
+and shown to the human reviewer, but never changes a report's severity or
+priority. Pixel statistics can't tell a pothole from a photo taken at
+night, so letting them rank issues would be gameable.
 
 Three real, cheap image statistics combine into one score:
   - edge_density: mean intensity after edge detection - cracked/broken/

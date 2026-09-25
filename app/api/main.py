@@ -53,8 +53,6 @@ from app.nlp.photo_severity import estimate_photo_severity
 from app.nlp.severity import severity
 from app.nlp.translate import translate_to_english
 
-SEVERITY_BAND_ORDER = ("cosmetic", "moderate", "critical")
-
 UPLOAD_DIR = Path("data/uploads")
 ALLOWED_PHOTO_TYPES = {"image/jpeg": ".jpg", "image/png": ".png", "image/webp": ".webp"}
 MAX_PHOTO_BYTES = 5 * 1024 * 1024
@@ -758,11 +756,11 @@ def create_report(payload: ReportCreateRequest, db=Depends(get_db)):
     severity_band = severity(pipeline_text, category)
     lat, lon, geom_conf, ward_id, location_phrase = resolve_report_location(pipeline_text, conn=db)
 
-    # Photo severity: a real, deterministic formula over the uploaded
-    # image's actual pixels (see app/nlp/photo_severity.py), combined with
-    # the text-derived band by taking the more severe of the two - the same
-    # max(...) pattern app/nlp/severity.py already uses to combine the
-    # category prior with the text band.
+    # Photo severity: a deterministic formula over the uploaded image's
+    # pixels (see app/nlp/photo_severity.py), stored and shown to the
+    # reviewer as evidence only. It never changes severity_band, so it
+    # never changes priority: a dark or shadowy photo would otherwise read
+    # as "critical" and push an issue up the queue.
     photo_severity_score = None
     photo_severity_band = None
     if payload.photo_url:
@@ -770,9 +768,8 @@ def create_report(payload: ReportCreateRequest, db=Depends(get_db)):
             photo_path = UPLOAD_DIR / Path(payload.photo_url).name
             result = estimate_photo_severity(photo_path.read_bytes())
             photo_severity_score, photo_severity_band = result["score"], result["band"]
-            severity_band = max(severity_band, photo_severity_band, key=SEVERITY_BAND_ORDER.index)
         except (ValueError, OSError):
-            pass  # undecodable/missing photo - text-derived severity stands alone
+            pass  # undecodable/missing photo - no photo evidence score
 
     # Only fills in a location the pipeline itself couldn't find - never
     # overrides a pipeline result, and never turns a ward selection into a
