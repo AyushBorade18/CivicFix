@@ -1,9 +1,9 @@
-complaints written: 1400/1580 (+100 pilot)
+complaints written: 1500/1580 (+100 pilot)
 group variants written: 0/1200
-category: {'pothole_road': 181, 'drainage_sewage': 209, 'water_supply': 203, 'streetlight': 179, 'garbage_waste': 181, 'footpath': 190, 'traffic_signage': 195, 'other': 162}
-language: {'english': 175, 'romanized_hindi': 181, 'hinglish': 217, 'romanized_marathi': 281, 'marathi': 245, 'hindi': 198, 'marathi_english': 203}
-script: {'latin': 920, 'devanagari': 443, 'mixed': 137}
-words per text: min 2, max 61, mean 21.5
-most repeated openers: [('market yard', 17), ('sadashiv peth', 16), ('salunke vihar', 15), ('tilak road', 15), ('rasta peth', 14)]
+category: {'pothole_road': 197, 'drainage_sewage': 218, 'water_supply': 220, 'streetlight': 190, 'garbage_waste': 189, 'footpath': 203, 'traffic_signage': 208, 'other': 175}
+language: {'english': 185, 'romanized_hindi': 195, 'hinglish': 234, 'romanized_marathi': 307, 'marathi': 258, 'hindi': 207, 'marathi_english': 214}
+script: {'latin': 985, 'devanagari': 465, 'mixed': 150}
+words per text: min 2, max 61, mean 21.4
+most repeated openers: [('salunke vihar', 18), ('market yard', 17), ('tilak road', 17), ('sadashiv peth', 16), ('gokhale nagar', 15)]
 'urgent' used in 4 texts
 problems: 0
