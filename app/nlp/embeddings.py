@@ -6,10 +6,13 @@ vector and retraining the classifier; the output size must stay 384 to fit
 the vector(384) columns in schema.sql.
 """
 from functools import lru_cache
+from pathlib import Path
 
 from sentence_transformers import SentenceTransformer
 
-EMBEDDING_MODEL = "all-MiniLM-L6-v2"
+# Fine-tuned from paraphrase-multilingual-MiniLM-L12-v2 (training/finetune_encoder.py,
+# metrics in models/encoder_metrics.json). Not committed; unzip it into models/.
+EMBEDDING_MODEL = str(Path(__file__).resolve().parents[2] / "models/civicfix-encoder-v1")
 
 
 @lru_cache(maxsize=1)
