@@ -2,7 +2,7 @@ import random
 from datetime import datetime, timedelta
 
 from app.db import get_connection
-from app.ingest.location import extract_landmark_phrase, extract_ward_number
+from app.ingest.location import extract_landmark_phrase
 from app.nlp.classify import classify
 from app.nlp.embeddings import get_embedding_model as _get_embedding_model
 from app.nlp.location import resolve_report_location
@@ -67,14 +67,17 @@ ORDINARY_CATEGORY_WEIGHTS = {
 
 
 
-def _anchor_location_cue(description: str) -> str | None:
-    """Reuses the exact same method the anchor work itself was resolved
-    with, so a synthetic complaint mentioning it resolves to the same (or
-    very close) point independently - not by injecting a coordinate.
+def _anchor_location_cue(description: str, ward_id: int | None = None) -> str | None:
+    """How a citizen would point at the anchor work, so the report pipeline
+    resolves the complaint there independently - not by injecting a coordinate.
+
+    Uses the work's own resolved 2022 ward ("Ward N" in a complaint means 2022
+    ward N to app/nlp/location.py), else a landmark from its description. Never
+    the raw "Ward No." in MPLADS text: those numbers mix old/new/PCMC schemes
+    (see app/ingest/mplads.py), so they'd send the complaint to the wrong ward.
     """
-    ward_num = extract_ward_number(description)
-    if ward_num is not None:
-        return f"Ward {ward_num}"
+    if ward_id is not None:
+        return f"Ward {ward_id}"
     return extract_landmark_phrase(description)
 
 
@@ -89,21 +92,22 @@ def _pick_reported_at(rng: random.Random, now: datetime | None = None, days_back
 
 
 def fetch_anchors(conn) -> list[dict]:
-    """Real, resolved, non-'other' works - the only legitimate spatial
-    anchors for synthetic complaints that should be genuinely findable by
-    a future matcher. Works with no geom, or category 'other', are never
-    used as anchors (never forced/manufactured).
+    """Real works the matcher can actually link (completed, dated, located,
+    not 'other' - the same gates as app/core/matcher.py) are the only
+    legitimate anchors for synthetic complaints meant to be findable.
+    Nothing is forced: the matcher still has to discover each link.
     """
     with conn.cursor() as cur:
         cur.execute(
             "SELECT category, ward_id, ST_Y(geom), ST_X(geom), description "
-            "FROM works WHERE geom IS NOT NULL AND category != 'other'"
+            "FROM works WHERE geom IS NOT NULL AND category != 'other' "
+            "AND status = 'completed' AND completed_on IS NOT NULL"
         )
         rows = cur.fetchall()
 
     anchors = []
     for category, ward_id, lat, lon, description in rows:
-        cue = _anchor_location_cue(description)
+        cue = _anchor_location_cue(description, ward_id)
         if cue is None:
             continue
         anchors.append({

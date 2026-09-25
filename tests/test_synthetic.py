@@ -9,9 +9,16 @@ import random
 from datetime import datetime, timedelta
 
 
-def test_anchor_location_cue_prefers_ward_number():
+def test_anchor_location_cue_uses_the_works_resolved_2022_ward():
+    cue = _anchor_location_cue("Road Concreting at Ward No.11, Sutardara Kothrud.", ward_id=30)
+    assert cue == "Ward 30"
+
+
+def test_anchor_location_cue_never_uses_the_raw_mplads_ward_number():
+    # MPLADS ward numbers mix old/new/PCMC schemes; "Ward 11" in the text is
+    # not 2022 ward 11 (see app/ingest/mplads.py).
     cue = _anchor_location_cue("Road Concreting at Ward No.11, Sutardara Kothrud.")
-    assert cue == "Ward 11"
+    assert cue != "Ward 11"
 
 
 def test_anchor_location_cue_uses_landmark_when_no_ward_number():
@@ -31,18 +38,22 @@ def test_pick_reported_at_within_range():
     assert now - timedelta(days=120) <= dt <= now
 
 
-def test_fetch_anchors_only_returns_resolved_non_other_works(db_conn):
+def test_fetch_anchors_only_returns_matchable_works(db_conn):
+    # Matchable = what app/core/matcher.py can link: completed, dated, located, not 'other'.
     with db_conn.cursor() as cur:
         cur.execute("TRUNCATE works CASCADE")
         cur.execute(
             """
-            INSERT INTO works (work_name, description, category, geom, ward_id)
+            INSERT INTO works (work_name, description, category, geom, ward_id, status, completed_on)
             VALUES
             ('Drain work', 'Laying Of Drainage Line at Ward No.13', 'drainage_sewage',
-             ST_SetSRID(ST_MakePoint(73.78, 18.56), 4326), 13),
+             ST_SetSRID(ST_MakePoint(73.78, 18.56), 4326), 13, 'completed', '2026-01-10'),
             ('Unrelated hall', 'Construction of a hall', 'other',
-             ST_SetSRID(ST_MakePoint(73.79, 18.57), 4326), 13),
-            ('Unresolved pothole work', 'Pothole repair somewhere', 'pothole_road', NULL, NULL)
+             ST_SetSRID(ST_MakePoint(73.79, 18.57), 4326), 13, 'completed', '2026-01-10'),
+            ('Unresolved pothole work', 'Pothole repair somewhere', 'pothole_road', NULL, NULL,
+             'completed', '2026-01-10'),
+            ('Unfinished drain', 'Drainage line at Dasara Chowk', 'drainage_sewage',
+             ST_SetSRID(ST_MakePoint(73.77, 18.57), 4326), 12, 'sanctioned', NULL)
             """
         )
     db_conn.commit()
@@ -51,18 +62,19 @@ def test_fetch_anchors_only_returns_resolved_non_other_works(db_conn):
     assert len(anchors) == 1
     assert anchors[0]["category"] == "drainage_sewage"
     assert anchors[0]["ward_id"] == 13
+    assert anchors[0]["cue"] == "Ward 13"
 
 
 def test_generate_synthetic_reports_end_to_end(clean_reports, clean_works):
     with clean_works.cursor() as cur:
         cur.execute(
             """
-            INSERT INTO works (work_name, description, category, geom, ward_id)
+            INSERT INTO works (work_name, description, category, geom, ward_id, status, completed_on)
             VALUES
             ('Drain work', 'Laying Of Drainage Line at Ward No.13', 'drainage_sewage',
-             ST_SetSRID(ST_MakePoint(73.78, 18.56), 4326), 13),
+             ST_SetSRID(ST_MakePoint(73.78, 18.56), 4326), 13, 'completed', '2026-01-10'),
             ('Footpath work', 'Development of footpath at Dasara Chowk, Balewadi.', 'footpath',
-             ST_SetSRID(ST_MakePoint(73.7761167, 18.5737452), 4326), 12)
+             ST_SetSRID(ST_MakePoint(73.7761167, 18.5737452), 4326), 12, 'completed', '2026-02-01')
             """
         )
     clean_works.commit()
