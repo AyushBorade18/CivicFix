@@ -228,9 +228,12 @@ def main() -> int:
     parser.add_argument("--encoder", default=str(DEFAULT_ENCODER) if DEFAULT_ENCODER.exists()
                         else "paraphrase-multilingual-MiniLM-L12-v2")
     parser.add_argument("--eval-human", metavar="CSV")
+    parser.add_argument("--model", default=str(MODEL_OUT), metavar="PKL",
+                        help="classifier to score with --eval-human (default: the one this run would train, "
+                             "%(default)s - pass e.g. models/classifier_v1.pkl to score a different one)")
     args = parser.parse_args()
     if args.eval_human:
-        print(json.dumps(evaluate_human(args.eval_human), indent=2, ensure_ascii=False))
+        print(json.dumps(evaluate_human(args.eval_human, model_path=Path(args.model)), indent=2, ensure_ascii=False))
     else:
         train_and_save(args.encoder)
     return 0

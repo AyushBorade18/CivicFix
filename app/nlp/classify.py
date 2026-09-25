@@ -16,7 +16,10 @@ _ROOT = Path(__file__).resolve().parents[2]
 # Trained by training/train_classifier.py (iCMyC + synthetic Pune, 7 language
 # styles) on the fine-tuned encoder; metrics in models/classifier_metrics_v1.json.
 MODEL_PATH = str(_ROOT / "models/classifier_v1.pkl")
-CONFIDENCE_THRESHOLD = 0.5
+# On the 64-row human test set (models/classifier_human_eval_v1.json), 0.6
+# covers 81% of complaints at 94% accuracy, vs 0.5's 88% coverage at 88%
+# accuracy - the smaller manual-review queue is worth the accuracy jump.
+CONFIDENCE_THRESHOLD = 0.6
 
 # Real trained-and-evaluated model, held OUT of MODEL_PATH deliberately.
 # Trained on NYC 311 descriptor text, it scores 0.929 macro-F1 on NYC 311's

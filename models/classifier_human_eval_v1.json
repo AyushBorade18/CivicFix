@@ -1,14 +1,14 @@
 {
   "n": 64,
-  "macro_f1": 0.813,
-  "keyword_baseline_macro_f1": 0.455,
+  "macro_f1": 0.83,
+  "keyword_baseline_macro_f1": 0.466,
   "macro_f1_by_source": {
-    "real": 0.725,
+    "real": 0.756,
     "team_written": 0.884
   },
   "macro_f1_by_language": {
     "script:devanagari": 0.643,
-    "script:latin": 0.82
+    "script:latin": 0.84
   },
   "f1_by_category": {
     "pothole_road": 0.842,
@@ -16,9 +16,9 @@
     "water_supply": 0.933,
     "streetlight": 0.75,
     "garbage_waste": 0.947,
-    "footpath": 0.714,
+    "footpath": 0.769,
     "traffic_signage": 0.909,
-    "other": 0.588
+    "other": 0.667
   },
   "confusion_matrix": {
     "labels": [
@@ -90,7 +90,7 @@
         0,
         5,
         0,
-        2
+        1
       ],
       [
         0,
@@ -110,7 +110,7 @@
         0,
         1,
         0,
-        5
+        6
       ]
     ]
   },
@@ -118,17 +118,17 @@
     {
       "threshold": 0.3,
       "coverage": 1.0,
-      "accuracy": 0.812
+      "accuracy": 0.828
     },
     {
       "threshold": 0.4,
       "coverage": 0.938,
-      "accuracy": 0.85
+      "accuracy": 0.867
     },
     {
       "threshold": 0.5,
       "coverage": 0.875,
-      "accuracy": 0.875
+      "accuracy": 0.893
     },
     {
       "threshold": 0.6,
