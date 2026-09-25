@@ -20,3 +20,8 @@ graphify-out/
 !data/cache/overpass_gazetteer.json
 models/civicfix-encoder-*/
 backups/
+
+# Not our data: 1,100 US municipal rows (New York/Chicago) carrying
+# resident_name/email/phone columns. Wrong geography for Pune and never
+# ingested by anything - kept out of the repo rather than committed.
+complaints.zip

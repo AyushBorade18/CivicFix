@@ -1,13 +1,20 @@
-psycopg[binary]
-python-dotenv
-shapely
-sentence-transformers
-scikit-learn
-spacy
-fastapi
-uvicorn[standard]
-python-multipart
-langdetect
-Pillow
-pytest
-xlrd
+# Pinned to the versions this project is actually developed and tested
+# against (233 passing tests on 2026-09-26). Unpinned names let a fresh
+# `pip install -r` resolve different majors on a teammate's machine, which
+# is how "works here, not there" starts the day before a hackathon.
+psycopg[binary]==3.3.6
+python-dotenv==1.2.3
+shapely==2.1.2
+sentence-transformers==6.1.0
+scikit-learn==1.9.1
+spacy==3.8.16
+fastapi==0.141.1
+uvicorn[standard]==0.53.0
+python-multipart==0.0.32
+langdetect==1.0.9
+Pillow==12.3.0
+pytest==9.1.1
+xlrd==2.0.2
+
+# spaCy's English model is not on PyPI as a normal dependency:
+#   python -m spacy download en_core_web_sm

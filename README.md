@@ -35,7 +35,9 @@ CivicFix is built using a modern, scalable stack:
 
 ### Prerequisites
 * Node.js (v18+)
-* Python 3.10+
+* Python 3.12
+* PostgreSQL 17 with **PostGIS** and **pgvector** (the app is geospatial and
+  stores embeddings; it will not start against a plain Postgres)
 * Git
 
 ### Local Setup
@@ -46,16 +48,30 @@ CivicFix is built using a modern, scalable stack:
    cd CivicFix
    ```
 
-2. **Start the Backend API:**
+2. **Database.** This project uses a dedicated cluster on port **5433** so it
+   never collides with a system Postgres on 5432:
    ```bash
-   cd app
-   # Install dependencies (using pip, poetry, or your preferred manager)
-   pip install -r requirements.txt 
-   # Start the FastAPI server
-   uvicorn api.main:app --reload --port 8000
+   createdb -p 5433 civicfix
+   psql -p 5433 -d civicfix -c "CREATE EXTENSION postgis; CREATE EXTENSION vector;"
+   psql -p 5433 -d civicfix -f schema.sql
+   ```
+   Then create `.env` in the repo root:
+   ```
+   DATABASE_URL=postgresql://<user>@localhost:5433/civicfix
+   TEST_DATABASE_URL=postgresql://<user>@localhost:5433/civicfix_test
+   ```
+   `TEST_DATABASE_URL` must point at a **separate** database — the test
+   fixtures truncate what they touch.
+
+3. **Start the Backend API** (from the repo root, not `app/`):
+   ```bash
+   python -m venv .venv && source .venv/bin/activate
+   pip install -r requirements.txt
+   python -m spacy download en_core_web_sm
+   uvicorn app.api.main:app --reload --port 8000
    ```
 
-3. **Start the Frontend Development Server:**
+4. **Start the Frontend Development Server:**
    ```bash
    # Open a new terminal tab
    cd web
@@ -63,14 +79,17 @@ CivicFix is built using a modern, scalable stack:
    npm run dev
    ```
 
-4. **Access the application:**
+5. **Access the application:**
    Open your browser and navigate to `http://localhost:5173`. 
    * **Citizen Portal:** `/citizen`
    * **Admin Console:** `/admin`
 
 ## 🎨 UI/UX Highlights
 
-The application features a premium dark-themed interface infused with "glowing" interactive elements. Our `GlowingCard` component natively tracks mouse proximity to illuminate borders, emphasizing spatial interactions and ensuring a highly engaging user experience.
+The application uses a light, high-contrast console interface with a monospaced
+data voice, so counts, scores and record ids stay legible when they are on a
+projector. The `GlowingCard` component tracks mouse proximity to illuminate
+borders, emphasising spatial interaction without decorating the numbers.
 
 ## 📜 License
 
