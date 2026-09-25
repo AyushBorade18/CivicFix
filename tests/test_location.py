@@ -81,3 +81,15 @@ def test_stops_at_copula_not_captured_into_phrase():
     # "Airport Road is broken" because "is"/"are" weren't stop words.
     assert extract_landmark_phrase("No proper footpath near Airport Road is broken and unusable") == "Airport Road"
     assert extract_landmark_phrase("Footpath tiles near Dasara Chowk are uneven and cracked") == "Dasara Chowk"
+
+
+def test_gazetteer_prefers_most_specific_place_and_reads_marathi():
+    from app.ingest.location import find_gazetteer_place
+    assert find_gazetteer_place("Construction of toilet at Kasba Peth, Pune")["name_en"] == "Kasba Peth"
+    assert find_gazetteer_place("कसबा पेठ येथे कचरा")["name_en"] == "Kasba Peth"
+    assert find_gazetteer_place("Road work near nowhere-in-particular xyz") is None
+
+
+def test_gazetteer_never_places_by_road_name():
+    from app.ingest.location import find_gazetteer_place
+    assert find_gazetteer_place("Construction Of Road Towards DP Road") is None

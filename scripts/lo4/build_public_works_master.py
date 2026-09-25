@@ -32,6 +32,8 @@ from pathlib import Path
 
 from shapely.geometry import Point, shape
 
+from app.ingest.location import JUNK_LANDMARKS
+
 from app.ingest.category import map_work_category
 from app.ingest.location import _WARD_PATTERN, extract_landmark_phrase
 
@@ -54,10 +56,6 @@ COLUMNS = [
 
 # Landmark phrases the regex extracted that are not places. Their cached
 # geocode results are coordinates for the wrong thing entirely.
-JUNK_LANDMARKS = {
-    "survey no", "office at", "park", "shri", "pcmc", "post", "the village",
-    "gram panchayat", "village", "taluka", "ward no", "ward number",
-}
 
 PCMC_CUES = ("pimpri", "chinchwad", "pcmc", "nigdi", "talwade", "chikhali",
              "thergaon", "kalewadi", "landewadi", "more vasti", "rupinagar")

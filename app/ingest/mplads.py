@@ -5,7 +5,7 @@ from datetime import date
 from app.db import get_connection
 from app.ingest.category import map_work_category
 from app.ingest.geocode import geocode
-from app.ingest.location import extract_landmark_phrase, extract_ward_number
+from app.ingest.location import JUNK_LANDMARKS, extract_landmark_phrase, find_gazetteer_place
 from app.nlp.embeddings import get_embedding_model as _get_model
 
 def _is_pune_district(row: dict) -> bool:
@@ -40,26 +40,65 @@ def _work_name(description: str, limit: int = 80) -> str:
     return text[:limit].rstrip() + "…"
 
 
+REVIEW_CSV = "data/eval/mplads_ward_review.csv"
+GEOM_CONF_GEOCODED = 1.0  # a named landmark Nominatim resolved: precise
+GEOM_CONF_WARD_LEVEL = 0.5  # reviewed ward centroid or gazetteer locality centre
+
+
+def _reviewed_wards() -> dict[str, int]:
+    """MPLADS workId -> PMC 2022 ward, only where a human reviewer assigned
+    one (data/eval/mplads_ward_review.csv). A raw "Ward No. N" in MPLADS text
+    is never used on its own: the text mixes PMC old/new schemes, PCMC and
+    village wards, and the review found most numbers can't be mapped.
+    """
+    try:
+        with open(REVIEW_CSV, newline="") as f:
+            return {r["work_id"]: int(r["candidate_2022_ward"])
+                    for r in csv.DictReader(f) if r["candidate_2022_ward"].strip()}
+    except FileNotFoundError:
+        return {}
+
+
 class _LocationStats:
     def __init__(self):
-        self.ward_regex = 0
         self.geocoded = 0
+        self.reviewed_ward = 0
+        self.gazetteer = 0
         self.unresolved = 0
 
     def summary(self, total: int) -> str:
         return (
-            f"location resolved: {self.ward_regex} via ward number, "
-            f"{self.geocoded} via geocoding, {self.unresolved} unresolved "
-            f"(of {total})"
+            f"location resolved: {self.geocoded} via geocoded landmark, "
+            f"{self.reviewed_ward} via reviewed ward, {self.gazetteer} via gazetteer place, "
+            f"{self.unresolved} unresolved (of {total})"
         )
 
 
-def _resolve_location(conn, description: str, stats: _LocationStats):
-    """Returns (lat, lon, ward_id), any of which may be None. Never guesses:
-    no ward number and no geocode match means geom stays NULL rather than
-    falling back to a fixed default point.
+def _ward_containing(conn, lat: float, lon: float) -> int | None:
+    with conn.cursor() as cur:
+        cur.execute(
+            "SELECT id FROM wards WHERE ST_Contains(geom, ST_SetSRID(ST_MakePoint(%s, %s), 4326))",
+            (lon, lat),
+        )
+        row = cur.fetchone()
+    return row[0] if row else None
+
+
+def _resolve_location(conn, description: str, work_id: str, reviewed: dict[str, int],
+                      stats: _LocationStats):
+    """Returns (lat, lon, ward_id, geom_confidence), any of which may be None.
+    Order: geocoded landmark (precise) -> human-reviewed ward (its centroid)
+    -> most specific gazetteer place named in the text (its OSM centre).
+    Nothing found leaves geom NULL rather than guessing.
     """
-    ward_id = extract_ward_number(description)
+    landmark = extract_landmark_phrase(description)
+    if landmark and landmark.lower() not in JUNK_LANDMARKS:
+        point = geocode(f"{landmark}, Pune, Maharashtra, India")
+        if point is not None:
+            stats.geocoded += 1
+            return point[0], point[1], _ward_containing(conn, *point), GEOM_CONF_GEOCODED
+
+    ward_id = reviewed.get(work_id)
     if ward_id is not None:
         with conn.cursor() as cur:
             cur.execute(
@@ -68,36 +107,25 @@ def _resolve_location(conn, description: str, stats: _LocationStats):
             )
             row = cur.fetchone()
         if row:
-            stats.ward_regex += 1
-            return row[0], row[1], ward_id
+            stats.reviewed_ward += 1
+            return row[0], row[1], ward_id, GEOM_CONF_WARD_LEVEL
 
-    landmark = extract_landmark_phrase(description)
-    if landmark is None:
-        stats.unresolved += 1
-        return None, None, None
+    place = find_gazetteer_place(description)
+    if place is not None:
+        lat, lon = float(place["lat"]), float(place["lon"])
+        stats.gazetteer += 1
+        return lat, lon, _ward_containing(conn, lat, lon), GEOM_CONF_WARD_LEVEL
 
-    point = geocode(f"{landmark}, Pune, Maharashtra, India")
-    if point is None:
-        stats.unresolved += 1
-        return None, None, None
-
-    lat, lon = point
-    with conn.cursor() as cur:
-        cur.execute(
-            "SELECT id FROM wards WHERE ST_Contains(geom, ST_SetSRID(ST_MakePoint(%s, %s), 4326))",
-            (lon, lat),
-        )
-        row = cur.fetchone()
-    stats.geocoded += 1
-    return lat, lon, (row[0] if row else None)
+    stats.unresolved += 1
+    return None, None, None, None
 
 
 def load_mplads(csv_path: str) -> int:
     """Loads MPLADS public-works records for Pune district into `works`.
 
     Maps free-text descriptions to civic_category, resolves each record to a
-    point (ward-number mention in the text, else geocoding, else left NULL),
-    binds to a ward via ST_Contains, and batch-embeds descriptions.
+    point (see _resolve_location), binds to a ward via ST_Contains, and
+    batch-embeds descriptions.
     """
     with open(csv_path, newline="") as f:
         rows = [r for r in csv.DictReader(f) if _is_pune_district(r)]
@@ -106,12 +134,14 @@ def load_mplads(csv_path: str) -> int:
     embeddings = _get_model().encode(descriptions, batch_size=64, show_progress_bar=False)
 
     stats = _LocationStats()
+    reviewed = _reviewed_wards()
 
     with get_connection() as conn:
         for row, embedding in zip(rows, embeddings):
             description = row["workDescription"]
             category = map_work_category(description)
-            lat, lon, ward_id = _resolve_location(conn, description, stats)
+            lat, lon, ward_id, geom_confidence = _resolve_location(
+                conn, description, row["workId"], reviewed, stats)
 
             geom_expr = "ST_SetSRID(ST_MakePoint(%s, %s), 4326)" if lat is not None else "NULL"
             geom_params = (lon, lat) if lat is not None else ()
@@ -122,9 +152,9 @@ def load_mplads(csv_path: str) -> int:
                     INSERT INTO works (
                         work_name, description, cost, status, sanctioned_on,
                         completed_on, agency, constituency, category, geom,
-                        ward_id, embedding
+                        ward_id, geom_confidence, source_record_id, embedding
                     ) VALUES (
-                        %s, %s, %s, %s, %s, %s, %s, %s, %s, {geom_expr}, %s, %s::vector
+                        %s, %s, %s, %s, %s, %s, %s, %s, %s, {geom_expr}, %s, %s, %s, %s::vector
                     )
                     """,
                     (
@@ -139,6 +169,8 @@ def load_mplads(csv_path: str) -> int:
                         category,
                         *geom_params,
                         ward_id,
+                        geom_confidence,
+                        row["workId"],
                         _embedding_literal(embedding),
                     ),
                 )

@@ -4,7 +4,6 @@ import math
 import numpy as np
 
 from app.db import get_connection
-from app.ingest.location import extract_ward_number
 
 SEMANTIC_THRESHOLD = 0.5
 MATCH_RADIUS_PRECISE_M = 250
@@ -52,15 +51,6 @@ def _issue_geom_is_precise(conn, issue_id: int) -> bool:
     return total > 0 and total == precise
 
 
-def _work_geom_is_precise(description: str) -> bool:
-    """Works has no geom_confidence column. Re-derives the same distinction
-    app.ingest.mplads used at ingestion time: a ward-number mention means
-    the point is a ward centroid (imprecise); otherwise it came from
-    landmark geocoding (precise). Only called for works that have a geom.
-    """
-    return extract_ward_number(description) is None
-
-
 def match_issue_to_work(issue: dict, conn) -> dict | None:
     """ARCHITECTURE.md 5.7: cosine(issue.embedding, work.embedding),
     ST_DWithin(issue.geom, work.geom, radius), completion date within a
@@ -96,7 +86,7 @@ def match_issue_to_work(issue: dict, conn) -> dict | None:
 
         cur.execute(
             """
-            SELECT id, work_name, description, embedding, ward_id,
+            SELECT id, work_name, geom_confidence, embedding, ward_id,
                    ST_Y(geom), ST_X(geom), completed_on
             FROM works
             WHERE category = %s AND status = 'completed' AND completed_on IS NOT NULL AND geom IS NOT NULL
@@ -106,7 +96,7 @@ def match_issue_to_work(issue: dict, conn) -> dict | None:
         candidates = cur.fetchall()
 
     scored = []
-    for (work_id, work_name, description, work_embedding_raw, work_ward_id,
+    for (work_id, work_name, work_geom_confidence, work_embedding_raw, work_ward_id,
          work_lat, work_lon, completed_on) in candidates:
         if issue_last_reported is None:
             continue
@@ -118,7 +108,9 @@ def match_issue_to_work(issue: dict, conn) -> dict | None:
         if semantic_score < SEMANTIC_THRESHOLD:
             continue
 
-        work_precise = _work_geom_is_precise(description)
+        # Only a geocoded landmark (1.0) is a precise point; reviewed-ward and
+        # gazetteer-locality points are ward-level evidence (app.ingest.mplads).
+        work_precise = work_geom_confidence == 1.0
         distance_m = None
         if issue_precise and work_precise and issue_lat is not None:
             distance_m = _haversine_m(issue_lat, issue_lon, work_lat, work_lon)

@@ -106,6 +106,15 @@ built today.
   re-ingestion is fast (~15s) as long as `data/cache/geocode_cache.json`
   (committed) still has the resolved queries cached — only slow the first
   time because Nominatim throttles bulk unauthenticated requests hard.
+- **Two terminals running pytest at once block each other.** Both hit
+  `civicfix_test`; one session's `TRUNCATE` waits on the other's open
+  transaction, so a 6s file takes minutes and looks hung. Pytest's cache
+  dir also contends — pass `-p no:cacheprovider`. Run tests from one
+  terminal at a time.
+- **MPLADS "Ward No. N" is never a ward id.** The text mixes PMC old/new,
+  PCMC and village numbering (see `data/eval/mplads_ward_review.csv`).
+  Works are placed by geocoded landmark (`geom_confidence` 1.0), reviewed
+  ward or gazetteer place (0.5), else left unplaced.
 -
 
 ## graphify

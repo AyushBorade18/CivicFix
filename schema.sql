@@ -73,6 +73,9 @@ CREATE TABLE IF NOT EXISTS works (
   category        civic_category,
   geom            geometry(Point,4326),
   ward_id         int REFERENCES wards(id),
+  geom_confidence real,             -- 1.0 geocoded landmark; 0.5 ward-level (reviewed
+                                    -- ward centroid or gazetteer locality); NULL no geom
+  source_record_id text,            -- MPLADS workId
   embedding       vector(384)
 );
 

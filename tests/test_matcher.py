@@ -14,16 +14,17 @@ def _vec_literal(values):
 
 
 def _insert_work(conn, category, status, completed_on, lat, lon, ward_id, description,
-                  embedding=SIMILAR_A):
+                  embedding=SIMILAR_A, geom_confidence=1.0):
     with conn.cursor() as cur:
         cur.execute(
             """
-            INSERT INTO works (work_name, description, category, status, completed_on, geom, ward_id, embedding)
-            VALUES (%s, %s, %s, %s, %s, ST_SetSRID(ST_MakePoint(%s, %s), 4326), %s, %s::vector)
+            INSERT INTO works (work_name, description, category, status, completed_on, geom, ward_id,
+                               geom_confidence, embedding)
+            VALUES (%s, %s, %s, %s, %s, ST_SetSRID(ST_MakePoint(%s, %s), 4326), %s, %s, %s::vector)
             RETURNING id
             """,
             ("test work", description, category, status, completed_on, lon, lat, ward_id,
-             _vec_literal(embedding)),
+             geom_confidence, _vec_literal(embedding)),
         )
         return cur.fetchone()[0]
 
@@ -53,7 +54,7 @@ NOW = datetime(2026, 9, 20)
 
 
 def test_precise_close_match_reports_real_distance(db_conn):
-    # Both sides precise (no ward number in description -> resolved via landmark).
+    # Both sides precise (work geocoded from a landmark, geom_confidence 1.0).
     work_id = _insert_work(db_conn, "drainage_sewage", "completed", date(2026, 3, 1),
                             18.55, 73.85, 11, "Drain work near Some Landmark")
     issue_id = _insert_issue(db_conn, "drainage_sewage", 11, 18.5501, 73.8501, NOW,
@@ -69,7 +70,7 @@ def test_precise_close_match_reports_real_distance(db_conn):
 
 def test_ward_level_match_never_fabricates_distance(db_conn):
     work_id = _insert_work(db_conn, "drainage_sewage", "completed", date(2026, 3, 1),
-                            18.55, 73.85, 11, "Drainage Line at Ward No.11")
+                            18.55, 73.85, 11, "Drainage Line at Ward No.11", geom_confidence=0.5)
     issue_id = _insert_issue(db_conn, "drainage_sewage", 11, 18.9, 74.3, NOW,
                               report_confidences=(0.4, 0.4))
 
@@ -82,7 +83,7 @@ def test_ward_level_match_never_fabricates_distance(db_conn):
 
 def test_ward_level_requires_same_ward_not_just_any_distance(db_conn):
     _insert_work(db_conn, "drainage_sewage", "completed", date(2026, 3, 1),
-                 18.55, 73.85, 11, "Drainage Line at Ward No.11")
+                 18.55, 73.85, 11, "Drainage Line at Ward No.11", geom_confidence=0.5)
     issue_id = _insert_issue(db_conn, "drainage_sewage", 12, 18.55, 73.85, NOW,
                               report_confidences=(0.4,))
 

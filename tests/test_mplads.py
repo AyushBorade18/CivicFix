@@ -35,28 +35,31 @@ def test_load_mplads_filters_to_pune_district(clean_works):
         assert cur.fetchone()[0] == 3
 
 
-def test_ward_number_in_text_resolves_directly(clean_works):
+def test_raw_ward_number_alone_is_not_used_to_place_a_work(clean_works):
+    # "Ward No.5" in MPLADS text mixes numbering schemes; without a reviewed
+    # ward, a geocoded landmark or a gazetteer place, the work stays unplaced.
     _run_load()
     with clean_works.cursor() as cur:
         cur.execute(
-            "SELECT category, ward_id, ST_Y(geom), ST_X(geom) FROM works "
+            "SELECT category, ward_id, geom, geom_confidence, source_record_id FROM works "
             "WHERE work_name LIKE 'Road Concreting%'"
         )
-        category, ward_id, lat, lon = cur.fetchone()
+        category, ward_id, geom, geom_confidence, source_record_id = cur.fetchone()
     assert category == "pothole_road"
-    assert ward_id == 5
-    assert lat is not None and lon is not None
+    assert ward_id is None and geom is None and geom_confidence is None
+    assert source_record_id == "900001"
 
 
 def test_geocode_fallback_binds_ward_via_st_contains(clean_works):
     _run_load()
     with clean_works.cursor() as cur:
         cur.execute(
-            "SELECT ward_id, ST_Y(geom), ST_X(geom) FROM works "
+            "SELECT ward_id, ST_Y(geom), ST_X(geom), geom_confidence FROM works "
             "WHERE description LIKE '%Pashan lake%'"
         )
-        ward_id, lat, lon = cur.fetchone()
+        ward_id, lat, lon, geom_confidence = cur.fetchone()
     assert ward_id == 5
+    assert geom_confidence == 1.0
     assert lat == WARD_5_CENTROID[0]
     assert lon == WARD_5_CENTROID[1]
 
