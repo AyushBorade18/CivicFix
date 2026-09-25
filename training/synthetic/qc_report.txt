@@ -1,9 +1,9 @@
-complaints written: 300/1580 (+100 pilot)
+complaints written: 400/1580 (+100 pilot)
 group variants written: 0/1200
-category: {'pothole_road': 52, 'drainage_sewage': 63, 'water_supply': 52, 'streetlight': 49, 'garbage_waste': 57, 'footpath': 45, 'traffic_signage': 47, 'other': 35}
-language: {'english': 62, 'romanized_hindi': 56, 'hinglish': 56, 'romanized_marathi': 57, 'marathi': 70, 'hindi': 57, 'marathi_english': 42}
-script: {'latin': 241, 'devanagari': 127, 'mixed': 32}
-words per text: min 4, max 57, mean 22.4
-most repeated openers: [('jm road', 7), ('sadashiv peth', 5), ('vadgaon budruk', 5), ('विमान नगर', 4), ('gokhale nagar', 4)]
+category: {'pothole_road': 65, 'drainage_sewage': 73, 'water_supply': 69, 'streetlight': 59, 'garbage_waste': 66, 'footpath': 61, 'traffic_signage': 62, 'other': 45}
+language: {'english': 78, 'romanized_hindi': 66, 'hinglish': 73, 'romanized_marathi': 73, 'marathi': 81, 'hindi': 75, 'marathi_english': 54}
+script: {'latin': 306, 'devanagari': 156, 'mixed': 38}
+words per text: min 4, max 59, mean 22.5
+most repeated openers: [('sadashiv peth', 7), ('jm road', 7), ('विमान नगर', 5), ('गोखले नगर', 5), ('rasta peth', 5)]
 'urgent' used in 2 texts
 problems: 0
