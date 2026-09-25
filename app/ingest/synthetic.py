@@ -93,7 +93,7 @@ def _pick_reported_at(rng: random.Random, now: datetime | None = None, days_back
 
 def fetch_anchors(conn) -> list[dict]:
     """Real works the matcher can actually link (completed, dated, located,
-    not 'other' - the same gates as app/core/matcher.py) are the only
+    not 'other' - the same gates as app/core/matcher.py - and inside a PMC ward) are the only
     legitimate anchors for synthetic complaints meant to be findable.
     Nothing is forced: the matcher still has to discover each link.
     """
@@ -101,7 +101,8 @@ def fetch_anchors(conn) -> list[dict]:
         cur.execute(
             "SELECT category, ward_id, ST_Y(geom), ST_X(geom), description "
             "FROM works WHERE geom IS NOT NULL AND category != 'other' "
-            "AND status = 'completed' AND completed_on IS NOT NULL"
+            "AND status = 'completed' AND completed_on IS NOT NULL "
+            "AND ward_id IS NOT NULL"  # inside a PMC ward: the demo is PMC Pune, not PCMC/rural
         )
         rows = cur.fetchall()
 

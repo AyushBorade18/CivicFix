@@ -53,7 +53,9 @@ def test_fetch_anchors_only_returns_matchable_works(db_conn):
             ('Unresolved pothole work', 'Pothole repair somewhere', 'pothole_road', NULL, NULL,
              'completed', '2026-01-10'),
             ('Unfinished drain', 'Drainage line at Dasara Chowk', 'drainage_sewage',
-             ST_SetSRID(ST_MakePoint(73.77, 18.57), 4326), 12, 'sanctioned', NULL)
+             ST_SetSRID(ST_MakePoint(73.77, 18.57), 4326), 12, 'sanctioned', NULL),
+            ('PCMC road', 'Construct a Road At Thergaon near Mini Market', 'pothole_road',
+             ST_SetSRID(ST_MakePoint(73.76, 18.61), 4326), NULL, 'completed', '2026-01-10')
             """
         )
     db_conn.commit()
