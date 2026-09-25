@@ -1,4 +1,4 @@
-from training.synthetic.assemble import detect_script, has_pii, script_problem, shingle_similarity
+from training.synthetic.assemble import detect_script, has_pii, odd_characters, script_problem, shingle_similarity
 
 
 def test_detects_script():
@@ -26,3 +26,9 @@ def test_near_duplicate_similarity():
     a = "Kothrud madhe teen divas kachra uchalla nahi"
     assert shingle_similarity(a, a + ".") > 0.9
     assert shingle_similarity(a, "Signal at Swargate chowk is not working since morning") < 0.2
+
+
+def test_flags_lookalike_characters_from_other_alphabets():
+    assert odd_characters("ganda paani") == ""
+    assert odd_characters("gand\u0430 paani") == "\u0430"  # Cyrillic a
+    assert odd_characters("पाणी नाही। “ok” – fine…") == ""

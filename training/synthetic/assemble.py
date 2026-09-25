@@ -62,6 +62,14 @@ def script_problem(language: str, script_hint: str, text: str) -> str | None:
     return None
 
 
+_ODD = re.compile(r"[^\x00-\x7F\u0900-\u097F\u2013\u2014\u2018-\u201D\u2026\u20B9]")
+
+
+def odd_characters(text: str) -> str:
+    """Letters from other alphabets (e.g. Cyrillic look-alikes) break tokenization silently."""
+    return "".join(sorted(set(_ODD.findall(text))))
+
+
 def has_pii(text: str) -> bool:
     return bool(_PII.search(text))
 
@@ -151,6 +159,7 @@ def assemble() -> list[str]:
 
     everything = [(r["id"], r["text"]) for r in complaints] + [(r["id"], r["text"]) for r in groups]
     problems += [f"{i}: possible personal information" for i, t in everything if has_pii(t)]
+    problems += [f"{i}: unexpected characters {odd_characters(t)!r}" for i, t in everything if odd_characters(t)]
 
     # ponytail: O(n^2) shingle comparison, ~3k texts is seconds; MinHash if this grows past ~20k.
     group_of = {r["id"]: r["group_id"] for r in groups}
