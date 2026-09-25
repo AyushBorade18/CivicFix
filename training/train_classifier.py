@@ -4,6 +4,7 @@ Data (all labelled by source, never mixed silently):
   - icmyc_bengaluru       real English complaints, Bengaluru (training/icmyc_mapped.csv)
   - synthetic_complaints  synthetic Pune, 7 language styles (training/synthetic/complaints.csv)
   - synthetic_groups      synthetic Pune paraphrase groups (training/synthetic/paraphrase_groups.csv)
+  - synthetic_style_matched  synthetic, modelled on the human seed rows (training/synthetic/style_matched.csv)
 NYC 311 is left out: its terse US descriptors made the old model call Pune
 complaints "other" (see ARCHIVED_MODEL_PATH note in app/nlp/classify.py).
 
@@ -41,9 +42,14 @@ ROOT = Path(__file__).resolve().parent.parent
 ICMYC_CSV = ROOT / "training/icmyc_mapped.csv"
 COMPLAINTS_CSV = ROOT / "training/synthetic/complaints.csv"
 GROUPS_CSV = ROOT / "training/synthetic/paraphrase_groups.csv"
+# Synthetic rows written in the style of the 42 human "seed" complaints (the 22
+# "test" rows were never used), so evaluate on the test split only.
+STYLE_CSV = ROOT / "training/synthetic/style_matched.csv"
 DEFAULT_ENCODER = ROOT / "models/civicfix-encoder-v1"
-MODEL_OUT = ROOT / "models/classifier_v1.pkl"
-METRICS_OUT = ROOT / "models/classifier_metrics_v1.json"
+# v2 adds the style-matched set; v1 stays on disk (and live) until v2 is shown
+# to beat it on the human test split.
+MODEL_OUT = ROOT / "models/classifier_v2.pkl"
+METRICS_OUT = ROOT / "models/classifier_metrics_v2.json"
 
 SEED = 42
 TEST_SHARE = 0.15
@@ -63,6 +69,9 @@ def load_all_sources() -> list[dict]:
               "source": "synthetic_complaints", "group_id": ""} for r in _read(COMPLAINTS_CSV)]
     rows += [{"text": r["text"], "category": r["category"], "language": r["language"],
               "source": "synthetic_groups", "group_id": r["group_id"]} for r in _read(GROUPS_CSV)]
+    if STYLE_CSV.exists():
+        rows += [{"text": r["text"], "category": r["category"], "language": r["language"],
+                  "source": "synthetic_style_matched", "group_id": ""} for r in _read(STYLE_CSV)]
     return rows
 
 
