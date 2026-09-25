@@ -197,8 +197,20 @@ def load_sensitive_sites(
             bbox = _fetch_ward_bbox(conn)
 
         elements = fetch_osm_elements(bbox, cache_path=cache_path, force_refresh=force_refresh)
-        sites = deduplicate_sites(normalize_elements(elements))
+        return insert_sites_in_wards(deduplicate_sites(normalize_elements(elements)), conn)
+    finally:
+        if owns_conn:
+            conn.close()
 
+
+def insert_sites_in_wards(sites: list[dict], conn=None) -> int:
+    """Upserts sites (keyed by source_id) that fall inside a PMC ward polygon;
+    a site outside all 58 wards is out of scope and discarded. Shared by
+    every sensitive-site source (OSM, PMC bus stops).
+    """
+    owns_conn = conn is None
+    conn = conn or get_connection()
+    try:
         inserted = 0
         with conn.cursor() as cur:
             for site in sites:

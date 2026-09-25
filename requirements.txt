@@ -11,3 +11,4 @@ langdetect
 deep-translator
 Pillow
 pytest
+xlrd
