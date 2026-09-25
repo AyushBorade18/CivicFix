@@ -36,7 +36,11 @@ from scripts.lo4.build_public_works_master import PMC_LOCALITIES
 
 MASTER_CSV = Path("data/eval/public_works_master.csv")
 OUTPUT_CSV = Path("data/eval/lo4_candidate_examples.csv")
-MAX_EXAMPLES = 20
+# 20 was a pilot cap. data/labelling's plan targets 100-150 labelled LO4
+# pairs; MAX_EXAMPLES and BUCKET_QUOTA below were raised to match, scaled to
+# the real bucket sizes a full DB scan actually finds (see the "bucket
+# sizes" line this script prints) - never above what genuinely exists.
+MAX_EXAMPLES = 120
 NEAR_M = 1000
 OLD_WORK_DAYS = 365
 
@@ -229,9 +233,9 @@ def _bucket(issue: dict, work: dict, f: dict) -> str | None:
 NEARBY_UNRELATED_M = 3000  # wider than strategy A; distance is shown per pair
 
 BUCKET_QUOTA = {
-    "likely_match": 4, "same_locality_unrelated": 3, "same_category_diff_location": 3,
-    "nearby_unrelated": 2, "old_completed_work": 2, "ambiguous_circular": 3,
-    "ambiguous_category": 2, "ambiguous_not_completed": 1,
+    "likely_match": 30, "same_locality_unrelated": 20, "same_category_diff_location": 20,
+    "nearby_unrelated": 2, "old_completed_work": 15, "ambiguous_circular": 8,
+    "ambiguous_category": 5, "ambiguous_not_completed": 6,
 }
 
 
