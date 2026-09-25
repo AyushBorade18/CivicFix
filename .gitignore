@@ -16,3 +16,4 @@ web/dist/
 .idea/
 .pytest_cache/
 training/icmyc_mapped.csv
+graphify-out/
