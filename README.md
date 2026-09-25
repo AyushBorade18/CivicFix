@@ -13,7 +13,7 @@ Civic complaints shouldn't disappear into a queue. CivicFix is an intelligent ci
 ### For Administrators
 * **Spatial Evidence Map:** A comprehensive view of citizen issues, matched public works, and sensitive sites (hospitals, schools) on a single interactive canvas.
 * **Auditable Priority Formulas:** Triage issues not based on guesswork, but on a deterministic, fully transparent formula considering severity, exposure, recurrence, and time open.
-* **MPLADS Cross-Check:** Automatically matches civic complaints with existing government-funded public work records to surface potential fraud or overlapping responsibilities.
+* **MPLADS Cross-Check:** Automatically matches civic complaints with existing government-funded public work records to flag works that may need a closer look, for human review.
 * **Verification Signals:** Highlights data discrepancies and priority signals through automated auditing algorithms.
 
 ## 🏗️ Architecture & Tech Stack
