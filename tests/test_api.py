@@ -35,12 +35,13 @@ def real_conn(monkeypatch, real_database_url):
 # changed, or we got lucky about what did.
 MIN_WORKS = 318
 MIN_REPORTS = 400
-MIN_ISSUES = 333
+MIN_ISSUES = 320  # was 333; the 2026-09-25 demo regen re-clustered 400 reports into
+# 320 issues and reassigned every issue id (backups/civicfix_before_demo_regen.dump)
 MIN_MATCHES = 27  # was 28; a concurrent session's activity took it to 27 - see comment above
 MIN_SENSITIVE_SITES = 3124  # 861 OSM + 2,263 PMC/PMPML bus stops (app/ingest/pmc_bus_stops.py)
 MIN_SIGNALS = 36
-MIN_DRAINAGE_SEWAGE_ISSUES = 81  # was 82; a legitimate recurrence merge (issue #24 reopened, absorbing a
-# duplicate at the same MPLADS anchor point) correctly reduced the open-issue count by one - see recurrence.py
+MIN_DRAINAGE_SEWAGE_ISSUES = 78  # was 81; same 2026-09-25 demo regen as MIN_ISSUES above.
+# (Before that: 82 -> 81 via a legitimate recurrence merge - see recurrence.py)
 
 
 def test_health(real_client):
@@ -84,10 +85,14 @@ def test_list_issues_category_filter(real_client):
 
 
 def test_list_issues_ward_filter(real_client):
-    resp = real_client.get("/api/issues", params={"ward_id": 11, "limit": 200})
+    # Which wards hold issues changes every time the pipeline re-clusters
+    # (ward 11 had issues before the 2026-09-25 regen and has none after),
+    # so pick a ward that currently has one instead of naming a number.
+    ward_id = real_client.get("/api/issues", params={"limit": 1}).json()["items"][0]["ward_id"]
+    resp = real_client.get("/api/issues", params={"ward_id": ward_id, "limit": 200})
     body = resp.json()
     assert body["total"] > 0
-    assert all(i["ward_id"] == 11 for i in body["items"])
+    assert all(i["ward_id"] == ward_id for i in body["items"])
 
 
 def test_list_issues_min_priority_filter(real_client):
@@ -656,22 +661,37 @@ def test_refresh_match_for_issue_survives_prior_signal_on_its_own_match(real_cli
     match row without first clearing the signal that referenced it via
     match_id. Reproduces that exact sequence directly rather than via a
     full report submission (isolates the fix from clustering/geocoding).
+
+    Issue ids are reassigned wholesale every time the pipeline re-clusters
+    (the 2026-09-25 demo regen retired #24 entirely), so the donor issue is
+    looked up at runtime rather than named: the test only needs *some* issue
+    whose category, ward and embedding already produce a match.
     """
     from app.api.main import _refresh_match_for_issue
     from app.core.signals import run_signals
 
-    issue_id = _insert_throwaway_issue(real_conn, category="drainage_sewage", ward_id=16)
     with real_conn.cursor() as cur:
-        # match_issue_to_work needs a real embedding on the issue - borrow
-        # issue #24's (same category/ward, already known to match work #1064).
-        cur.execute("UPDATE issues SET embedding = (SELECT embedding FROM issues WHERE id = 24) WHERE id = %s",
-                    (issue_id,))
+        cur.execute(
+            "SELECT i.id, i.category, i.ward_id FROM issues i JOIN matches m ON m.issue_id = i.id "
+            "WHERE i.ward_id IS NOT NULL LIMIT 1"
+        )
+        donor = cur.fetchone()
+    if donor is None:
+        pytest.skip("no matched issue in the current dataset to borrow from")
+    donor_id, donor_category, donor_ward = donor
+
+    issue_id = _insert_throwaway_issue(real_conn, category=donor_category, ward_id=donor_ward)
+    with real_conn.cursor() as cur:
+        # match_issue_to_work needs a real embedding on the issue - borrow the
+        # donor's (same category/ward, already known to match a work).
+        cur.execute("UPDATE issues SET embedding = (SELECT embedding FROM issues WHERE id = %s) WHERE id = %s",
+                    (donor_id, issue_id))
     real_conn.commit()
     try:
         first_match = _refresh_match_for_issue(real_conn, issue_id)
         real_conn.commit()
         if first_match is None:
-            pytest.skip("no matchable work for drainage_sewage/ward 16 in the current dataset")
+            pytest.skip(f"no matchable work for {donor_category}/ward {donor_ward} in the current dataset")
 
         run_signals(conn=real_conn)
         real_conn.commit()

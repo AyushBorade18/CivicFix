@@ -80,6 +80,9 @@ built today.
   first on PATH). Not registered as a LaunchAgent (needs explicit user approval
   for login-persistence), so it must be started manually each session/reboot.
   Connect: `postgresql://swarajdeshmukh4249gmail.com@localhost:5433/civicfix`.
+  Same story for `pg_dump`/`pg_restore`: the `postgresql@15` one on PATH is
+  v15 and refuses to dump a v17 server ("aborting because of server version
+  mismatch"). Use `/opt/homebrew/opt/postgresql@17/bin/pg_dump`.
 - **Homebrew Python is broken on this Mac for anything touching `pip`/`plistlib`.**
   `/usr/lib/libexpat.1.dylib` (system lib, macOS 26.2 beta) is missing a symbol
   Homebrew's Python bottles need (`_XML_SetAllocTrackerActivationThreshold`),
