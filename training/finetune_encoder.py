@@ -214,7 +214,7 @@ def main() -> int:
     triplets = build_triplets(train_rows)
     print(f"{len(train_rows) // 3} train groups, {len(test_rows) // 3} test groups, {len(triplets)} triplets")
 
-    device = "mps" if torch.backends.mps.is_available() else "cpu"
+    device = "cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu"
     model = SentenceTransformer(BASE_MODEL, device=device)
     model.max_seq_length = MAX_SEQ_LENGTH
     before = evaluate(model, test_rows)
