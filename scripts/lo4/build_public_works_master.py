@@ -32,7 +32,7 @@ from pathlib import Path
 
 from shapely.geometry import Point, shape
 
-from app.ingest.location import JUNK_LANDMARKS
+from app.ingest.location import JUNK_LANDMARKS, PCMC_CUES, RURAL_CUES
 
 from app.ingest.category import map_work_category
 from app.ingest.location import _WARD_PATTERN, extract_landmark_phrase
@@ -54,13 +54,6 @@ COLUMNS = [
     "pmc_locality_hint", "quality_flags", "matching_usability",
 ]
 
-# Landmark phrases the regex extracted that are not places. Their cached
-# geocode results are coordinates for the wrong thing entirely.
-
-PCMC_CUES = ("pimpri", "chinchwad", "pcmc", "nigdi", "talwade", "chikhali",
-             "thergaon", "kalewadi", "landewadi", "more vasti", "rupinagar")
-RURAL_CUES = ("taluka", " tal.", " tal ", "gram panchayat", "grampanchayat",
-              "at post", "village", "dist.", "district pune", "distict")
 # Positive text evidence that a work is inside PMC limits. Words taken from
 # the 58 PMC 2022 ward names (data/wards/ward-attributes.csv), plus a few
 # well-known PMC localities/spellings that appear in MPLADS text but not in

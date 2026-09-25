@@ -93,3 +93,17 @@ def test_gazetteer_prefers_most_specific_place_and_reads_marathi():
 def test_gazetteer_never_places_by_road_name():
     from app.ingest.location import find_gazetteer_place
     assert find_gazetteer_place("Construction Of Road Towards DP Road") is None
+
+
+def test_pcmc_and_rural_text_is_flagged_outside_pmc():
+    from app.ingest.location import outside_pmc_text
+    assert outside_pmc_text("Construction of roads At. Pashan Mala towords Shivraj Residancy Society Tq. Shirur")
+    assert outside_pmc_text("Fixing A Solar High Mast Lamp In Dongarwadi At Chabsar Grampanchayt Tal Maval")
+    assert outside_pmc_text("Construct road At Thergaon PCmc Area")
+    assert not outside_pmc_text("Laying Of Drainage Line at Ward No.11, Kishkindhanagar Kothrud")
+
+
+def test_route_descriptions_are_not_geocodable_places():
+    from app.ingest.location import is_route_phrase
+    assert is_route_phrase("Forest to Pilanewasti road")
+    assert not is_route_phrase("Pashan Lake")

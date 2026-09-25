@@ -15,6 +15,17 @@ JUNK_LANDMARKS = {
     "gram panchayat", "village", "taluka", "ward no", "ward number",
 }
 
+# Text evidence that a work is outside PMC limits (PCMC, or a rural taluka /
+# gram panchayat). Such a work is never placed inside a PMC ward, even when
+# it shares a locality name with one ("Pashan Mala, Tq. Shirur").
+PCMC_CUES = ("pimpri", "chinchwad", "pcmc", "nigdi", "talwade", "chikhali",
+             "thergaon", "kalewadi", "landewadi", "more vasti", "rupinagar")
+RURAL_CUES = ("taluka", " tal.", " tal ", " tq.", " tq ", "gram panchayat", "grampanchayat",
+              "grampanchayt", "at post", "village", "dist.", "district pune", "distict", "lonavala")
+# "from X to Y" / "X to Y road" describes a route, not a place; geocoding it
+# returns a point for whichever word Nominatim happens to match.
+_ROUTE_PHRASE = re.compile(r"\bto\b|\btowards?\b|\btowords\b", re.I)
+
 _WARD_PATTERN = re.compile(r"\bward\s*(?:no\.?|number|num\.?)?\s*[:\-]?\s*(\d{1,2})\b", re.I)
 
 _LANDMARK_PATTERN = re.compile(
@@ -111,3 +122,13 @@ def find_gazetteer_place(text: str) -> dict | None:
     if not hits:
         return None
     return max(hits, key=lambda r: (_GAZETTEER_SPECIFICITY[r["kind"]], len(r["name_en"])))
+
+
+def outside_pmc_text(text: str) -> bool:
+    """True when the text itself says the place is in PCMC or a rural area."""
+    lowered = f" {(text or '').lower()} "
+    return any(cue in lowered for cue in PCMC_CUES) or any(cue in lowered for cue in RURAL_CUES)
+
+
+def is_route_phrase(phrase: str) -> bool:
+    return bool(_ROUTE_PHRASE.search(phrase or ""))

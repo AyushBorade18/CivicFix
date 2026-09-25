@@ -5,7 +5,9 @@ from datetime import date
 from app.db import get_connection
 from app.ingest.category import map_work_category
 from app.ingest.geocode import geocode
-from app.ingest.location import JUNK_LANDMARKS, extract_landmark_phrase, find_gazetteer_place
+from app.ingest.location import (
+    JUNK_LANDMARKS, extract_landmark_phrase, find_gazetteer_place, is_route_phrase, outside_pmc_text,
+)
 from app.nlp.embeddings import get_embedding_model as _get_model
 
 def _is_pune_district(row: dict) -> bool:
@@ -64,13 +66,14 @@ class _LocationStats:
         self.geocoded = 0
         self.reviewed_ward = 0
         self.gazetteer = 0
+        self.outside_pmc = 0
         self.unresolved = 0
 
     def summary(self, total: int) -> str:
         return (
             f"location resolved: {self.geocoded} via geocoded landmark, "
             f"{self.reviewed_ward} via reviewed ward, {self.gazetteer} via gazetteer place, "
-            f"{self.unresolved} unresolved (of {total})"
+            f"{self.outside_pmc} left unplaced as PCMC/rural text, {self.unresolved} unresolved (of {total})"
         )
 
 
@@ -89,10 +92,16 @@ def _resolve_location(conn, description: str, work_id: str, reviewed: dict[str, 
     """Returns (lat, lon, ward_id, geom_confidence), any of which may be None.
     Order: geocoded landmark (precise) -> human-reviewed ward (its centroid)
     -> most specific gazetteer place named in the text (its OSM centre).
-    Nothing found leaves geom NULL rather than guessing.
+    Nothing found leaves geom NULL rather than guessing. Text that says the
+    work is in PCMC or a rural taluka is never placed: its locality names
+    can collide with PMC ones ("Pashan Mala, Tq. Shirur").
     """
+    if outside_pmc_text(description):
+        stats.outside_pmc += 1
+        return None, None, None, None
+
     landmark = extract_landmark_phrase(description)
-    if landmark and landmark.lower() not in JUNK_LANDMARKS:
+    if landmark and landmark.lower() not in JUNK_LANDMARKS and not is_route_phrase(landmark):
         point = geocode(f"{landmark}, Pune, Maharashtra, India")
         if point is not None:
             stats.geocoded += 1
