@@ -1,22 +1,12 @@
 import csv
 from datetime import date
 
-from sentence_transformers import SentenceTransformer
 
 from app.db import get_connection
 from app.ingest.category import map_work_category
 from app.ingest.geocode import geocode
 from app.ingest.location import extract_landmark_phrase, extract_ward_number
-
-_model = None
-
-
-def _get_model() -> SentenceTransformer:
-    global _model
-    if _model is None:
-        _model = SentenceTransformer("all-MiniLM-L6-v2")
-    return _model
-
+from app.nlp.embeddings import get_embedding_model as _get_model
 
 def _is_pune_district(row: dict) -> bool:
     return "pune" in (row.get("ida") or "").lower() or "pune" in (row.get("constituency") or "").lower()

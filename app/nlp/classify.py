@@ -2,13 +2,13 @@ import csv
 import pickle
 import sys
 
-from sentence_transformers import SentenceTransformer
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import f1_score
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 
 from app.categories import CIVIC_CATEGORIES
+from app.nlp.embeddings import get_embedding_model as _get_embedding_model
 
 MODEL_PATH = "models/classifier.pkl"
 CONFIDENCE_THRESHOLD = 0.5
@@ -81,16 +81,8 @@ CITIZEN_KEYWORDS = {
     ],
 }
 
-_embedding_model = None
 _cached_model = None
 _cached_model_path = None
-
-
-def _get_embedding_model() -> SentenceTransformer:
-    global _embedding_model
-    if _embedding_model is None:
-        _embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
-    return _embedding_model
 
 
 def classify_keywords(text: str) -> tuple[str, float]:

@@ -1,11 +1,10 @@
 import random
 from datetime import datetime, timedelta
 
-from sentence_transformers import SentenceTransformer
-
 from app.db import get_connection
 from app.ingest.location import extract_landmark_phrase, extract_ward_number
 from app.nlp.classify import classify
+from app.nlp.embeddings import get_embedding_model as _get_embedding_model
 from app.nlp.location import resolve_report_location
 from app.nlp.severity import severity
 
@@ -66,14 +65,6 @@ ORDINARY_CATEGORY_WEIGHTS = {
     "other": 6,
 }
 
-_embedding_model = None
-
-
-def _get_embedding_model() -> SentenceTransformer:
-    global _embedding_model
-    if _embedding_model is None:
-        _embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
-    return _embedding_model
 
 
 def _anchor_location_cue(description: str) -> str | None:

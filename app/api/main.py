@@ -9,7 +9,6 @@ from fastapi import Depends, FastAPI, File, HTTPException, Query, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from psycopg.rows import dict_row
-from sentence_transformers import SentenceTransformer
 
 from app.api.schemas import (
     FeedbackCreateRequest,
@@ -47,6 +46,7 @@ from app.core.signals import run_signals
 from app.db import get_connection
 from app.ingest.location import extract_ward_number
 from app.nlp.classify import classify
+from app.nlp.embeddings import get_embedding_model as _get_embedding_model
 from app.nlp.language import detect_language
 from app.nlp.location import resolve_report_location
 from app.nlp.photo_severity import estimate_photo_severity
@@ -77,14 +77,6 @@ app.add_middleware(
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 app.mount("/uploads", StaticFiles(directory=UPLOAD_DIR), name="uploads")
 
-_embedding_model = None
-
-
-def _get_embedding_model() -> SentenceTransformer:
-    global _embedding_model
-    if _embedding_model is None:
-        _embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
-    return _embedding_model
 
 
 def _parse_embedding(raw) -> np.ndarray:
