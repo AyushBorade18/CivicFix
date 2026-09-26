@@ -1,1 +1,125 @@
 word_or_phrase,language,script,severity_band,category,example_sentence
+open manhole,en,latin,critical,all,There is an open manhole near the school gate
+accident,en,latin,critical,all,A scooter accident happened here last night
+injured,en,latin,critical,all,A rider was injured in the pothole
+injury,en,latin,critical,all,This pit has already caused one injury
+child fell,en,latin,critical,all,A child fell near the open drain
+fell into,en,latin,critical,all,A dog fell into the uncovered chamber
+collapsed,en,latin,critical,all,The footpath slab collapsed yesterday
+electrocution,en,latin,critical,all,"Exposed wires, electrocution risk for children"
+fire hazard,en,latin,critical,all,"Garbage burning next to houses, fire hazard"
+contaminated water,en,latin,critical,all,Contaminated water is coming from the tap
+sewage near,en,latin,critical,all,Sewage near the drinking water line
+overflowing sewage,en,latin,critical,all,Overflowing sewage outside the clinic
+caught fire,en,latin,critical,all,The garbage heap caught fire near the houses
+exposed wires,en,latin,critical,all,Exposed wires hanging from the pole
+drowned,en,latin,critical,all,A stray dog drowned in the water filled pit
+died,en,latin,critical,all,A rider died in this stretch last month
+death,en,latin,critical,all,This junction has already caused one death
+उघडे मॅनहोल,mr,devanagari,critical,all,शाळेजवळ उघडे मॅनहोल आहे
+उघड्या तारा,mr,devanagari,critical,all,खांबाला उघड्या तारा आहेत
+अपघात,mr,devanagari,critical,all,येथे दुचाकीचा अपघात झाला
+जखमी,mr,devanagari,critical,all,खड्ड्यामुळे एक चालक जखमी झाला
+मूल पडले,mr,devanagari,critical,all,उघड्या गटारात मूल पडले
+आत पडले,mr,devanagari,critical,all,कुत्रा चेंबरमध्ये आत पडले
+कोसळला,mr,devanagari,critical,all,फुटपाथचा स्लॅब कोसळला
+कोसळले,mr,devanagari,critical,all,संरक्षक भिंतीचे बांधकाम कोसळले
+विजेचा धक्का,mr,devanagari,critical,all,खांबाला हात लावल्यास विजेचा धक्का बसतो
+आग लागली,mr,devanagari,critical,all,कचऱ्याला आग लागली
+आगीचा धोका,mr,devanagari,critical,all,घरांजवळ आगीचा धोका आहे
+दूषित पाणी,mr,devanagari,critical,all,नळाला दूषित पाणी येत आहे
+मृत्यू,mr,devanagari,critical,all,या अपघातात एकाचा मृत्यू झाला
+बुडाले,mr,devanagari,critical,all,पाण्याने भरलेल्या खड्ड्यात जनावर बुडाले
+खुला मैनहोल,hi,devanagari,critical,all,स्कूल के पास खुला मैनहोल है
+खुले तार,hi,devanagari,critical,all,खंभे पर खुले तार लटक रहे हैं
+दुर्घटना,hi,devanagari,critical,all,यहाँ कल एक दुर्घटना हुई
+हादसा,hi,devanagari,critical,all,गड्ढे के कारण हादसा हो गया
+घायल,hi,devanagari,critical,all,एक बाइक सवार घायल हो गया
+बच्चा गिर,hi,devanagari,critical,all,खुली नाली में बच्चा गिर गया
+गिर गया,hi,devanagari,critical,all,चेंबर में कुत्ता गिर गया
+ढह गया,hi,devanagari,critical,all,फुटपाथ का स्लैब ढह गया
+बिजली का झटका,hi,devanagari,critical,all,खंभे से बिजली का झटका लगता है
+आग लगी,hi,devanagari,critical,all,कचरे में आग लगी है
+आग का खतरा,hi,devanagari,critical,all,घरों के पास आग का खतरा है
+दूषित पानी,hi,devanagari,critical,all,नल से दूषित पानी आ रहा है
+मौत,hi,devanagari,critical,all,इस हादसे में एक की मौत हुई
+ughade manhole,mr-rom,latin,critical,all,shalejaval ughade manhole aahe
+ughda manhole,mr-rom,latin,critical,all,rastyavar ughda manhole aahe
+ughdya tara,mr-rom,latin,critical,all,khambala ughdya tara aahet
+apghat,mr-rom,latin,critical,all,ithe duchaki apghat zala
+jakhmi,mr-rom,latin,critical,all,khaddyamule chalak jakhmi zala
+mul padle,mr-rom,latin,critical,all,ughdya gatarat mul padle
+aat padle,mr-rom,latin,critical,all,chamber madhe kutra aat padle
+kosalla,mr-rom,latin,critical,all,footpath cha slab kosalla
+vijecha dhakka,mr-rom,latin,critical,all,khambala vijecha dhakka basto
+current cha dhakka,mr-rom,latin,critical,all,"tar ughdi aahe, current cha dhakka basu shakto"
+aag lagli,mr-rom,latin,critical,all,kachryala aag lagli
+dushit pani,mr-rom,latin,critical,all,nalala dushit pani yet aahe
+mrutyu,mr-rom,latin,critical,all,ya apghatat ekacha mrutyu zala
+durghatna,hi-rom,latin,critical,all,yahan kal durghatna hui
+haadsa,hi-rom,latin,critical,all,gadhe ke karan haadsa ho gaya
+ghayal,hi-rom,latin,critical,all,ek bike sawar ghayal ho gaya
+bijli ka jhatka,hi-rom,latin,critical,all,khambe se bijli ka jhatka lagta hai
+khule taar,hi-rom,latin,critical,all,khambe par khule taar latak rahe hain
+overflow,en,latin,moderate,all,The drain chamber overflows every morning
+blocked,en,latin,moderate,all,The storm water drain is blocked
+not working,en,latin,moderate,all,The streetlight is not working
+broken,en,latin,moderate,all,Footpath tiles are broken
+damaged,en,latin,moderate,all,The road surface is badly damaged
+leak,en,latin,moderate,all,There is a leak in the water line
+shortage,en,latin,moderate,all,Water shortage for the last three days
+no water,en,latin,moderate,all,No water since Monday morning
+no supply,en,latin,moderate,all,No supply in our building today
+uneven,en,latin,moderate,all,The footpath is uneven and hard to walk on
+foul smell,en,latin,moderate,all,Foul smell from the drain all day
+stink,en,latin,moderate,all,The garbage point stinks badly
+waterlogged,en,latin,moderate,all,The road is waterlogged after every shower
+water logging,en,latin,moderate,all,Water logging near the bus stop
+pothole,en,latin,moderate,all,A deep pothole right outside the gate
+out of order,en,latin,moderate,all,The signal has been out of order for a week
+तुंबले,mr,devanagari,moderate,all,गटार तुंबले आहे
+तुंबला,mr,devanagari,moderate,all,पावसाळी नाला तुंबला आहे
+बंद आहे,mr,devanagari,moderate,all,पथदिवा बंद आहे
+नादुरुस्त,mr,devanagari,moderate,all,सिग्नल नादुरुस्त आहे
+तुटले,mr,devanagari,moderate,all,फुटपाथवरील फरशा तुटले आहेत
+तुटल्या,mr,devanagari,moderate,all,फुटपाथवरील फरशा तुटल्या आहेत
+फुटले,mr,devanagari,moderate,all,जलवाहिनी फुटले आहे
+खराब,mr,devanagari,moderate,all,रस्त्याची स्थिती खूप खराब आहे
+गळती,mr,devanagari,moderate,all,नळाला गळती लागली आहे
+पाणी नाही,mr,devanagari,moderate,all,तीन दिवस पाणी नाही
+खड्डे,mr,devanagari,moderate,all,रस्त्यावर मोठे खड्डे पडले आहेत
+खड्डा,mr,devanagari,moderate,all,येथे खोल खड्डा आहे
+कचरा साचला,mr,devanagari,moderate,all,कोपऱ्यावर कचरा साचला आहे
+साचले,mr,devanagari,moderate,all,रस्त्यावर पाणी साचले आहे
+दुर्गंधी,mr,devanagari,moderate,all,परिसरात दुर्गंधी पसरली आहे
+ओबडधोबड,mr,devanagari,moderate,all,फुटपाथ ओबडधोबड आहे
+वाहत आहे,mr,devanagari,moderate,all,सांडपाणी रस्त्यावर वाहत आहे
+जाम,hi,devanagari,moderate,all,नाली जाम हो गई है
+बंद है,hi,devanagari,moderate,all,स्ट्रीट लाइट बंद है
+टूट गई,hi,devanagari,moderate,all,फुटपाथ की टाइलें टूट गई हैं
+टूटा,hi,devanagari,moderate,all,नल का पाइप टूटा हुआ है
+खराब,hi,devanagari,moderate,all,सड़क की हालत खराब है
+रिसाव,hi,devanagari,moderate,all,पाइपलाइन में रिसाव है
+पानी नहीं,hi,devanagari,moderate,all,तीन दिन से पानी नहीं आया
+गड्ढा,hi,devanagari,moderate,all,यहाँ गहरा गड्ढा है
+गड्ढे,hi,devanagari,moderate,all,सड़क पर बड़े गड्ढे हैं
+कचरा जमा,hi,devanagari,moderate,all,कोने पर कचरा जमा है
+बदबू,hi,devanagari,moderate,all,इलाके में बदबू फैली है
+भर गया,hi,devanagari,moderate,all,चेंबर पानी से भर गया है
+नहीं आ रहा,hi,devanagari,moderate,all,नल में पानी नहीं आ रहा
+tumble aahe,mr-rom,latin,moderate,all,gatar tumble aahe
+tumbla,mr-rom,latin,moderate,all,pavsali nala tumbla aahe
+band aahe,mr-rom,latin,moderate,all,pathdiva band aahe
+nadurust,mr-rom,latin,moderate,all,signal nadurust aahe
+tutle,mr-rom,latin,moderate,all,footpath varil farsha tutle aahet
+kharab,mr-rom,latin,moderate,all,rastyachi sthiti kharab aahe
+pani nahi,mr-rom,latin,moderate,all,teen divas pani nahi
+khadda,mr-rom,latin,moderate,all,ithe khol khadda aahe
+khadde,mr-rom,latin,moderate,all,rastyavar mothe khadde aahet
+kachra sachla,mr-rom,latin,moderate,all,koparyavar kachra sachla aahe
+durgandhi,mr-rom,latin,moderate,all,parisarat durgandhi pasarli aahe
+band hai,hi-rom,latin,moderate,all,street light band hai
+toot gaya,hi-rom,latin,moderate,all,pipe toot gaya hai
+gadhe,hi-rom,latin,moderate,all,sadak par bade gadhe hain
+kachra jama,hi-rom,latin,moderate,all,kone par kachra jama hai
+badbu,hi-rom,latin,moderate,all,ilake mein badbu faili hai
