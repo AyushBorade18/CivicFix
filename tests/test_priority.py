@@ -83,7 +83,11 @@ def test_site_weight_water_body_elevated_for_drainage_category():
 
 
 def test_exposure_radius_falls_back_to_base_when_no_density_data(db_conn):
-    # Real state of this DB: no ward has population/area_sqkm loaded.
+    # Establish the precondition instead of assuming it: area_sqkm is filled
+    # for every ward now (load_wards derives it from the geometry), and the
+    # ward tests commit a population, so "no density data" has to be set up.
+    with db_conn.cursor() as cur:
+        cur.execute("UPDATE wards SET population = NULL WHERE id = 1")
     radius = _exposure_radius(db_conn, ward_id=1)
     from app.core.priority import BASE_EXPOSURE_RADIUS_M
     assert radius == BASE_EXPOSURE_RADIUS_M

@@ -114,6 +114,21 @@ built today.
   transaction, so a 6s file takes minutes and looks hung. Pytest's cache
   dir also contends — pass `-p no:cacheprovider`. Run tests from one
   terminal at a time.
+- **`pmc.gov.in` is unreachable from this machine** (both http and https time
+  out, curl exit 28). It hosts the only per-ward population figures for the
+  2022 scheme, inside the final ward map PDFs linked from
+  `data/wards/ward-attributes.csv`'s `orig` column. So `wards.population` is
+  still NULL and `priority.py`'s density-scaled exposure radius stays on its
+  300 m fallback. `data/labelling/ward_population.csv` is pre-filled with all
+  58 wards, computed areas and the per-ward PDF URL - someone on a network
+  that can reach PMC fills one column and runs
+  `python -c "from app.ingest.wards import load_ward_population as l; print(l())"`.
+- **`clean_wards` commits, so ward state leaks across test files.** Unlike
+  `db_conn` (which rolls back), the `clean_wards` fixture commits, and
+  `load_ward_population` commits too - so a population written in
+  `test_wards.py` was still there when `test_priority.py` ran, breaking a test
+  that assumed "no ward has density data". Tests must establish their own
+  ward density precondition rather than trusting the ambient DB.
 - **MPLADS "Ward No. N" is never a ward id.** The text mixes PMC old/new,
   PCMC and village numbering (see `data/eval/mplads_ward_review.csv`).
   Works are placed by geocoded landmark (`geom_confidence` 1.0), reviewed

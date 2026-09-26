@@ -30,10 +30,14 @@ SITE_WEIGHTS = {
 WATER_BODY_WEIGHT_DRAINAGE = 1.0
 
 # Radius scales inversely with ward population density, per ARCHITECTURE.md
-# 5.8 - but no PMC ward population/area data has ever been sourced or
-# loaded in this project (wards.population and .area_sqkm are NULL for all
-# 58 wards). The formula below is real and activates correctly the moment
-# that data exists; until then every call falls back to BASE_EXPOSURE_RADIUS_M.
+# 5.8. wards.area_sqkm is now filled for all 58 wards, derived from the
+# boundary geometry by app/ingest/wards.py (507.1 sq km total against PMC's
+# published ~516). wards.population is still NULL everywhere: PMC publishes
+# it per ward only inside the final ward map PDFs, and pmc.gov.in was
+# unreachable when this was attempted - see data/labelling/ward_population.csv,
+# which carries the per-ward source URL and needs only that one column filled.
+# Inventing the number would silently reshape every ranking, so until it is
+# filled every call falls back to BASE_EXPOSURE_RADIUS_M.
 BASE_EXPOSURE_RADIUS_M = 300
 REFERENCE_DENSITY_PER_KM2 = 20000  # a plausible dense-urban-ward reference point
 MIN_RADIUS_M = 150
