@@ -16,7 +16,9 @@ import {
   AlertCircle, 
   MapPin, 
   Layers,
-  ArrowRight
+  ArrowRight,
+  Camera,
+  Image as ImageIcon
 } from "lucide-react";
 
 const VOICE_LANGUAGES = [
@@ -47,8 +49,10 @@ export function ReportIssue() {
 
   function handlePhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0] ?? null;
+    if (photoPreview) URL.revokeObjectURL(photoPreview);
     setPhoto(file);
     setPhotoPreview(file ? URL.createObjectURL(file) : null);
+    e.target.value = ""; // lets the same photo be re-picked after switching inputs
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -186,19 +190,39 @@ export function ReportIssue() {
 
           {/* Photo attachment */}
           <div className="space-y-2">
-            <label htmlFor="photo" className="text-sm font-semibold text-foreground flex items-center gap-1.5">
+            <span className="text-sm font-semibold text-foreground flex items-center gap-1.5">
               <UploadCloud className="w-4 h-4 text-primary" />
               <span>Attach a photo (optional)</span>
-            </label>
-            <input
-              id="photo"
-              type="file"
-              accept="image/jpeg,image/png,image/webp"
-              onChange={handlePhotoChange}
-              className="block w-full text-xs text-secondary file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 cursor-pointer border border-border rounded-xl p-2 bg-muted/20"
-            />
+            </span>
+            <div className="flex flex-wrap gap-3">
+              {/* capture="environment" opens the rear camera directly on phones; desktops fall back to a file picker. */}
+              <label className="btn cursor-pointer px-4 py-2 rounded-lg border border-border bg-primary/10 text-primary text-xs font-semibold flex items-center gap-1.5">
+                <Camera className="w-4 h-4" />
+                Take photo
+                <input
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  capture="environment"
+                  onChange={handlePhotoChange}
+                  className="sr-only"
+                />
+              </label>
+              <label className="btn cursor-pointer px-4 py-2 rounded-lg border border-border bg-muted/40 text-foreground text-xs font-semibold flex items-center gap-1.5">
+                <ImageIcon className="w-4 h-4" />
+                Choose from gallery
+                <input
+                  id="photo"
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  onChange={handlePhotoChange}
+                  className="sr-only"
+                />
+              </label>
+              {photo && <span className="self-center text-xs text-secondary truncate max-w-[12rem]">{photo.name}</span>}
+            </div>
             <p className="text-xs text-secondary">
-              Stored as evidence for ward officer verification — never solely used to score severity.
+              Stored as evidence for ward officer verification — never used to score severity. Location
+              data and other metadata are removed from the photo before it is stored.
             </p>
             {photoPreview && (
               <div className="mt-3 relative rounded-xl overflow-hidden border border-border max-w-sm">

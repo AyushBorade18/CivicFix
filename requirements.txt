@@ -13,6 +13,9 @@ uvicorn[standard]==0.53.0
 python-multipart==0.0.32
 langdetect==1.0.9
 Pillow==12.3.0
+# Photo encryption at rest. Range, not a pin, because it was added from a
+# machine without the venv; replace with the exact version pip installs.
+cryptography>=44,<50
 pytest==9.1.1
 xlrd==2.0.2
 

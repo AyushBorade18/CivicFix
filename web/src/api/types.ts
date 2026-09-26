@@ -143,10 +143,20 @@ export interface ReportInIssue {
   translated_text: string | null;
   photo_severity_score: number | null;
   photo_severity_band: string | null;
+  photo_checks?: PhotoChecks | null;
+}
+
+export interface PhotoChecks {
+  had_exif: boolean;
+  had_gps: boolean;
+  content_credentials_present: boolean;
+  flags: Record<string, string>;
+  stored_encrypted: boolean;
 }
 
 export interface PhotoUploadResponse {
   photo_url: string;
+  photo_checks: PhotoChecks;
 }
 
 export interface IssueRouteResponse {
