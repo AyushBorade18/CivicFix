@@ -53,9 +53,16 @@ OUTPUT_COLUMNS = [
     "label_a", "label_b", "final_label", "pair_type", "notes",
 ]
 
-BOUNDARY_LOW = 0.65          # bottom of the "could go either way" band
-SAME_PLACE_LOW = 0.45        # below this, a same-place pair is obviously unrelated
-CROSS_CATEGORY_LOW = 0.50    # cross-category pairs worth a second look
+# Bands measured off the real distribution of the 321 fully-gated
+# same-category pairs (244 of them with non-identical text), not guessed:
+#   p10 0.223   p25 0.450   p50 0.641   p75 0.921
+# There is no clean natural gap. What there is, is a sparse dip at
+# [0.65,0.70) - only 3 pairs - which is exactly where an earlier version of
+# this script cut, so it sampled 38 pairs while the real decision mass
+# (0.50-0.80, 78 non-identical pairs) sat below the cut.
+BOUNDARY_LOW = 0.50          # 0.50-threshold: where re-tuning is actually decided
+SAME_PLACE_LOW = 0.30        # 0.30-0.50: negative control; below 0.30 is trivial
+CROSS_CATEGORY_LOW = 0.50    # cross-category p90 is 0.522, so this is the top ~21%
 
 # Scaled to what a full scan actually finds - see the "bucket sizes" line this
 # script prints. Never set above what genuinely exists.
@@ -65,14 +72,26 @@ CROSS_CATEGORY_LOW = 0.50    # cross-category pairs worth a second look
 # actually settle a question go first; likely_duplicate and the two gate checks
 # have hundreds of candidates each and still fill their quota from the leftovers.
 BUCKET_QUOTA = {
-    "boundary_below_threshold": 25,
-    "cross_category_same_place_time": 8,
-    "gated_low_similarity": 15,
-    "likely_duplicate": 25,
-    "outside_time_window": 12,
-    "different_ward_high_similarity": 10,
+    "boundary_below_threshold": 40,
+    "cross_category_same_place_time": 10,
+    "gated_low_similarity": 12,
+    "likely_duplicate": 18,
+    "outside_time_window": 5,
+    "different_ward_high_similarity": 5,
 }
-MAX_EXAMPLES = 95
+MAX_EXAMPLES = 90
+
+# A given wording may appear in a few pairs, but not many. LO4 forbids reuse
+# outright because its unit is a work and a repeated work makes repetitive
+# review material. LO3's unit is the PAIR: whether two texts describe one issue
+# is a fresh judgement each time, and forbidding reuse starved the band that
+# decides the threshold (11 of 38 available). A small cap keeps repetition
+# bounded without throwing away the supply.
+#
+# Counted per TEXT, not per report id: the synthetic corpus repeats templates
+# verbatim across different rows, so an id-based cap let one sentence reach a
+# reviewer five times while claiming a cap of three.
+MAX_TEXT_USES = 3
 
 
 def pair_type(a: dict, b: dict, sim: float, days_apart: int) -> str | None:
@@ -148,12 +167,12 @@ def build_candidates(reports: list[dict]) -> list[tuple]:
 
 
 def select_examples(candidates: list[tuple], quota: dict[str, int],
-                    max_examples: int) -> list[tuple]:
-    """Deterministic pick. A report appears in at most one pair: repetitive
-    review material is worse than a smaller set (same rule as LO4's).
+                    max_examples: int, max_text_uses: int = MAX_TEXT_USES) -> list[tuple]:
+    """Deterministic pick. A wording may appear in up to max_text_uses pairs
+    (see MAX_TEXT_USES), and the same pair of texts is never offered twice.
     """
-    used_reports: set[int] = set()
-    used_texts: set[str] = set()
+    uses: dict[str, int] = {}
+    seen_pairs: set[frozenset] = set()
     picked: list[tuple] = []
     for bucket in quota:
         # Verbatim-identical sides are a synthetic-template artefact and teach a
@@ -169,11 +188,15 @@ def select_examples(candidates: list[tuple], quota: dict[str, int],
             if taken >= quota[bucket] or len(picked) >= max_examples:
                 break
             _, a, b, _, _ = candidate
-            texts = {a["text"].lower(), b["text"].lower()}
-            if {a["id"], b["id"]} & used_reports or texts & used_texts:
+            text_pair = frozenset({a["text"].lower(), b["text"].lower()})
+            if text_pair in seen_pairs:
                 continue
-            used_reports |= {a["id"], b["id"]}
-            used_texts |= texts
+            texts = [a["text"].lower(), b["text"].lower()]
+            if any(uses.get(t, 0) >= max_text_uses for t in texts):
+                continue
+            seen_pairs.add(text_pair)
+            for t in texts:
+                uses[t] = uses.get(t, 0) + 1
             taken += 1
             picked.append(candidate)
     return picked

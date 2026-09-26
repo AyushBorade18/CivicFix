@@ -706,3 +706,22 @@ def test_refresh_match_for_issue_survives_prior_signal_on_its_own_match(real_cli
         assert second_match is not None
     finally:
         _delete_throwaway_issue(real_conn, issue_id)
+
+
+def test_devanagari_hazard_keeps_its_critical_band_through_the_api(real_client, real_conn):
+    """Regression: severity used to be scored on the machine translation only.
+    The translator renders उघड्या तारा / विजेचा धक्का as "open wires" /
+    "electric shock", neither of which is a keyword, so an electrocution
+    report came back cosmetic while the identical English text came back
+    critical. Holds with or without network: if translation is unavailable the
+    pipeline falls back to the original text, which now scores critical itself.
+    """
+    hazard = "कोथरूडमधील विजेच्या खांबाला उघड्या तारा आहेत, मुलांना विजेचा धक्का बसू शकतो"
+    resp = real_client.post("/api/reports", json={"raw_text": hazard, "ward_id": 14})
+    assert resp.status_code == 201
+    body = resp.json()
+    issue_id = body["issue_id"]
+    try:
+        assert body["report"]["severity"] == "critical"
+    finally:
+        _delete_throwaway_issue(real_conn, issue_id)

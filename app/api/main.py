@@ -50,7 +50,7 @@ from app.nlp.embeddings import get_embedding_model as _get_embedding_model
 from app.nlp.language import detect_language
 from app.nlp.location import resolve_report_location
 from app.nlp.photo_severity import estimate_photo_severity
-from app.nlp.severity import severity
+from app.nlp.severity import BAND_ORDER, severity
 from app.nlp.translate import translate_to_english
 
 UPLOAD_DIR = Path("data/uploads")
@@ -753,11 +753,23 @@ def create_report(payload: ReportCreateRequest, db=Depends(get_db)):
     pipeline_text = translated_text or payload.raw_text
 
     # The fine-tuned encoder reads Hindi/Marathi/romanized/code-mixed text
-    # directly, so category and embedding use the original words. Severity and
-    # location still use the English translation until their keyword lists and
-    # gazetteer cover Hindi/Marathi.
+    # directly, so category and embedding use the original words. Location
+    # still uses the English translation until the gazetteer covers
+    # Hindi/Marathi.
     category, category_conf = classify(payload.raw_text)
-    severity_band = severity(pipeline_text, category)
+    # Severity reads BOTH the original and the translation, and takes the
+    # stronger band. The keyword list now carries Marathi/Hindi/romanized
+    # entries, so the original must be scored directly: translating first lost
+    # real hazards, because the translator renders विजेचा धक्का as "electric
+    # shock" and उघड्या तारा as "open wires", neither of which is a keyword,
+    # so an electrocution report scored cosmetic. The translation is still
+    # scored too - it is the only cover for a language the keyword list has no
+    # entries for at all.
+    severity_band = max(
+        severity(payload.raw_text, category),
+        severity(pipeline_text, category),
+        key=BAND_ORDER.index,
+    )
     lat, lon, geom_conf, ward_id, location_phrase = resolve_report_location(pipeline_text, conn=db)
 
     # Photo severity: a deterministic formula over the uploaded image's

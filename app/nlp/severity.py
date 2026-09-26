@@ -1,7 +1,7 @@
 import csv
 from functools import lru_cache
 
-_BAND_ORDER = ("cosmetic", "moderate", "critical")
+BAND_ORDER = ("cosmetic", "moderate", "critical")
 
 # Published category priors, per ARCHITECTURE.md 5.4: some categories are
 # dangerous regardless of how mildly they're worded (an open manhole or
@@ -58,4 +58,4 @@ def severity(text: str, category: str) -> str:
     """
     prior = CATEGORY_SEVERITY_PRIOR.get(category, "cosmetic")
     text_band = _text_severity(text)
-    return max(prior, text_band, key=_BAND_ORDER.index)
+    return max(prior, text_band, key=BAND_ORDER.index)
