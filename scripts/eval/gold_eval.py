@@ -36,7 +36,7 @@ from pathlib import Path
 
 from app.core.clustering import COSINE_THRESHOLD, _cosine_similarity
 from app.nlp.embeddings import get_embedding_model
-from app.nlp.severity import severity
+from app.nlp.severity import BAND_ORDER, severity
 
 GOLD_CSV = "data/labelling/lo2_gold_complaints.csv"
 OUTPUT_JSON = Path("data/eval/gold_eval.json")
@@ -53,7 +53,15 @@ def script_of(text: str) -> str:
 
 
 def severity_eval(rows: list[dict]) -> dict:
-    correct, misses = 0, []
+    """Accuracy, plus the split that actually matters operationally.
+
+    Over- and under-calls are not equally bad. Under-calling a live wire sends
+    a hazard to the back of the queue; over-calling litter just wastes a
+    reviewer's attention. `dangerous_misses` counts the worst case on its own -
+    a complaint humans called critical that we scored lower - because a single
+    accuracy number hides it.
+    """
+    correct, misses, over, under, dangerous = 0, [], 0, 0, []
     by_script: dict[str, list[int]] = {}
     for row in rows:
         got = severity(row["text"], row["category"])
@@ -62,14 +70,28 @@ def severity_eval(rows: list[dict]) -> dict:
         correct += hit
         if not hit:
             misses.append({"gold_id": row["gold_id"], "expected": expected, "got": got})
+            if BAND_ORDER.index(got) > BAND_ORDER.index(expected):
+                over += 1
+            else:
+                under += 1
+                if expected == "critical":
+                    dangerous.append({"gold_id": row["gold_id"], "got": got,
+                                      "text": row["text"][:80]})
         by_script.setdefault(script_of(row["text"]), []).append(int(hit))
+    n_critical = sum(1 for r in rows if r["severity"].strip() == "critical")
     return {
         "n": len(rows),
         "correct": correct,
         "accuracy": round(correct / len(rows), 4) if rows else None,
+        "over_calls": over,
+        "under_calls": under,
+        "dangerous_misses": len(dangerous),
+        "n_gold_critical": n_critical,
+        "critical_recall": round((n_critical - len(dangerous)) / n_critical, 4) if n_critical else None,
         "by_script": {s: {"n": len(v), "correct": sum(v),
                           "accuracy": round(sum(v) / len(v), 4)}
                       for s, v in sorted(by_script.items())},
+        "dangerous_miss_detail": dangerous,
         "misses": misses,
     }
 
@@ -172,6 +194,9 @@ def main() -> None:
         sev, ded = section["severity"], section["dedup"]
         print(f"\n=== {key}  ({section['n_complaints']} complaints)")
         print(f"  severity accuracy : {sev['accuracy']}  ({sev['correct']}/{sev['n']})")
+        print(f"      over-called {sev['over_calls']}  under-called {sev['under_calls']}  "
+              f"DANGEROUS misses {sev['dangerous_misses']}/{sev['n_gold_critical']} gold-critical "
+              f"(critical recall {sev['critical_recall']})")
         for script, s in sev["by_script"].items():
             print(f"      {script:11}     {s['accuracy']}  ({s['correct']}/{s['n']})")
         print(f"  dedup pairs       : {ded['n_pairs']} ({ded['n_duplicate_pairs']} duplicates)")

@@ -8,6 +8,11 @@
       "n": 22,
       "correct": 8,
       "accuracy": 0.3636,
+      "over_calls": 5,
+      "under_calls": 9,
+      "dangerous_misses": 6,
+      "n_gold_critical": 8,
+      "critical_recall": 0.25,
       "by_script": {
         "devanagari": {
           "n": 2,
@@ -20,6 +25,38 @@
           "accuracy": 0.35
         }
       },
+      "dangerous_miss_detail": [
+        {
+          "gold_id": "G003",
+          "got": "moderate",
+          "text": "D mart baner ke samne bohot bada pothole hai 2 log gir gaye kal. please fix imme"
+        },
+        {
+          "gold_id": "G017",
+          "got": "moderate",
+          "text": "NCC HQ SB road pe kachra jala rahe hai. Dhua hi dhua hai."
+        },
+        {
+          "gold_id": "G018",
+          "got": "moderate",
+          "text": "Sutardara main road tap water is muddy and smells like sewage"
+        },
+        {
+          "gold_id": "G033",
+          "got": "cosmetic",
+          "text": "live wire on footpath near viman nagar symbiosys"
+        },
+        {
+          "gold_id": "G049",
+          "got": "cosmetic",
+          "text": "आमच्या इथे काल रात्री एक अजोबा अजब घडले कारण संपूर्ण लॅनमध्ये वीज गेली होती."
+        },
+        {
+          "gold_id": "G061",
+          "got": "moderate",
+          "text": "Raat ke samay MNGL gas line ka khadda khula aur bina kisi marking ke chhod diya "
+        }
+      ],
       "misses": [
         {
           "gold_id": "G003",
@@ -377,6 +414,11 @@
       "n": 64,
       "correct": 29,
       "accuracy": 0.4531,
+      "over_calls": 13,
+      "under_calls": 22,
+      "dangerous_misses": 13,
+      "n_gold_critical": 19,
+      "critical_recall": 0.3158,
       "by_script": {
         "devanagari": {
           "n": 9,
@@ -389,6 +431,73 @@
           "accuracy": 0.4545
         }
       },
+      "dangerous_miss_detail": [
+        {
+          "gold_id": "G003",
+          "got": "moderate",
+          "text": "D mart baner ke samne bohot bada pothole hai 2 log gir gaye kal. please fix imme"
+        },
+        {
+          "gold_id": "G017",
+          "got": "moderate",
+          "text": "NCC HQ SB road pe kachra jala rahe hai. Dhua hi dhua hai."
+        },
+        {
+          "gold_id": "G018",
+          "got": "moderate",
+          "text": "Sutardara main road tap water is muddy and smells like sewage"
+        },
+        {
+          "gold_id": "G022",
+          "got": "moderate",
+          "text": "lohegaon sai ganesh park light pole is broken wires hanging"
+        },
+        {
+          "gold_id": "G033",
+          "got": "cosmetic",
+          "text": "live wire on footpath near viman nagar symbiosys"
+        },
+        {
+          "gold_id": "G048",
+          "got": "cosmetic",
+          "text": "ek bulb off reh jata hai mere ghar ke samne wale sadak pe, jo raat ke time pe ka"
+        },
+        {
+          "gold_id": "G049",
+          "got": "cosmetic",
+          "text": "आमच्या इथे काल रात्री एक अजोबा अजब घडले कारण संपूर्ण लॅनमध्ये वीज गेली होती."
+        },
+        {
+          "gold_id": "G055",
+          "got": "moderate",
+          "text": "Deep pothole caused a two-wheeler to skid at night, rider got hurt"
+        },
+        {
+          "gold_id": "G056",
+          "got": "cosmetic",
+          "text": "saare footpath pe stalls lage hue hai jis wajeh se logo ko sadak pe chalna pad r"
+        },
+        {
+          "gold_id": "G060",
+          "got": "cosmetic",
+          "text": "घरासमोरील कन्स्ट्रक्शन साईटमुळे रस्त्यावर वाळू आणि सिमेंट टाकून ठेवले आहे, गेल्य"
+        },
+        {
+          "gold_id": "G061",
+          "got": "moderate",
+          "text": "Raat ke samay MNGL gas line ka khadda khula aur bina kisi marking ke chhod diya "
+        },
+        {
+          "gold_id": "G062",
+          "got": "moderate",
+          "text": "Hamare society ke back gate ke vaha logo ne dumping spot create karke rakha hai "
+        },
+        {
+          "gold_id": "G063",
+          "got": "moderate",
+          "text": "lane ke speed breaker ke markings chale gaye hai, samne agar speed breaker aa ra"
+        }
+      ],
       "misses": [
         {
           "gold_id": "G003",

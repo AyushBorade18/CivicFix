@@ -108,3 +108,31 @@ def test_load_gold_reads_the_real_sheet():
     rows = load_gold()
     assert len(rows) == 64
     assert {r["split"] for r in rows} == {"seed", "test"}
+
+
+def test_severity_eval_separates_dangerous_misses_from_harmless_ones():
+    rows = [
+        # gold critical, scored lower -> dangerous
+        _row("G1", category="streetlight", severity="critical", text="bulb is dim"),
+        # gold cosmetic, scored higher -> over-call, not dangerous
+        _row("G2", category="drainage_sewage", severity="cosmetic", text="drain needs a look"),
+    ]
+    result = severity_eval(rows)
+    assert result["under_calls"] == 1
+    assert result["over_calls"] == 1
+    assert result["dangerous_misses"] == 1
+    assert result["dangerous_miss_detail"][0]["gold_id"] == "G1"
+
+
+def test_critical_recall_is_reported_against_gold_criticals_only():
+    rows = [
+        # "electrocution" is a long-standing keyword, so this one is caught -
+        # the test is about the metric, not about which words are in the list.
+        _row("G1", category="streetlight", severity="critical",
+             text="exposed wires, electrocution risk"),
+        _row("G2", category="streetlight", severity="critical", text="bulb is dim"),
+        _row("G3", category="footpath", severity="cosmetic", text="slightly worn paint"),
+    ]
+    result = severity_eval(rows)
+    assert result["n_gold_critical"] == 2
+    assert result["critical_recall"] == 0.5  # one of the two criticals caught
