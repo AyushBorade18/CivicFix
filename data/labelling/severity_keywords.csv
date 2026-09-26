@@ -16,6 +16,22 @@ exposed wires,en,latin,critical,all,Exposed wires hanging from the pole
 drowned,en,latin,critical,all,A stray dog drowned in the water filled pit
 died,en,latin,critical,all,A rider died in this stretch last month
 death,en,latin,critical,all,This junction has already caused one death
+live wire,en,latin,critical,all,Live wire on the footpath near the college
+live wires,en,latin,critical,all,Live wires lying in the water after rain
+wires hanging,en,latin,critical,all,"Light pole is broken, wires hanging low"
+wire hanging,en,latin,critical,all,Loose wire hanging over the footpath
+burning garbage,en,latin,critical,all,Burning garbage right next to the houses
+garbage burning,en,latin,critical,all,Garbage burning every evening here
+smoke everywhere,en,latin,critical,all,Smoke everywhere from the waste fire
+muddy water,en,latin,critical,all,Muddy water coming from the tap
+water is muddy,en,latin,critical,all,Tap water is muddy since morning
+smells like sewage,en,latin,critical,all,Tap water smells like sewage
+sewage smell,en,latin,critical,all,Strong sewage smell from the drinking line
+got hurt,en,latin,critical,all,A rider got hurt in this pothole
+skid,en,latin,critical,all,Deep pothole made a two wheeler skid at night
+open pit,en,latin,critical,all,An open pit left on the road overnight
+gas leak,en,latin,critical,all,Gas leak smell near the pipeline trench
+dog bite,en,latin,critical,all,A dog bite was reported at this corner
 उघडे मॅनहोल,mr,devanagari,critical,all,शाळेजवळ उघडे मॅनहोल आहे
 उघड्या तारा,mr,devanagari,critical,all,खांबाला उघड्या तारा आहेत
 अपघात,mr,devanagari,critical,all,येथे दुचाकीचा अपघात झाला
@@ -30,6 +46,14 @@ death,en,latin,critical,all,This junction has already caused one death
 दूषित पाणी,mr,devanagari,critical,all,नळाला दूषित पाणी येत आहे
 मृत्यू,mr,devanagari,critical,all,या अपघातात एकाचा मृत्यू झाला
 बुडाले,mr,devanagari,critical,all,पाण्याने भरलेल्या खड्ड्यात जनावर बुडाले
+जिवंत तार,mr,devanagari,critical,all,फुटपाथवर जिवंत तार पडली आहे
+तारा लटकत,mr,devanagari,critical,all,खांबावरून तारा लटकत आहेत
+कचरा जाळत,mr,devanagari,critical,all,येथे रोज कचरा जाळत आहेत
+धूर,mr,devanagari,critical,all,कचऱ्याच्या आगीमुळे सगळीकडे धूर पसरला आहे
+गढूळ पाणी,mr,devanagari,critical,all,नळाला गढूळ पाणी येत आहे
+उघडा खड्डा,mr,devanagari,critical,all,रस्त्यावर उघडा खड्डा आहे
+गॅस गळती,mr,devanagari,critical,all,पाइपलाइनजवळ गॅस गळती आहे
+कुत्रा चावला,mr,devanagari,critical,all,येथे एका मुलाला कुत्रा चावला
 खुला मैनहोल,hi,devanagari,critical,all,स्कूल के पास खुला मैनहोल है
 खुले तार,hi,devanagari,critical,all,खंभे पर खुले तार लटक रहे हैं
 दुर्घटना,hi,devanagari,critical,all,यहाँ कल एक दुर्घटना हुई
@@ -43,6 +67,11 @@ death,en,latin,critical,all,This junction has already caused one death
 आग का खतरा,hi,devanagari,critical,all,घरों के पास आग का खतरा है
 दूषित पानी,hi,devanagari,critical,all,नल से दूषित पानी आ रहा है
 मौत,hi,devanagari,critical,all,इस हादसे में एक की मौत हुई
+जिंदा तार,hi,devanagari,critical,all,फुटपाथ पर जिंदा तार पड़ी है
+तार लटक,hi,devanagari,critical,all,खंभे से तार लटक रहे हैं
+कचरा जला,hi,devanagari,critical,all,यहाँ रोज कचरा जला रहे हैं
+खुला गड्ढा,hi,devanagari,critical,all,सड़क पर खुला गड्ढा है
+गैस रिसाव,hi,devanagari,critical,all,पाइपलाइन में गैस रिसाव है
 ughade manhole,mr-rom,latin,critical,all,shalejaval ughade manhole aahe
 ughda manhole,mr-rom,latin,critical,all,rastyavar ughda manhole aahe
 ughdya tara,mr-rom,latin,critical,all,khambala ughdya tara aahet
@@ -56,11 +85,23 @@ current cha dhakka,mr-rom,latin,critical,all,"tar ughdi aahe, current cha dhakka
 aag lagli,mr-rom,latin,critical,all,kachryala aag lagli
 dushit pani,mr-rom,latin,critical,all,nalala dushit pani yet aahe
 mrutyu,mr-rom,latin,critical,all,ya apghatat ekacha mrutyu zala
+tar latakat,mr-rom,latin,critical,all,khambavarun tar latakat aahet
+khula khadda,mr-rom,latin,critical,all,rastyavar khula khadda aahe
+kutra chavla,mr-rom,latin,critical,all,ekhya mulala kutra chavla
+gas galti,mr-rom,latin,critical,all,pipeline javal gas galti aahe
 durghatna,hi-rom,latin,critical,all,yahan kal durghatna hui
 haadsa,hi-rom,latin,critical,all,gadhe ke karan haadsa ho gaya
 ghayal,hi-rom,latin,critical,all,ek bike sawar ghayal ho gaya
 bijli ka jhatka,hi-rom,latin,critical,all,khambe se bijli ka jhatka lagta hai
 khule taar,hi-rom,latin,critical,all,khambe par khule taar latak rahe hain
+taar latak,hi-rom,latin,critical,all,khambe se taar latak rahe hain
+kachra jala,hi-rom,latin,critical,all,yahan roz kachra jala rahe hain
+jala rahe,hi-rom,latin,critical,all,"kachra jala rahe hai, dhua hi dhua"
+dhua,hi-rom,latin,critical,all,dhua hi dhua hai poore ilake mein
+gir gaye,hi-rom,latin,critical,all,bade gadhe mein do log gir gaye kal
+gir gaya,hi-rom,latin,critical,all,ek bachcha khule nale mein gir gaya
+khadda khula,hi-rom,latin,critical,all,gas line ka khadda khula chhod diya
+bina marking,hi-rom,latin,critical,all,khadda khula aur bina marking ke hai
 overflow,en,latin,moderate,all,The drain chamber overflows every morning
 blocked,en,latin,moderate,all,The storm water drain is blocked
 not working,en,latin,moderate,all,The streetlight is not working
@@ -77,6 +118,20 @@ waterlogged,en,latin,moderate,all,The road is waterlogged after every shower
 water logging,en,latin,moderate,all,Water logging near the bus stop
 pothole,en,latin,moderate,all,A deep pothole right outside the gate
 out of order,en,latin,moderate,all,The signal has been out of order for a week
+no light,en,latin,moderate,all,No light on this stretch for a week
+very dark,en,latin,moderate,all,"Street light is off, very dark at night"
+dark at night,en,latin,moderate,all,The lane is dark at night
+light is off,en,latin,moderate,all,The pole light is off since Monday
+slab missing,en,latin,moderate,all,Footpath slab missing near the bus stand
+debris,en,latin,moderate,all,Construction debris left on half the road
+rubble,en,latin,moderate,all,Rubble dumped at the road edge
+stray dogs,en,latin,moderate,all,Stray dogs chasing morning walkers
+stray dog,en,latin,moderate,all,Stray dog pack near the park entrance
+encroachment,en,latin,moderate,all,Encroachment on the footpath by stalls
+loud noise,en,latin,moderate,all,Loud noise from the site early morning
+fallen tree,en,latin,moderate,all,Fallen tree blocking the society gate
+tree fell,en,latin,moderate,all,A tree fell across the footpath
+branch fell,en,latin,moderate,all,A dry branch fell over the footpath
 तुंबले,mr,devanagari,moderate,all,गटार तुंबले आहे
 तुंबला,mr,devanagari,moderate,all,पावसाळी नाला तुंबला आहे
 बंद आहे,mr,devanagari,moderate,all,पथदिवा बंद आहे
@@ -94,6 +149,13 @@ out of order,en,latin,moderate,all,The signal has been out of order for a week
 दुर्गंधी,mr,devanagari,moderate,all,परिसरात दुर्गंधी पसरली आहे
 ओबडधोबड,mr,devanagari,moderate,all,फुटपाथ ओबडधोबड आहे
 वाहत आहे,mr,devanagari,moderate,all,सांडपाणी रस्त्यावर वाहत आहे
+अंधार,mr,devanagari,moderate,all,संपूर्ण गल्लीत अंधार आहे
+वीज गेली,mr,devanagari,moderate,all,काल रात्री संपूर्ण लेनमध्ये वीज गेली
+भटकी कुत्री,mr,devanagari,moderate,all,परिसरात भटकी कुत्री खूप आहेत
+राडारोडा,mr,devanagari,moderate,all,रस्त्याच्या कडेला राडारोडा टाकला आहे
+अतिक्रमण,mr,devanagari,moderate,all,फुटपाथवर अतिक्रमण झाले आहे
+झाड पडले,mr,devanagari,moderate,all,सोसायटीच्या गेटसमोर झाड पडले आहे
+फांदी पडली,mr,devanagari,moderate,all,फुटपाथवर वाळलेली फांदी पडली आहे
 जाम,hi,devanagari,moderate,all,नाली जाम हो गई है
 बंद है,hi,devanagari,moderate,all,स्ट्रीट लाइट बंद है
 टूट गई,hi,devanagari,moderate,all,फुटपाथ की टाइलें टूट गई हैं
@@ -107,6 +169,10 @@ out of order,en,latin,moderate,all,The signal has been out of order for a week
 बदबू,hi,devanagari,moderate,all,इलाके में बदबू फैली है
 भर गया,hi,devanagari,moderate,all,चेंबर पानी से भर गया है
 नहीं आ रहा,hi,devanagari,moderate,all,नल में पानी नहीं आ रहा
+अंधेरा,hi,devanagari,moderate,all,पूरी गली में अंधेरा है
+आवारा कुत्ते,hi,devanagari,moderate,all,इलाके में आवारा कुत्ते बहुत हैं
+मलबा,hi,devanagari,moderate,all,सड़क किनारे मलबा फेंका गया है
+पेड गिर,hi,devanagari,moderate,all,गेट के सामने पेड गिर गया है
 tumble aahe,mr-rom,latin,moderate,all,gatar tumble aahe
 tumbla,mr-rom,latin,moderate,all,pavsali nala tumbla aahe
 band aahe,mr-rom,latin,moderate,all,pathdiva band aahe
@@ -118,8 +184,16 @@ khadda,mr-rom,latin,moderate,all,ithe khol khadda aahe
 khadde,mr-rom,latin,moderate,all,rastyavar mothe khadde aahet
 kachra sachla,mr-rom,latin,moderate,all,koparyavar kachra sachla aahe
 durgandhi,mr-rom,latin,moderate,all,parisarat durgandhi pasarli aahe
+andhar,mr-rom,latin,moderate,all,poorya lane madhe andhar aahe
+bhatki kutri,mr-rom,latin,moderate,all,parisarat bhatki kutri khup aahet
+radaroda,mr-rom,latin,moderate,all,rastyachya kadela radaroda taakla aahe
+atikraman,mr-rom,latin,moderate,all,footpath var atikraman zale aahe
 band hai,hi-rom,latin,moderate,all,street light band hai
 toot gaya,hi-rom,latin,moderate,all,pipe toot gaya hai
 gadhe,hi-rom,latin,moderate,all,sadak par bade gadhe hain
 kachra jama,hi-rom,latin,moderate,all,kone par kachra jama hai
 badbu,hi-rom,latin,moderate,all,ilake mein badbu faili hai
+andhera,hi-rom,latin,moderate,all,poori gali mein andhera hai
+awara kutte,hi-rom,latin,moderate,all,ilake mein awara kutte bohot hain
+malba,hi-rom,latin,moderate,all,construction ka malba phenka gaya hai
+daal gir,hi-rom,latin,moderate,all,sookhi hui ped ki daal gir gayi

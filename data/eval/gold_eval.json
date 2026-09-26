@@ -6,13 +6,13 @@
     "n_complaints": 22,
     "severity": {
       "n": 22,
-      "correct": 8,
-      "accuracy": 0.3636,
-      "over_calls": 5,
-      "under_calls": 9,
-      "dangerous_misses": 6,
+      "correct": 16,
+      "accuracy": 0.7273,
+      "over_calls": 4,
+      "under_calls": 2,
+      "dangerous_misses": 2,
       "n_gold_critical": 8,
-      "critical_recall": 0.25,
+      "critical_recall": 0.75,
       "by_script": {
         "devanagari": {
           "n": 2,
@@ -21,45 +21,25 @@
         },
         "latin": {
           "n": 20,
-          "correct": 7,
-          "accuracy": 0.35
+          "correct": 15,
+          "accuracy": 0.75
         }
       },
       "dangerous_miss_detail": [
         {
-          "gold_id": "G003",
+          "gold_id": "G001",
           "got": "moderate",
-          "text": "D mart baner ke samne bohot bada pothole hai 2 log gir gaye kal. please fix imme"
-        },
-        {
-          "gold_id": "G017",
-          "got": "moderate",
-          "text": "NCC HQ SB road pe kachra jala rahe hai. Dhua hi dhua hai."
-        },
-        {
-          "gold_id": "G018",
-          "got": "moderate",
-          "text": "Sutardara main road tap water is muddy and smells like sewage"
-        },
-        {
-          "gold_id": "G033",
-          "got": "cosmetic",
-          "text": "live wire on footpath near viman nagar symbiosys"
+          "text": "Drainage chamber near Kelewadi bus stop overflowing since 4 days, whole lane sme"
         },
         {
           "gold_id": "G049",
-          "got": "cosmetic",
-          "text": "आमच्या इथे काल रात्री एक अजोबा अजब घडले कारण संपूर्ण लॅनमध्ये वीज गेली होती."
-        },
-        {
-          "gold_id": "G061",
           "got": "moderate",
-          "text": "Raat ke samay MNGL gas line ka khadda khula aur bina kisi marking ke chhod diya "
+          "text": "आमच्या इथे काल रात्री एक अजोबा अजब घडले कारण संपूर्ण लॅनमध्ये वीज गेली होती."
         }
       ],
       "misses": [
         {
-          "gold_id": "G003",
+          "gold_id": "G001",
           "expected": "critical",
           "got": "moderate"
         },
@@ -69,34 +49,9 @@
           "got": "moderate"
         },
         {
-          "gold_id": "G016",
-          "expected": "moderate",
-          "got": "critical"
-        },
-        {
-          "gold_id": "G017",
-          "expected": "critical",
-          "got": "moderate"
-        },
-        {
-          "gold_id": "G018",
-          "expected": "critical",
-          "got": "moderate"
-        },
-        {
           "gold_id": "G019",
           "expected": "cosmetic",
           "got": "moderate"
-        },
-        {
-          "gold_id": "G020",
-          "expected": "moderate",
-          "got": "cosmetic"
-        },
-        {
-          "gold_id": "G033",
-          "expected": "critical",
-          "got": "cosmetic"
         },
         {
           "gold_id": "G034",
@@ -106,26 +61,11 @@
         {
           "gold_id": "G049",
           "expected": "critical",
-          "got": "cosmetic"
-        },
-        {
-          "gold_id": "G050",
-          "expected": "moderate",
-          "got": "cosmetic"
-        },
-        {
-          "gold_id": "G052",
-          "expected": "moderate",
-          "got": "cosmetic"
+          "got": "moderate"
         },
         {
           "gold_id": "G057",
           "expected": "cosmetic",
-          "got": "critical"
-        },
-        {
-          "gold_id": "G061",
-          "expected": "critical",
           "got": "moderate"
         }
       ]
@@ -412,13 +352,13 @@
     "n_complaints": 64,
     "severity": {
       "n": 64,
-      "correct": 29,
-      "accuracy": 0.4531,
-      "over_calls": 13,
-      "under_calls": 22,
-      "dangerous_misses": 13,
+      "correct": 42,
+      "accuracy": 0.6562,
+      "over_calls": 11,
+      "under_calls": 11,
+      "dangerous_misses": 8,
       "n_gold_critical": 19,
-      "critical_recall": 0.3158,
+      "critical_recall": 0.5789,
       "by_script": {
         "devanagari": {
           "n": 9,
@@ -427,35 +367,25 @@
         },
         "latin": {
           "n": 55,
-          "correct": 25,
-          "accuracy": 0.4545
+          "correct": 38,
+          "accuracy": 0.6909
         }
       },
       "dangerous_miss_detail": [
         {
-          "gold_id": "G003",
+          "gold_id": "G001",
           "got": "moderate",
-          "text": "D mart baner ke samne bohot bada pothole hai 2 log gir gaye kal. please fix imme"
+          "text": "Drainage chamber near Kelewadi bus stop overflowing since 4 days, whole lane sme"
         },
         {
-          "gold_id": "G017",
+          "gold_id": "G029",
           "got": "moderate",
-          "text": "NCC HQ SB road pe kachra jala rahe hai. Dhua hi dhua hai."
+          "text": "kishkindhanagar drainage overflowing into houses please help"
         },
         {
-          "gold_id": "G018",
+          "gold_id": "G042",
           "got": "moderate",
-          "text": "Sutardara main road tap water is muddy and smells like sewage"
-        },
-        {
-          "gold_id": "G022",
-          "got": "moderate",
-          "text": "lohegaon sai ganesh park light pole is broken wires hanging"
-        },
-        {
-          "gold_id": "G033",
-          "got": "cosmetic",
-          "text": "live wire on footpath near viman nagar symbiosys"
+          "text": "wakdewadi subway flooded knee deep water"
         },
         {
           "gold_id": "G048",
@@ -464,13 +394,8 @@
         },
         {
           "gold_id": "G049",
-          "got": "cosmetic",
-          "text": "आमच्या इथे काल रात्री एक अजोबा अजब घडले कारण संपूर्ण लॅनमध्ये वीज गेली होती."
-        },
-        {
-          "gold_id": "G055",
           "got": "moderate",
-          "text": "Deep pothole caused a two-wheeler to skid at night, rider got hurt"
+          "text": "आमच्या इथे काल रात्री एक अजोबा अजब घडले कारण संपूर्ण लॅनमध्ये वीज गेली होती."
         },
         {
           "gold_id": "G056",
@@ -483,24 +408,14 @@
           "text": "घरासमोरील कन्स्ट्रक्शन साईटमुळे रस्त्यावर वाळू आणि सिमेंट टाकून ठेवले आहे, गेल्य"
         },
         {
-          "gold_id": "G061",
-          "got": "moderate",
-          "text": "Raat ke samay MNGL gas line ka khadda khula aur bina kisi marking ke chhod diya "
-        },
-        {
           "gold_id": "G062",
           "got": "moderate",
           "text": "Hamare society ke back gate ke vaha logo ne dumping spot create karke rakha hai "
-        },
-        {
-          "gold_id": "G063",
-          "got": "moderate",
-          "text": "lane ke speed breaker ke markings chale gaye hai, samne agar speed breaker aa ra"
         }
       ],
       "misses": [
         {
-          "gold_id": "G003",
+          "gold_id": "G001",
           "expected": "critical",
           "got": "moderate"
         },
@@ -510,28 +425,13 @@
           "got": "moderate"
         },
         {
-          "gold_id": "G007",
-          "expected": "moderate",
-          "got": "cosmetic"
-        },
-        {
           "gold_id": "G011",
           "expected": "cosmetic",
           "got": "moderate"
         },
         {
-          "gold_id": "G016",
-          "expected": "moderate",
-          "got": "critical"
-        },
-        {
-          "gold_id": "G017",
-          "expected": "critical",
-          "got": "moderate"
-        },
-        {
-          "gold_id": "G018",
-          "expected": "critical",
+          "gold_id": "G013",
+          "expected": "cosmetic",
           "got": "moderate"
         },
         {
@@ -540,34 +440,14 @@
           "got": "moderate"
         },
         {
-          "gold_id": "G020",
-          "expected": "moderate",
-          "got": "cosmetic"
-        },
-        {
-          "gold_id": "G022",
+          "gold_id": "G029",
           "expected": "critical",
           "got": "moderate"
-        },
-        {
-          "gold_id": "G023",
-          "expected": "moderate",
-          "got": "critical"
-        },
-        {
-          "gold_id": "G026",
-          "expected": "moderate",
-          "got": "cosmetic"
         },
         {
           "gold_id": "G030",
           "expected": "cosmetic",
           "got": "moderate"
-        },
-        {
-          "gold_id": "G033",
-          "expected": "critical",
-          "got": "cosmetic"
         },
         {
           "gold_id": "G034",
@@ -580,14 +460,9 @@
           "got": "moderate"
         },
         {
-          "gold_id": "G038",
-          "expected": "moderate",
-          "got": "critical"
-        },
-        {
-          "gold_id": "G043",
-          "expected": "moderate",
-          "got": "cosmetic"
+          "gold_id": "G042",
+          "expected": "critical",
+          "got": "moderate"
         },
         {
           "gold_id": "G044",
@@ -612,27 +487,12 @@
         {
           "gold_id": "G049",
           "expected": "critical",
-          "got": "cosmetic"
-        },
-        {
-          "gold_id": "G050",
-          "expected": "moderate",
-          "got": "cosmetic"
+          "got": "moderate"
         },
         {
           "gold_id": "G051",
           "expected": "moderate",
           "got": "cosmetic"
-        },
-        {
-          "gold_id": "G052",
-          "expected": "moderate",
-          "got": "cosmetic"
-        },
-        {
-          "gold_id": "G055",
-          "expected": "critical",
-          "got": "moderate"
         },
         {
           "gold_id": "G056",
@@ -642,7 +502,7 @@
         {
           "gold_id": "G057",
           "expected": "cosmetic",
-          "got": "critical"
+          "got": "moderate"
         },
         {
           "gold_id": "G058",
@@ -655,17 +515,7 @@
           "got": "cosmetic"
         },
         {
-          "gold_id": "G061",
-          "expected": "critical",
-          "got": "moderate"
-        },
-        {
           "gold_id": "G062",
-          "expected": "critical",
-          "got": "moderate"
-        },
-        {
-          "gold_id": "G063",
           "expected": "critical",
           "got": "moderate"
         },
@@ -951,6 +801,183 @@
           "f1": null
         }
       ]
+    }
+  },
+  "severity_not_tuned_on": {
+    "note": "rows never inspected while choosing severity keywords; the honest held-out severity score",
+    "n_excluded": 14,
+    "n": 50,
+    "correct": 29,
+    "accuracy": 0.58,
+    "over_calls": 11,
+    "under_calls": 10,
+    "dangerous_misses": 8,
+    "n_gold_critical": 12,
+    "critical_recall": 0.3333,
+    "by_script": {
+      "devanagari": {
+        "n": 9,
+        "correct": 4,
+        "accuracy": 0.4444
+      },
+      "latin": {
+        "n": 41,
+        "correct": 25,
+        "accuracy": 0.6098
+      }
+    },
+    "dangerous_miss_detail": [
+      {
+        "gold_id": "G001",
+        "got": "moderate",
+        "text": "Drainage chamber near Kelewadi bus stop overflowing since 4 days, whole lane sme"
+      },
+      {
+        "gold_id": "G029",
+        "got": "moderate",
+        "text": "kishkindhanagar drainage overflowing into houses please help"
+      },
+      {
+        "gold_id": "G042",
+        "got": "moderate",
+        "text": "wakdewadi subway flooded knee deep water"
+      },
+      {
+        "gold_id": "G048",
+        "got": "cosmetic",
+        "text": "ek bulb off reh jata hai mere ghar ke samne wale sadak pe, jo raat ke time pe ka"
+      },
+      {
+        "gold_id": "G049",
+        "got": "moderate",
+        "text": "आमच्या इथे काल रात्री एक अजोबा अजब घडले कारण संपूर्ण लॅनमध्ये वीज गेली होती."
+      },
+      {
+        "gold_id": "G056",
+        "got": "cosmetic",
+        "text": "saare footpath pe stalls lage hue hai jis wajeh se logo ko sadak pe chalna pad r"
+      },
+      {
+        "gold_id": "G060",
+        "got": "cosmetic",
+        "text": "घरासमोरील कन्स्ट्रक्शन साईटमुळे रस्त्यावर वाळू आणि सिमेंट टाकून ठेवले आहे, गेल्य"
+      },
+      {
+        "gold_id": "G062",
+        "got": "moderate",
+        "text": "Hamare society ke back gate ke vaha logo ne dumping spot create karke rakha hai "
+      }
+    ],
+    "misses": [
+      {
+        "gold_id": "G001",
+        "expected": "critical",
+        "got": "moderate"
+      },
+      {
+        "gold_id": "G005",
+        "expected": "cosmetic",
+        "got": "moderate"
+      },
+      {
+        "gold_id": "G011",
+        "expected": "cosmetic",
+        "got": "moderate"
+      },
+      {
+        "gold_id": "G013",
+        "expected": "cosmetic",
+        "got": "moderate"
+      },
+      {
+        "gold_id": "G019",
+        "expected": "cosmetic",
+        "got": "moderate"
+      },
+      {
+        "gold_id": "G029",
+        "expected": "critical",
+        "got": "moderate"
+      },
+      {
+        "gold_id": "G030",
+        "expected": "cosmetic",
+        "got": "moderate"
+      },
+      {
+        "gold_id": "G034",
+        "expected": "cosmetic",
+        "got": "moderate"
+      },
+      {
+        "gold_id": "G037",
+        "expected": "cosmetic",
+        "got": "moderate"
+      },
+      {
+        "gold_id": "G042",
+        "expected": "critical",
+        "got": "moderate"
+      },
+      {
+        "gold_id": "G044",
+        "expected": "cosmetic",
+        "got": "moderate"
+      },
+      {
+        "gold_id": "G045",
+        "expected": "cosmetic",
+        "got": "moderate"
+      },
+      {
+        "gold_id": "G047",
+        "expected": "moderate",
+        "got": "cosmetic"
+      },
+      {
+        "gold_id": "G048",
+        "expected": "critical",
+        "got": "cosmetic"
+      },
+      {
+        "gold_id": "G049",
+        "expected": "critical",
+        "got": "moderate"
+      },
+      {
+        "gold_id": "G056",
+        "expected": "critical",
+        "got": "cosmetic"
+      },
+      {
+        "gold_id": "G057",
+        "expected": "cosmetic",
+        "got": "moderate"
+      },
+      {
+        "gold_id": "G058",
+        "expected": "cosmetic",
+        "got": "moderate"
+      },
+      {
+        "gold_id": "G060",
+        "expected": "critical",
+        "got": "cosmetic"
+      },
+      {
+        "gold_id": "G062",
+        "expected": "critical",
+        "got": "moderate"
+      },
+      {
+        "gold_id": "G064",
+        "expected": "moderate",
+        "got": "cosmetic"
+      }
+    ],
+    "majority_class_baseline": {
+      "band": "moderate",
+      "accuracy": 0.52
     }
   }
 }

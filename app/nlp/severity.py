@@ -8,7 +8,12 @@ BAND_ORDER = ("cosmetic", "moderate", "critical")
 # sewage near water is never "cosmetic").
 CATEGORY_SEVERITY_PRIOR = {
     "pothole_road": "moderate",
-    "drainage_sewage": "critical",
+    # Was "critical", which made EVERY drainage complaint top-band regardless of
+    # wording - 4 of the 33 gold-set misses were exactly that, humans calling
+    # routine gutter overflow moderate. The genuine hazards in this category
+    # (sewage near a water line, contaminated water, an open chamber) all have
+    # keywords that escalate them, so the floor does not need to do it.
+    "drainage_sewage": "moderate",
     "water_supply": "moderate",
     "streetlight": "cosmetic",
     "garbage_waste": "moderate",

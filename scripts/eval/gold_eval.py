@@ -42,6 +42,22 @@ GOLD_CSV = "data/labelling/lo2_gold_complaints.csv"
 OUTPUT_JSON = Path("data/eval/gold_eval.json")
 SWEEP = [round(0.40 + 0.025 * i, 3) for i in range(25)]  # 0.400 .. 0.975
 
+# Gold rows whose text was READ while choosing severity keywords, so they can
+# never serve as a held-out severity score again. Recorded rather than
+# remembered, because the mistake is invisible otherwise: 8 of these sit in the
+# `test` split, which made the "clean test split" severity number look like a
+# held-out result when it was partly fitted to.
+#
+# The seed/test split is the right boundary for anything touching the ENCODER
+# (dedup), since the 42 seed rows shaped the synthetic fine-tuning corpus.
+# severity() never touches the encoder - it is keywords plus priors - so for
+# severity the boundary that matters is this list. Append to it whenever a row
+# is read while tuning.
+TUNED_ON_GOLD_IDS = {
+    "G003", "G007", "G017", "G018", "G020", "G022", "G026",
+    "G033", "G043", "G050", "G051", "G052", "G055", "G061",
+}
+
 
 def load_gold(path: str = GOLD_CSV) -> list[dict]:
     with open(path, newline="", encoding="utf-8") as f:
@@ -176,15 +192,39 @@ def _evaluate(rows: list[dict], label: str) -> dict:
     }
 
 
+def _majority_baseline(rows: list[dict]) -> dict:
+    """Always answering the most common band. Severity has to beat this to be
+    adding any information at all - and before this commit it did not."""
+    counts: dict[str, int] = {}
+    for r in rows:
+        band = r["severity"].strip()
+        counts[band] = counts.get(band, 0) + 1
+    if not counts:
+        return {"band": None, "accuracy": None}
+    band, n = max(counts.items(), key=lambda kv: kv[1])
+    return {"band": band, "accuracy": round(n / len(rows), 4)}
+
+
 def main() -> None:
     rows = load_gold()
     test_rows = [r for r in rows if r["split"] == "test"]
+
+    untouched = [r for r in rows if r["gold_id"] not in TUNED_ON_GOLD_IDS]
 
     report = {
         "gold_csv": GOLD_CSV,
         "current_cosine_threshold": COSINE_THRESHOLD,
         "clean_test_split": _evaluate(test_rows, "test"),
         "all_rows_leaky": _evaluate(rows, "all (includes 42 seed rows the encoder was tuned around)"),
+        # The only defensible held-out severity number: rows never read while
+        # choosing keywords. Dedup is omitted here - its holdout is seed/test.
+        "severity_not_tuned_on": {
+            "note": "rows never inspected while choosing severity keywords; "
+                    "the honest held-out severity score",
+            "n_excluded": len(rows) - len(untouched),
+            **severity_eval(untouched),
+            "majority_class_baseline": _majority_baseline(untouched),
+        },
     }
     OUTPUT_JSON.parent.mkdir(parents=True, exist_ok=True)
     OUTPUT_JSON.write_text(json.dumps(report, indent=2, ensure_ascii=False))
@@ -207,6 +247,16 @@ def main() -> None:
         if best:
             print(f"      best f1 at {best['threshold']:<5} precision {best['precision']}  "
                   f"recall {best['recall']}  f1 {best['f1']}")
+    held = report["severity_not_tuned_on"]
+    base = held["majority_class_baseline"]
+    print(f"\n=== severity, HELD OUT ({held['n']} rows never read while tuning; "
+          f"{held['n_excluded']} excluded)")
+    print(f"  accuracy          : {held['accuracy']}")
+    print(f"  always-'{base['band']}'   : {base['accuracy']}   <- must beat this")
+    print(f"  critical recall   : {held['critical_recall']}  "
+          f"({held['dangerous_misses']} dangerous misses of {held['n_gold_critical']})")
+    for script, st in held["by_script"].items():
+        print(f"      {script:11}   {st['accuracy']}  ({st['correct']}/{st['n']})")
     print(f"\nwrote {OUTPUT_JSON}")
 
 
