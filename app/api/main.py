@@ -1,13 +1,13 @@
 import json
+import re
 import uuid
 from datetime import datetime
 from pathlib import Path
 from typing import Optional
 
 import numpy as np
-from fastapi import Depends, FastAPI, File, HTTPException, Query, UploadFile
+from fastapi import Depends, FastAPI, File, HTTPException, Query, Response, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
 from psycopg.rows import dict_row
 
 from app.api.schemas import (
@@ -50,12 +50,17 @@ from app.nlp.embeddings import get_embedding_model as _get_embedding_model
 from app.nlp.language import detect_language
 from app.nlp.location import resolve_report_location
 from app.nlp.photo_severity import estimate_photo_severity
+from app.nlp.photo_validate import process_upload, read_photo, write_photo
 from app.nlp.severity import BAND_ORDER, severity
 from app.nlp.translate import translate_to_english
 
+# Gitignored, and deliberately not mounted as static files: photos are only
+# reachable through serve_photo, which decrypts and checks the DB first.
 UPLOAD_DIR = Path("data/uploads")
-ALLOWED_PHOTO_TYPES = {"image/jpeg": ".jpg", "image/png": ".png", "image/webp": ".webp"}
-MAX_PHOTO_BYTES = 5 * 1024 * 1024
+ALLOWED_PHOTO_TYPES = {"image/jpeg", "image/png", "image/webp"}
+# Phone camera JPEGs (12-48 MP) routinely exceed 5 MB; they are downscaled to
+# 2048 px before storage, so this limit only bounds the request.
+MAX_PHOTO_BYTES = 20 * 1024 * 1024
 
 app = FastAPI(title="CivicFix API")
 
@@ -71,9 +76,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Evidence photos only - never scored (hard rule: no photo severity model).
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
-app.mount("/uploads", StaticFiles(directory=UPLOAD_DIR), name="uploads")
 
 
 
@@ -412,7 +415,7 @@ def issue_detail(issue_id: int, db=Depends(get_db)):
         cur.execute(
             "SELECT id, raw_text, reported_at, category, category_conf, severity, location_phrase, "
             "geom_confidence, ward_id, is_synthetic, photo_url, language, translated_text, "
-            "photo_severity_score, photo_severity_band "
+            "photo_severity_score, photo_severity_band, photo_checks "
             "FROM reports WHERE issue_id = %s ORDER BY reported_at",
             (issue_id,),
         )
@@ -712,21 +715,63 @@ def _refresh_match_for_issue(conn, issue_id: int) -> Optional[dict]:
 
 
 @app.post("/api/uploads/photo", response_model=PhotoUploadResponse, status_code=201)
-async def upload_photo(file: UploadFile = File(...)):
-    """Evidence storage only - no photo severity model (hard rule 3). Returns
-    a photo_url to attach to a report via POST /api/reports; never analyzed
-    or scored here or anywhere else in the pipeline."""
-    ext = ALLOWED_PHOTO_TYPES.get(file.content_type)
-    if ext is None:
+async def upload_photo(file: UploadFile = File(...), db=Depends(get_db)):
+    """Evidence intake. Signals are read from the original bytes, then only a
+    re-encoded, metadata-free, upright JPEG is written (encrypted when
+    PHOTO_ENCRYPTION_KEY is set). Suspicious signals never reject the
+    upload; they are stored and shown to the human reviewer."""
+    if file.content_type not in ALLOWED_PHOTO_TYPES:
         raise HTTPException(status_code=400, detail=f"unsupported content type: {file.content_type}")
 
     body = await file.read()
     if len(body) > MAX_PHOTO_BYTES:
         raise HTTPException(status_code=400, detail=f"photo exceeds {MAX_PHOTO_BYTES // (1024 * 1024)}MB limit")
 
-    filename = f"{uuid.uuid4().hex}{ext}"
-    (UPLOAD_DIR / filename).write_bytes(body)
-    return PhotoUploadResponse(photo_url=f"/uploads/{filename}")
+    try:
+        clean, checks = process_upload(body, file.content_type)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc))
+    del body
+
+    filename = f"{uuid.uuid4().hex}.jpg"
+    checks["stored_encrypted"] = write_photo(UPLOAD_DIR / filename, clean)
+    with db.cursor() as cur:
+        cur.execute(
+            "INSERT INTO photo_uploads (filename, checks) VALUES (%s, %s::jsonb)",
+            (filename, json.dumps(checks)),
+        )
+    db.commit()
+    return PhotoUploadResponse(photo_url=f"/api/photos/{filename}", photo_checks=checks)
+
+
+PHOTO_FILENAME_RE = re.compile(r"^[0-9a-f]{32}\.(jpg|png|webp)$")
+PHOTO_MEDIA_TYPES = {"jpg": "image/jpeg", "png": "image/png", "webp": "image/webp"}
+
+
+@app.get("/api/photos/{filename}")
+@app.get("/uploads/{filename}")  # photo_url format used before 2026-09-27; rows still reference it
+def serve_photo(filename: str, db=Depends(get_db)):
+    """Serves a photo only once it is attached to a report, decrypting it in
+    memory. A guessed or leaked filename of an unattached upload gets 404."""
+    match = PHOTO_FILENAME_RE.match(filename)
+    if match is None:
+        raise HTTPException(status_code=400, detail="invalid filename")
+
+    with db.cursor() as cur:
+        cur.execute(
+            "SELECT 1 FROM reports WHERE photo_url IN (%s, %s)",
+            (f"/api/photos/{filename}", f"/uploads/{filename}"),
+        )
+        attached = cur.fetchone() is not None
+    photo_path = UPLOAD_DIR / filename
+    if not attached or not photo_path.is_file():
+        raise HTTPException(status_code=404, detail="photo not found")
+
+    try:
+        content = read_photo(photo_path)
+    except ValueError as exc:
+        raise HTTPException(status_code=503, detail=str(exc))
+    return Response(content=content, media_type=PHOTO_MEDIA_TYPES[match.group(1)])
 
 
 @app.post("/api/reports", response_model=ReportCreateResponse, status_code=201)
@@ -779,13 +824,19 @@ def create_report(payload: ReportCreateRequest, db=Depends(get_db)):
     # as "critical" and push an issue up the queue.
     photo_severity_score = None
     photo_severity_band = None
+    photo_checks = None
     if payload.photo_url:
+        photo_filename = Path(payload.photo_url).name
         try:
-            photo_path = UPLOAD_DIR / Path(payload.photo_url).name
-            result = estimate_photo_severity(photo_path.read_bytes())
+            result = estimate_photo_severity(read_photo(UPLOAD_DIR / photo_filename))
             photo_severity_score, photo_severity_band = result["score"], result["band"]
         except (ValueError, OSError):
             pass  # undecodable/missing photo - no photo evidence score
+        with db.cursor() as cur:
+            cur.execute("SELECT checks FROM photo_uploads WHERE filename = %s", (photo_filename,))
+            row = cur.fetchone()
+        # None for photos uploaded before intake checks existed - shown as "not checked".
+        photo_checks = row[0] if row else None
 
     # Only fills in a location the pipeline itself couldn't find - never
     # overrides a pipeline result, and never turns a ward selection into a
@@ -815,11 +866,12 @@ def create_report(payload: ReportCreateRequest, db=Depends(get_db)):
             f"""
             INSERT INTO reports (raw_text, reported_at, category, category_conf, severity,
                                   location_phrase, geom, geom_confidence, ward_id, embedding, is_synthetic,
-                                  photo_url, language, translated_text, photo_severity_score, photo_severity_band)
+                                  photo_url, language, translated_text, photo_severity_score, photo_severity_band,
+                                  photo_checks)
             VALUES (%(raw_text)s, %(reported_at)s, %(category)s, %(category_conf)s, %(severity)s,
                     %(location_phrase)s, {geom_expr}, %(geom_conf)s, %(ward_id)s, %(embedding)s::vector, true,
                     %(photo_url)s, %(language)s, %(translated_text)s, %(photo_severity_score)s,
-                    %(photo_severity_band)s)
+                    %(photo_severity_band)s, %(photo_checks)s::jsonb)
             RETURNING id
             """,
             {
@@ -829,6 +881,7 @@ def create_report(payload: ReportCreateRequest, db=Depends(get_db)):
                 "embedding": embedding_literal, "photo_url": payload.photo_url, "language": language,
                 "translated_text": translated_text, "photo_severity_score": photo_severity_score,
                 "photo_severity_band": photo_severity_band,
+                "photo_checks": json.dumps(photo_checks) if photo_checks is not None else None,
             },
         )
         report_id = cur.fetchone()[0]
@@ -900,6 +953,7 @@ def create_report(payload: ReportCreateRequest, db=Depends(get_db)):
             geom_confidence=geom_conf, ward_id=ward_id, is_synthetic=True,
             photo_url=payload.photo_url, language=language, translated_text=translated_text,
             photo_severity_score=photo_severity_score, photo_severity_band=photo_severity_band,
+            photo_checks=photo_checks,
         ),
         issue_id=issue_id, joined_existing_issue=joined_existing, category=category,
         category_confidence=category_conf, severity=severity_band,

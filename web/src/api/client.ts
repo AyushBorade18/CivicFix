@@ -18,8 +18,8 @@ import type {
 
 export const BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8000";
 
-// photo_url values from the API are paths like "/uploads/xxx.jpg", served by
-// the backend, not the Vite dev server - this resolves them to a real <img src>.
+// photo_url values from the API are backend paths ("/api/photos/xxx.jpg", or
+// "/uploads/xxx.jpg" on older reports), not Vite dev-server paths.
 export function mediaUrl(path: string): string {
   return `${BASE_URL}${path}`;
 }

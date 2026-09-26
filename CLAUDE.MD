@@ -133,6 +133,12 @@ built today.
   PCMC and village numbering (see `data/eval/mplads_ward_review.csv`).
   Works are placed by geocoded landmark (`geom_confidence` 1.0), reviewed
   ward or gazetteer place (0.5), else left unplaced.
+- **`PHOTO_ENCRYPTION_KEY` is unrecoverable.** Photos in `data/uploads/` are
+  Fernet-encrypted with it; lose or change the key and every encrypted photo
+  becomes unreadable (serve_photo returns 503 saying so). All teammates must
+  share the same key out of band. Photos uploaded before 2026-09-27 are still
+  plaintext *and still carry their original EXIF GPS*; the new intake only
+  cleans new uploads.
 -
 
 ## graphify

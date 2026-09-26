@@ -137,6 +137,7 @@ class ReportInIssue(BaseModel):
     translated_text: Optional[str] = None
     photo_severity_score: Optional[float] = None
     photo_severity_band: Optional[str] = None
+    photo_checks: Optional[dict[str, Any]] = None
 
 
 class WorkSummary(BaseModel):
@@ -241,6 +242,7 @@ class ReportCreateRequest(BaseModel):
 
 class PhotoUploadResponse(BaseModel):
     photo_url: str
+    photo_checks: dict[str, Any]
 
 
 class ReportCreateResponse(BaseModel):

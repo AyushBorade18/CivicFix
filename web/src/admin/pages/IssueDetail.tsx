@@ -8,6 +8,7 @@ import { PriorityBreakdownView } from "../../components/PriorityBreakdown";
 import { EvidenceChain, type EvidenceChainNode } from "../../components/EvidenceChain";
 import { WardMap } from "../../components/WardMap";
 import { CATEGORY_LABELS } from "../../api/types";
+import type { PhotoChecks } from "../../api/types";
 import { hasDistinctDescription } from "../../lib/work";
 import { GlowingCard } from "../../components/ui/GlowingCard";
 import { 
@@ -22,6 +23,32 @@ import {
   MessageSquare,
   Sparkles
 } from "lucide-react";
+
+// Evidence for human review, never a verdict: metadata can be stripped or faked,
+// so a clean result does not confirm the photo is genuine.
+function PhotoChecksPanel({ checks }: { checks: PhotoChecks | null }) {
+  if (!checks) {
+    return <p className="text-[11px] text-secondary mt-1">Photo authenticity signals: not checked (uploaded before intake checks).</p>;
+  }
+  const flagEntries = Object.entries(checks.flags);
+  return (
+    <div className="text-[11px] text-secondary mt-1 space-y-0.5">
+      <p>
+        Photo authenticity signals for review:{" "}
+        {flagEntries.length === 0 ? "no generator markers found" : `${flagEntries.length} flagged`}
+      </p>
+      {flagEntries.map(([name, detail]) => (
+        <p key={name} className={detail.startsWith("strong") ? "text-amber-700 font-semibold" : ""}>
+          • {name.replace(/_/g, " ")}: {detail}
+        </p>
+      ))}
+      <p>
+        Original had location data: {checks.had_gps ? "yes (removed)" : "no"} · Stored encrypted:{" "}
+        {checks.stored_encrypted ? "yes" : <strong className="text-amber-700">no</strong>}
+      </p>
+    </div>
+  );
+}
 
 export function IssueDetail() {
   const { issueId } = useParams();
@@ -241,6 +268,7 @@ export function IssueDetail() {
                       {report.photo_severity_score != null && ` (score ${report.photo_severity_score.toFixed(2)})`}
                     </p>
                   )}
+                  <PhotoChecksPanel checks={report.photo_checks ?? null} />
                 </div>
               )}
             </div>
