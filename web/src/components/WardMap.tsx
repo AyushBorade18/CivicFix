@@ -67,7 +67,7 @@ function IssueLayer({
     return () => {
       map.removeLayer(layer);
     };
-  }, [map, issues, onIssueClick]);
+  }, [map, issues, onIssueClick, audience]);
   return null;
 }
 

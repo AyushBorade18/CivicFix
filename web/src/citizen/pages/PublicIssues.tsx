@@ -3,35 +3,42 @@ import { useNavigate } from "react-router-dom";
 import { api } from "../../api/client";
 import { useApi } from "../../hooks/useApi";
 import { WardMap } from "../../components/WardMap";
-import { CategoryTag, StatusTag, SyntheticTag } from "../../components/Badges";
+import { CategoryTag, StatusTag } from "../../components/Badges";
 import { LoadingState, ErrorState, EmptyState } from "../../components/States";
 import { CATEGORY_LABELS } from "../../api/types";
+import type { MapIssuePoint } from "../../api/types";
 import { GlowingCard } from "../../components/ui/GlowingCard";
 import { Filter, MapPin, Layers, ArrowRight } from "lucide-react";
 
 export function PublicIssues() {
   const navigate = useNavigate();
   const [category, setCategory] = useState("");
-  const { data: mapData, loading: mapLoading } = useApi(() => api.map(), []);
+  // Public, no-sign-in endpoints only.
+  const { data: mapData, loading: mapLoading } = useApi(() => api.publicMap(), []);
   const { data: issueList, loading, error, reload } = useApi(
-    () => api.listIssues({ category: category || undefined, sort: "recent", limit: 50 }),
+    () => api.publicIssues({ category: category || undefined, limit: 50 }),
     [category]
   );
 
-  const filteredMapIssues = useMemo(() => {
+  const filteredMapIssues = useMemo<MapIssuePoint[]>(() => {
     if (!mapData) return [];
-    if (!category) return mapData.issues;
-    return mapData.issues.filter((i) => i.category === category);
+    return mapData.issues
+      .filter((i) => i.location && (!category || i.category === category))
+      .map((i) => ({
+        issue_id: i.issue_id, category: i.category, status: i.status, priority_score: null, location: i.location!,
+        location_precision: i.location_precision === "ward_level" ? "ward_level" : "precise",
+        ward_id: i.ward_id, first_reported: i.first_reported,
+      }));
   }, [mapData, category]);
 
   return (
     <div className="max-w-5xl mx-auto space-y-8">
       <div>
         <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground mb-2">
-          Public Issues Directory
+          Reported problems in Pune
         </h1>
         <p className="text-secondary text-base sm:text-lg leading-relaxed">
-          Explore civic issues currently tracked across Pune, grouped and clustered from resident reports.
+          See what your neighbours have reported. When many people report the same problem, it's shown once with the number of reports.
         </p>
       </div>
 
@@ -40,7 +47,7 @@ export function PublicIssues() {
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex items-center gap-2 text-sm font-semibold text-foreground">
             <Filter className="w-4 h-4 text-primary" />
-            <span>Filter by Category:</span>
+            <span>Show only:</span>
           </div>
           <div className="w-full sm:w-auto">
             <select
@@ -49,7 +56,7 @@ export function PublicIssues() {
               onChange={(e) => setCategory(e.target.value)}
               className="w-full sm:w-64 px-3.5 py-2 border border-border rounded-xl bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary"
             >
-              <option value="">All Categories ({mapData?.issues.length ?? "…"})</option>
+              <option value="">All problems ({mapData?.issues.length ?? "…"})</option>
               {Object.entries(CATEGORY_LABELS).map(([value, label]) => (
                 <option key={value} value={value}>
                   {label}
@@ -64,7 +71,7 @@ export function PublicIssues() {
       <div className="rounded-2xl border border-border p-2 bg-white/80 shadow-xs">
         {mapLoading ? (
           <div className="h-96 flex items-center justify-center">
-            <LoadingState label="Loading spatial map…" />
+            <LoadingState label="Loading map…" />
           </div>
         ) : (
           <WardMap
@@ -80,10 +87,10 @@ export function PublicIssues() {
         <div className="flex items-center justify-between">
           <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
             <Layers className="w-5 h-5 text-primary" />
-            <span>Recent Tracked Issues</span>
+            <span>Latest problems</span>
           </h2>
           {issueList && (
-            <span className="text-xs font-mono text-secondary">
+            <span className="text-xs text-secondary">
               Showing {issueList.items.length} of {issueList.total}
             </span>
           )}
@@ -92,7 +99,7 @@ export function PublicIssues() {
         {loading && <LoadingState label="Loading issues…" />}
         {error && <ErrorState message={error} onRetry={reload} />}
         {issueList && issueList.items.length === 0 && (
-          <EmptyState>No issues match this category filter.</EmptyState>
+          <EmptyState>Nothing reported of this kind yet.</EmptyState>
         )}
 
         {issueList && (
@@ -112,14 +119,13 @@ export function PublicIssues() {
                     <div className="flex gap-1.5 flex-wrap">
                       <CategoryTag category={issue.category} />
                       <StatusTag status={issue.status} />
-                      {issue.is_synthetic && <SyntheticTag />}
                     </div>
                   </div>
 
                   <div className="mb-3">
                     <div className="text-xs text-secondary font-mono mb-1 flex items-center gap-1">
                       <MapPin className="w-3.5 h-3.5 text-secondary" />
-                      Ward {issue.ward_id ?? "—"}
+                      {issue.ward_id != null ? `Ward ${issue.ward_id}${issue.ward_name ? ` · ${issue.ward_name}` : ""}` : "Ward pending"}
                     </div>
                     <div className="font-bold text-foreground text-base group-hover:text-primary transition-colors line-clamp-1">
                       {CATEGORY_LABELS[issue.category] ?? issue.category}
@@ -129,7 +135,7 @@ export function PublicIssues() {
 
                 <div className="mt-4 pt-3 border-t border-border/80 flex items-center justify-between text-xs text-secondary">
                   <span>
-                    {issue.report_count} citizen report{issue.report_count === 1 ? "" : "s"}
+                    {issue.report_count} resident report{issue.report_count === 1 ? "" : "s"}
                   </span>
                   <span className="text-primary font-semibold flex items-center gap-1 group-hover:translate-x-0.5 transition-transform">
                     View Details

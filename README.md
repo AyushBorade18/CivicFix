@@ -1,3 +1,4 @@
+
 # CivicFix 🏛️
 
 Civic complaints shouldn't disappear into a queue. CivicFix is an intelligent civic issue triage and accountability platform designed for municipal corporations. It bridges the gap between citizens reporting local issues and the government agencies responsible for resolving them, while cross-referencing complaints with funded public works (like MPLADS) to enforce transparency.
@@ -79,10 +80,15 @@ CivicFix is built using a modern, scalable stack:
    npm run dev
    ```
 
+   **Or start everything at once** (database, dev sign-in keys, API with
+   auto-reload, both frontends): `scripts/dev.sh`
+
 5. **Access the application:**
-   Open your browser and navigate to `http://localhost:5173`. 
-   * **Citizen Portal:** `/citizen`
-   * **Admin Console:** `/admin`
+   * **Public site and Citizen Portal:** `http://localhost:5173` (`/citizen`)
+   * **Staff Command Center:** `http://localhost:5174`
+
+   Generated test complaints only appear when `.env` sets `SHOW_TEST_DATA=1`.
+   Leave it unset on any deployment the public or PMC can reach.
 
 ## 🎨 UI/UX Highlights
 

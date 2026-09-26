@@ -20,11 +20,6 @@
   flex-shrink: 0;
 }
 
-.tag--synthetic {
-  border-style: dashed;
-  color: var(--ink-faint);
-}
-
 .tag--status {
   color: var(--ink-soft);
 }

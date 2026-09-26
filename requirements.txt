@@ -11,9 +11,11 @@ spacy==3.8.16
 fastapi==0.141.1
 uvicorn[standard]==0.53.0
 python-multipart==0.0.32
+httpx==0.28.1  # Supabase Storage calls for evidence photos (app/api/evidence.py)
 langdetect==1.0.9
 Pillow==12.3.0
 pytest==9.1.1
+PyJWT[crypto]==2.15.0  # verifies identity-provider tokens (app/auth.py)
 xlrd==2.0.2
 
 # spaCy's English model is not on PyPI as a normal dependency:

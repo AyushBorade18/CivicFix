@@ -1,5 +1,5 @@
 from datetime import date, datetime
-from typing import Any, Optional
+from typing import Any, Literal, Optional
 
 from pydantic import BaseModel
 
@@ -112,6 +112,12 @@ class IssueSummary(BaseModel):
     is_synthetic: bool
     routed_agency: Optional[str] = None
     routed_at: Optional[datetime] = None
+    # Triage-table extras, filled by GET /api/issues only.
+    location_phrase: Optional[str] = None
+    evidence_accuracy_m: Optional[float] = None  # best citizen-photo GPS accuracy
+    pending_evidence: int = 0
+    has_resolution_evidence: bool = False
+    assigned_worker_id: Optional[int] = None
 
 
 class IssueListResponse(BaseModel):
@@ -137,6 +143,10 @@ class ReportInIssue(BaseModel):
     translated_text: Optional[str] = None
     photo_severity_score: Optional[float] = None
     photo_severity_band: Optional[str] = None
+    # "submitted" | "alternative_confirmed" | "alternative_in_progress" |
+    # "pending" | "not_provided". A missing photo is never read as false.
+    evidence_status: Optional[str] = None
+    evidence_due_at: Optional[datetime] = None
 
 
 class WorkSummary(BaseModel):
@@ -176,6 +186,75 @@ class SignalSummary(BaseModel):
     source_record_ids: dict[str, Any]
 
 
+class EvidenceItem(BaseModel):
+    """One location-verified capture: photo + device location + both clocks.
+    A verification signal for human review, not proof."""
+    evidence_id: int
+    issue_id: int
+    report_id: Optional[int]
+    submitted_by: int
+    actor_type: str  # "citizen" | "worker"
+    evidence_type: str  # "initial_report" | "resolution"
+    capture_method: str  # "camera"
+    file_url: str  # authorized endpoint, never a public path
+    mime_type: str
+    byte_size: int
+    sha256: str
+    location: GeoPoint  # as reported by the device
+    accuracy_m: float  # device-reported radius, not a guarantee
+    captured_at: Optional[datetime]  # device clock
+    location_captured_at: Optional[datetime]  # device clock
+    submitted_at: datetime  # server clock
+    distance_from_issue_m: Optional[float]
+    issue_location_precision: str  # what the distance was measured against
+    review_status: str  # "pending_review" | "verified" | "review_required"
+    reviewed_by: Optional[int]
+    reviewed_at: Optional[datetime]
+    review_note: Optional[str]  # staff-only; None for citizens
+
+
+class EvidenceReviewRequest(BaseModel):
+    review_status: Literal["verified", "review_required"]
+    note: Optional[str] = None
+
+
+class FieldWorker(BaseModel):
+    id: int
+    display_name: Optional[str]
+
+
+class IssueAssignRequest(BaseModel):
+    worker_user_id: int
+
+
+class IssueAssignResponse(BaseModel):
+    issue_id: int
+    assigned_worker_id: int
+    assigned_at: datetime
+
+
+class AlternativeVerificationCreateRequest(BaseModel):
+    channel: Literal["phone", "whatsapp", "in_person", "other"]
+    notes: Optional[str] = None
+
+
+class AlternativeVerificationCompleteRequest(BaseModel):
+    status: Literal["confirmed", "not_confirmed", "unreachable"]
+    notes: Optional[str] = None
+
+
+class AlternativeVerification(BaseModel):
+    id: int
+    report_id: int
+    channel: str
+    status: str
+    initiated_by: int
+    initiated_at: datetime
+    completed_by: Optional[int]
+    completed_at: Optional[datetime]
+    notes: Optional[str]
+
+
 class IssueDetailResponse(BaseModel):
     issue_id: int
     category: str
@@ -196,6 +275,12 @@ class IssueDetailResponse(BaseModel):
     feedback: list[FeedbackSummary] = []
     routed_agency: Optional[str] = None
     routed_at: Optional[datetime] = None
+    evidence: list[EvidenceItem] = []  # chronological: before, then after
+    alternative_verifications: list[AlternativeVerification] = []
+    assigned_worker_id: Optional[int] = None
+    assigned_at: Optional[datetime] = None
+    closed_at: Optional[datetime] = None
+    reverification_due_at: Optional[datetime] = None
 
 
 class MapIssuePoint(BaseModel):
@@ -205,6 +290,8 @@ class MapIssuePoint(BaseModel):
     priority_score: Optional[float]
     location: GeoPoint
     location_precision: str
+    ward_id: Optional[int] = None
+    first_reported: Optional[datetime] = None
 
 
 class MapWorkPoint(BaseModel):
@@ -224,6 +311,7 @@ class MapSitePoint(BaseModel):
 class MapWard(BaseModel):
     ward_id: int
     name: str
+    geometry: Optional[dict] = None  # simplified GeoJSON boundary
 
 
 class MapResponse(BaseModel):
@@ -248,11 +336,71 @@ class ReportCreateResponse(BaseModel):
     issue_id: int
     joined_existing_issue: bool
     category: str
-    category_confidence: float
-    severity: str
+    # None for citizens: model confidence and severity feed the internal
+    # priority formula, so only staff receive them (see create_report).
+    category_confidence: Optional[float]
+    severity: Optional[str]
     location_precision: str
     priority_score: Optional[float]
     priority_breakdown: Optional[dict[str, Any]]
     matched_work: Optional[MatchSummary]
     signals: list[SignalSummary]
     is_synthetic: bool
+
+
+class MeResponse(BaseModel):
+    id: int
+    role: str
+    display_name: Optional[str]
+    email: Optional[str]
+    ward_ids: list[int]
+    departments: list[str]
+
+
+class MyReport(BaseModel):
+    """A citizen's own report: their own words back, plus the public status
+    of the issue it joined. No model scores, no priority, no signals."""
+    report_id: int
+    raw_text: str
+    reported_at: datetime
+    category: Optional[str]
+    ward_id: Optional[int]
+    photo_url: Optional[str]
+    language: Optional[str]
+    translated_text: Optional[str]
+    issue_id: Optional[int]
+    issue_status: Optional[str]
+    is_synthetic: bool
+    evidence_status: Optional[str] = None
+    evidence_due_at: Optional[datetime] = None
+    issue_reverification_due_at: Optional[datetime] = None
+
+
+class PublicIssue(BaseModel):
+    """Public projection of an issue. Built field by field from the issues
+    table - never from IssueDetailResponse - so internal fields can't leak
+    by accident. Location is rounded to ~100 m (3 decimal places)."""
+    issue_id: int
+    category: str
+    ward_id: Optional[int]
+    ward_name: Optional[str]
+    status: str
+    report_count: int
+    first_reported: Optional[datetime]
+    last_reported: Optional[datetime]
+    closed_at: Optional[datetime]
+    location: Optional[GeoPoint]
+    location_precision: str  # "approximate" | "ward_level" | "unknown"
+    is_synthetic: bool
+
+
+class PublicIssueListResponse(BaseModel):
+    total: int
+    limit: int
+    offset: int
+    items: list[PublicIssue]
+
+
+class PublicMapResponse(BaseModel):
+    issues: list[PublicIssue]
+    wards: list[MapWard]

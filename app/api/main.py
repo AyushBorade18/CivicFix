@@ -1,13 +1,16 @@
 import json
+import os
 import uuid
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Optional
 
 import numpy as np
 from fastapi import Depends, FastAPI, File, HTTPException, Query, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.staticfiles import StaticFiles
+import psycopg
 from psycopg.rows import dict_row
 
 from app.api.schemas import (
@@ -27,8 +30,13 @@ from app.api.schemas import (
     MapWard,
     MapWorkPoint,
     MatchSummary,
+    MeResponse,
     MetricsResponse,
+    MyReport,
     PhotoUploadResponse,
+    PublicIssue,
+    PublicIssueListResponse,
+    PublicMapResponse,
     ReportCreateRequest,
     ReportCreateResponse,
     ReportInIssue,
@@ -36,6 +44,18 @@ from app.api.schemas import (
     StatsResponse,
     WorkSummary,
 )
+from app.api.evidence import (
+    EVIDENCE_SUBMISSION_WINDOW_DAYS,
+    REVERIFICATION_WINDOW_DAYS,
+    alternative_verifications_for_issue,
+    evidence_due_sql,
+    evidence_items,
+    evidence_status_sql,
+)
+from app.api.evidence import location_precision_from_breakdown as _location_precision_from_breakdown
+from app.api.evidence import router as evidence_router
+from app.auth import (ensure_issue_access, get_current_user, get_verified_claims, issue_scope_sql, live_issue_sql,
+                      require_staff, show_test_data)
 from app.core.clustering import COSINE_THRESHOLD, spatial_ok
 from app.core.matcher import match_issue_to_work
 from app.core.metrics import compute_metrics
@@ -43,7 +63,7 @@ from app.core.priority import compute_priority
 from app.core.recurrence import run_recurrence_check
 from app.core.routing import route_issue
 from app.core.signals import run_signals
-from app.db import get_connection
+from app.db import get_connection, get_db
 from app.ingest.location import extract_ward_number
 from app.nlp.classify import classify
 from app.nlp.embeddings import get_embedding_model as _get_embedding_model
@@ -52,12 +72,15 @@ from app.nlp.location import resolve_report_location
 from app.nlp.photo_severity import estimate_photo_severity
 from app.nlp.severity import BAND_ORDER, severity
 from app.nlp.translate import translate_to_english
+from app.users import CurrentUser, create_user, get_user
 
 UPLOAD_DIR = Path("data/uploads")
 ALLOWED_PHOTO_TYPES = {"image/jpeg": ".jpg", "image/png": ".png", "image/webp": ".webp"}
 MAX_PHOTO_BYTES = 5 * 1024 * 1024
 
 app = FastAPI(title="CivicFix API")
+# The map payloads are several hundred KB of JSON; gzip cuts them ~5x for phones.
+app.add_middleware(GZipMiddleware, minimum_size=1024)
 
 # Local-dev only: lets a Vite dev server (a different origin/port) call
 # this API. Regex, not a fixed port, since Vite auto-increments its port
@@ -66,7 +89,10 @@ app = FastAPI(title="CivicFix API")
 # CORS policy.
 app.add_middleware(
     CORSMiddleware,
-    allow_origin_regex=r"http://(localhost|127\.0\.0\.1):\d+",
+    # Local dev servers, plus the hosted frontends, e.g.
+    # CORS_ORIGINS=https://wardsentry.vercel.app,https://wardsentry-admin.vercel.app
+    allow_origins=[o.strip() for o in os.environ.get("CORS_ORIGINS", "").split(",") if o.strip()],
+    allow_origin_regex=r"https?://(localhost|127\.0\.0\.1):\d+",
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -74,6 +100,7 @@ app.add_middleware(
 # Evidence photos only - never scored (hard rule: no photo severity model).
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 app.mount("/uploads", StaticFiles(directory=UPLOAD_DIR), name="uploads")
+app.include_router(evidence_router)
 
 
 
@@ -90,25 +117,6 @@ def _cosine_similarity(a: np.ndarray, b: np.ndarray) -> float:
 
 def _time_ok(reported_at_a: datetime, reported_at_b: datetime, window_days: int = 7) -> bool:
     return abs((reported_at_a - reported_at_b).days) <= window_days
-
-
-def get_db():
-    conn = get_connection()
-    try:
-        yield conn
-    finally:
-        conn.close()
-
-
-def _location_precision_from_breakdown(breakdown: Optional[dict]) -> str:
-    if not breakdown:
-        return "unknown"
-    basis = (breakdown.get("exposure_detail") or {}).get("spatial_basis")
-    if basis == "precise":
-        return "precise"
-    if basis == "ward":
-        return "ward_level"
-    return "unknown"
 
 
 def _work_location_precision(description: Optional[str]) -> str:
@@ -200,18 +208,24 @@ def health():
 @app.get("/api/stats", response_model=StatsResponse)
 def stats(db=Depends(get_db)):
     counts = {}
+    live = live_issue_sql()
     with db.cursor() as cur:
-        for table, key in [
-            ("wards", "wards"), ("works", "works"), ("reports", "reports"), ("issues", "issues"),
-            ("matches", "matches"), ("sensitive_sites", "sensitive_sites"), ("signals", "verification_signals"),
+        for key, sql in [
+            ("wards", "SELECT count(*) FROM wards"),
+            ("works", "SELECT count(*) FROM works"),
+            ("reports", "SELECT count(*) FROM reports" + ("" if show_test_data() else " WHERE NOT is_synthetic")),
+            ("issues", f"SELECT count(*) FROM issues WHERE {live}"),
+            ("matches", f"SELECT count(*) FROM matches m JOIN issues ON issues.id = m.issue_id WHERE {live}"),
+            ("sensitive_sites", "SELECT count(*) FROM sensitive_sites"),
+            ("verification_signals", f"SELECT count(*) FROM signals s JOIN issues ON issues.id = s.issue_id WHERE {live}"),
         ]:
-            cur.execute(f"SELECT count(*) FROM {table}")
+            cur.execute(sql)
             counts[key] = cur.fetchone()[0]
     return StatsResponse(**counts)
 
 
 @app.get("/api/metrics", response_model=MetricsResponse)
-def metrics(db=Depends(get_db)):
+def metrics(db=Depends(get_db), user: CurrentUser = Depends(require_staff)):
     """Real evaluation numbers per ARCHITECTURE.md section 6 - computed
     from the actual database plus a persisted offline classifier
     evaluation, never asserted. See app/core/metrics.py for the two
@@ -222,13 +236,14 @@ def metrics(db=Depends(get_db)):
 
 
 @app.post("/api/issues/{issue_id}/close", response_model=IssueCloseResponse)
-def close_issue(issue_id: int, db=Depends(get_db)):
+def close_issue(issue_id: int, db=Depends(get_db), user: CurrentUser = Depends(require_staff)):
     """Administrator action: marks an issue resolved. This is what makes
     recurrence.py's precondition (a prior CLOSED issue) reachable at all -
     nothing else in this system ever closes an issue. If a new report
     later matches this issue's ward+category+timing, run_recurrence_check
     (called from POST /api/reports) will reopen it automatically.
     """
+    ensure_issue_access(user, db, issue_id)
     with db.cursor() as cur:
         cur.execute("SELECT status FROM issues WHERE id = %s", (issue_id,))
         row = cur.fetchone()
@@ -239,9 +254,10 @@ def close_issue(issue_id: int, db=Depends(get_db)):
 
     with db.cursor() as cur:
         cur.execute(
-            "UPDATE issues SET status = 'closed', closed_at = now() WHERE id = %s "
+            "UPDATE issues SET status = 'closed', closed_at = now(), "
+            "reverification_due_at = now() + make_interval(days => %s) WHERE id = %s "
             "RETURNING status, closed_at",
-            (issue_id,),
+            (REVERIFICATION_WINDOW_DAYS, issue_id),
         )
         status, closed_at = cur.fetchone()
     db.commit()
@@ -249,11 +265,12 @@ def close_issue(issue_id: int, db=Depends(get_db)):
 
 
 @app.post("/api/issues/{issue_id}/route", response_model=IssueRouteResponse)
-def route_issue_endpoint(issue_id: int, db=Depends(get_db)):
+def route_issue_endpoint(issue_id: int, db=Depends(get_db), user: CurrentUser = Depends(require_staff)):
     """Deterministic work-order routing: looks up the issue's category in
     app.core.routing's fixed table (never invented per-issue) and records
     a signal citing exactly which rule fired, matching every other
     verification signal's source-record convention."""
+    ensure_issue_access(user, db, issue_id)
     with db.cursor() as cur:
         cur.execute("SELECT category, routed_agency FROM issues WHERE id = %s", (issue_id,))
         row = cur.fetchone()
@@ -286,18 +303,32 @@ def route_issue_endpoint(issue_id: int, db=Depends(get_db)):
 
 
 @app.post("/api/issues/{issue_id}/feedback", response_model=FeedbackCreateResponse, status_code=201)
-def submit_feedback(issue_id: int, payload: FeedbackCreateRequest, db=Depends(get_db)):
+def submit_feedback(
+    issue_id: int, payload: FeedbackCreateRequest, db=Depends(get_db),
+    user: CurrentUser = Depends(get_current_user),
+):
     """Closes the loop after resolution: a citizen confirms the fix or
     disputes it. A dispute reopens the issue directly (status -> reopened,
     recurrence_count + 1) - simpler and more precise than routing through
     run_recurrence_check's category/ward/proximity matching, since we
     already know exactly which issue this feedback is about.
+
+    Only a citizen who reported into this issue may confirm or dispute it:
+    a dispute reopens the issue, so it can't be open to any account.
     """
     with db.cursor() as cur:
-        cur.execute("SELECT status FROM issues WHERE id = %s", (issue_id,))
+        cur.execute("SELECT status, reverification_due_at, now() > reverification_due_at FROM issues WHERE id = %s",
+                    (issue_id,))
         row = cur.fetchone()
-    if row is None:
-        raise HTTPException(status_code=404, detail=f"issue {issue_id} not found")
+        if row is None:
+            raise HTTPException(status_code=404, detail=f"issue {issue_id} not found")
+        cur.execute("SELECT 1 FROM reports WHERE issue_id = %s AND reporter_user_id = %s LIMIT 1", (issue_id, user.id))
+        if cur.fetchone() is None:
+            raise HTTPException(status_code=403, detail="only a citizen who reported this issue can give feedback on it")
+    # NULL window: closed before windows existed - feedback stays open.
+    if row[0] == "closed" and row[2]:
+        raise HTTPException(status_code=409,
+                            detail=f"the reverification window for issue {issue_id} closed on {row[1]:%d %b %Y}")
     if row[0] != "closed":
         raise HTTPException(
             status_code=400,
@@ -307,7 +338,7 @@ def submit_feedback(issue_id: int, payload: FeedbackCreateRequest, db=Depends(ge
     with db.cursor() as cur:
         cur.execute(
             "INSERT INTO feedback (issue_id, resolved_confirmed, comment, submitted_at, is_synthetic) "
-            "VALUES (%s, %s, %s, now(), true) "
+            "VALUES (%s, %s, %s, now(), false) "
             "RETURNING id, issue_id, resolved_confirmed, comment, submitted_at, is_synthetic",
             (issue_id, payload.resolved_confirmed, payload.comment),
         )
@@ -349,15 +380,20 @@ def list_issues(
     status: Optional[str] = None,
     min_priority: Optional[float] = None,
     sort: str = Query("priority", pattern="^(priority|recent)$"),
+    queue: Optional[str] = Query(None, pattern="^(verification_pending|assigned|signoff)$"),
     limit: int = Query(50, ge=1, le=200),
     offset: int = Query(0, ge=0),
     db=Depends(get_db),
+    user: CurrentUser = Depends(require_staff),
 ):
     order_sql = (
         "last_reported DESC NULLS LAST, id DESC" if sort == "recent"
         else "priority_score DESC NULLS LAST, id"
     )
-    where, params = [], {}
+    # Scope is applied server-side from the database, never from the client:
+    # a ward_id filter outside the user's scope just returns nothing.
+    scope_sql, params = issue_scope_sql(user)
+    where = [scope_sql]
     if ward_id is not None:
         where.append("ward_id = %(ward_id)s")
         params["ward_id"] = ward_id
@@ -370,6 +406,12 @@ def list_issues(
     if min_priority is not None:
         where.append("priority_score >= %(min_priority)s")
         params["min_priority"] = min_priority
+    if queue == "verification_pending":
+        where.append("EXISTS (SELECT 1 FROM evidence e WHERE e.issue_id = issues.id AND e.review_status = 'pending_review')")
+    elif queue == "assigned":
+        where.append("assigned_worker_id IS NOT NULL")
+    elif queue == "signoff":
+        where.append("status = 'closed' AND reverification_due_at > now()")
     where_sql = f"WHERE {' AND '.join(where)}" if where else ""
 
     with db.cursor(row_factory=dict_row) as cur:
@@ -380,7 +422,15 @@ def list_issues(
             f"""
             SELECT id, category, ward_id, report_count, first_reported, last_reported, status,
                    recurrence_count, priority_score, priority_breakdown, ST_Y(geom) AS lat, ST_X(geom) AS lon,
-                   routed_agency, routed_at
+                   routed_agency, routed_at, assigned_worker_id,
+                   (SELECT r.location_phrase FROM reports r WHERE r.issue_id = issues.id AND r.location_phrase IS NOT NULL
+                    ORDER BY r.reported_at LIMIT 1) AS location_phrase,
+                   (SELECT min(e.accuracy_m) FROM evidence e WHERE e.issue_id = issues.id AND e.actor_type = 'citizen')
+                    AS evidence_accuracy_m,
+                   (SELECT count(*) FROM evidence e WHERE e.issue_id = issues.id AND e.review_status = 'pending_review')
+                    AS pending_evidence,
+                   EXISTS (SELECT 1 FROM evidence e WHERE e.issue_id = issues.id AND e.evidence_type = 'resolution')
+                    AS has_resolution_evidence
             FROM issues {where_sql}
             ORDER BY {order_sql}
             LIMIT %(limit)s OFFSET %(offset)s
@@ -390,17 +440,25 @@ def list_issues(
         rows = cur.fetchall()
 
     synthetic_map = _synthetic_flags_for_issues(db, [r["id"] for r in rows])
-    items = [_issue_summary_from_row(r, synthetic_map.get(r["id"])) for r in rows]
+    items = [
+        _issue_summary_from_row(r, synthetic_map.get(r["id"])).model_copy(update={
+            "location_phrase": r["location_phrase"], "evidence_accuracy_m": r["evidence_accuracy_m"],
+            "pending_evidence": r["pending_evidence"], "has_resolution_evidence": r["has_resolution_evidence"],
+            "assigned_worker_id": r["assigned_worker_id"],
+        })
+        for r in rows
+    ]
     return IssueListResponse(total=total, limit=limit, offset=offset, items=items)
 
 
 @app.get("/api/issues/{issue_id}", response_model=IssueDetailResponse)
-def issue_detail(issue_id: int, db=Depends(get_db)):
+def issue_detail(issue_id: int, db=Depends(get_db), user: CurrentUser = Depends(require_staff)):
+    ensure_issue_access(user, db, issue_id)
     with db.cursor(row_factory=dict_row) as cur:
         cur.execute(
             "SELECT id, category, ward_id, status, report_count, first_reported, last_reported, "
             "recurrence_count, priority_score, priority_breakdown, ST_Y(geom) AS lat, ST_X(geom) AS lon, "
-            "routed_agency, routed_at "
+            "routed_agency, routed_at, assigned_worker_id, assigned_at, closed_at, reverification_due_at "
             "FROM issues WHERE id = %s",
             (issue_id,),
         )
@@ -412,8 +470,9 @@ def issue_detail(issue_id: int, db=Depends(get_db)):
         cur.execute(
             "SELECT id, raw_text, reported_at, category, category_conf, severity, location_phrase, "
             "geom_confidence, ward_id, is_synthetic, photo_url, language, translated_text, "
-            "photo_severity_score, photo_severity_band "
-            "FROM reports WHERE issue_id = %s ORDER BY reported_at",
+            "photo_severity_score, photo_severity_band, "
+            f"{evidence_status_sql()} AS evidence_status, {evidence_due_sql()} AS evidence_due_at "
+            "FROM reports r WHERE issue_id = %s ORDER BY reported_at",
             (issue_id,),
         )
         report_rows = cur.fetchall()
@@ -461,16 +520,24 @@ def issue_detail(issue_id: int, db=Depends(get_db)):
             for r in feedback_rows
         ],
         routed_agency=issue_row["routed_agency"], routed_at=issue_row["routed_at"],
+        evidence=evidence_items(db, issue_id),
+        alternative_verifications=alternative_verifications_for_issue(db, issue_id),
+        assigned_worker_id=issue_row["assigned_worker_id"], assigned_at=issue_row["assigned_at"],
+        closed_at=issue_row["closed_at"], reverification_due_at=issue_row["reverification_due_at"],
     )
 
 
 @app.get("/api/matches", response_model=list[MatchSummary])
-def list_matches(limit: int = Query(100, ge=1, le=500), offset: int = Query(0, ge=0), db=Depends(get_db)):
+def list_matches(
+    limit: int = Query(100, ge=1, le=500), offset: int = Query(0, ge=0), db=Depends(get_db),
+    user: CurrentUser = Depends(require_staff),
+):
+    scope_sql, params = issue_scope_sql(user, alias="i")
     with db.cursor(row_factory=dict_row) as cur:
         cur.execute(
-            f"{MATCH_JOIN_SQL} JOIN issues i ON i.id = m.issue_id "
-            "ORDER BY m.combined_score DESC LIMIT %s OFFSET %s",
-            (limit, offset),
+            f"{MATCH_JOIN_SQL} JOIN issues i ON i.id = m.issue_id WHERE {scope_sql} "
+            "ORDER BY m.combined_score DESC LIMIT %(limit)s OFFSET %(offset)s",
+            {**params, "limit": limit, "offset": offset},
         )
         rows = cur.fetchall()
         issue_ids = [r["issue_id"] for r in rows]
@@ -492,7 +559,10 @@ def list_works(
     limit: int = Query(100, ge=1, le=500),
     offset: int = Query(0, ge=0),
     db=Depends(get_db),
+    user: CurrentUser = Depends(require_staff),
 ):
+    # Not ward-scoped: works are published MPLADS records, and an officer
+    # needs neighbouring wards' works to judge a match.
     where, params = [], {}
     if ward_id is not None:
         where.append("ward_id = %(ward_id)s")
@@ -515,33 +585,45 @@ def list_works(
     return [_work_summary_from_row(r) for r in rows]
 
 
+# ~11 m tolerance: keeps outlines faithful at city zoom, payload small.
+WARDS_WITH_OUTLINE_SQL = (
+    "SELECT id, name, ST_AsGeoJSON(ST_SimplifyPreserveTopology(geom, 0.0001))::json AS geometry "
+    "FROM wards ORDER BY id"
+)
+
+
 @app.get("/api/map", response_model=MapResponse)
-def map_data(db=Depends(get_db)):
+def map_data(db=Depends(get_db), user: CurrentUser = Depends(require_staff)):
+    scope_sql, params = issue_scope_sql(user, alias="i")
     with db.cursor(row_factory=dict_row) as cur:
         cur.execute(
-            "SELECT id, category, status, priority_score, priority_breakdown, "
-            "ST_Y(geom) AS lat, ST_X(geom) AS lon FROM issues WHERE geom IS NOT NULL"
+            "SELECT i.id, i.category, i.status, i.priority_score, i.priority_breakdown, i.ward_id, i.first_reported, "
+            f"ST_Y(i.geom) AS lat, ST_X(i.geom) AS lon FROM issues i WHERE i.geom IS NOT NULL AND {scope_sql}",
+            params,
         )
         issue_rows = cur.fetchall()
 
         cur.execute(
             "SELECT DISTINCT w.id AS work_id, w.category, w.work_name, w.description, "
             "ST_Y(w.geom) AS lat, ST_X(w.geom) AS lon "
-            "FROM works w JOIN matches m ON m.work_id = w.id WHERE w.geom IS NOT NULL"
+            "FROM works w JOIN matches m ON m.work_id = w.id JOIN issues i ON i.id = m.issue_id "
+            f"WHERE w.geom IS NOT NULL AND {scope_sql}",
+            params,
         )
         work_rows = cur.fetchall()
 
         cur.execute("SELECT id, kind, name, ST_Y(geom) AS lat, ST_X(geom) AS lon FROM sensitive_sites")
         site_rows = cur.fetchall()
 
-        cur.execute("SELECT id, name FROM wards ORDER BY id")
+        cur.execute(WARDS_WITH_OUTLINE_SQL)
         ward_rows = cur.fetchall()
 
     return MapResponse(
         issues=[
             MapIssuePoint(issue_id=r["id"], category=r["category"], status=r["status"],
                           priority_score=r["priority_score"], location=GeoPoint(lat=r["lat"], lon=r["lon"]),
-                          location_precision=_location_precision_from_breakdown(r["priority_breakdown"]))
+                          location_precision=_location_precision_from_breakdown(r["priority_breakdown"]),
+                          ward_id=r["ward_id"], first_reported=r["first_reported"])
             for r in issue_rows
         ],
         matched_works=[
@@ -554,7 +636,7 @@ def map_data(db=Depends(get_db)):
             MapSitePoint(site_id=r["id"], kind=r["kind"], location=GeoPoint(lat=r["lat"], lon=r["lon"]))
             for r in site_rows
         ],
-        wards=[MapWard(ward_id=r["id"], name=r["name"]) for r in ward_rows],
+        wards=[MapWard(ward_id=r["id"], name=r["name"], geometry=r["geometry"]) for r in ward_rows],
     )
 
 
@@ -608,7 +690,8 @@ def _attach_or_create_issue(conn, report: dict) -> tuple[int, bool]:
     with conn.cursor(row_factory=dict_row) as cur:
         cur.execute(
             "SELECT id, embedding, ward_id, ST_Y(geom) AS lat, ST_X(geom) AS lon, last_reported "
-            "FROM issues WHERE category = %s AND status IN ('open', 'reopened')",
+            # A real report never joins a hidden test issue on the live site.
+            f"FROM issues WHERE category = %s AND status IN ('open', 'reopened') AND {live_issue_sql()}",
             (report["category"],),
         )
         candidates = cur.fetchall()
@@ -712,7 +795,7 @@ def _refresh_match_for_issue(conn, issue_id: int) -> Optional[dict]:
 
 
 @app.post("/api/uploads/photo", response_model=PhotoUploadResponse, status_code=201)
-async def upload_photo(file: UploadFile = File(...)):
+async def upload_photo(file: UploadFile = File(...), user: CurrentUser = Depends(get_current_user)):
     """Evidence storage only - no photo severity model (hard rule 3). Returns
     a photo_url to attach to a report via POST /api/reports; never analyzed
     or scored here or anywhere else in the pipeline."""
@@ -730,12 +813,17 @@ async def upload_photo(file: UploadFile = File(...)):
 
 
 @app.post("/api/reports", response_model=ReportCreateResponse, status_code=201)
-def create_report(payload: ReportCreateRequest, db=Depends(get_db)):
+def create_report(payload: ReportCreateRequest, db=Depends(get_db), user: CurrentUser = Depends(get_current_user)):
     """Live citizen-complaint flow: classify -> location -> severity ->
     attach-or-create issue -> recurrence check -> matcher -> priority ->
     signals, using the existing, unmodified pipeline functions throughout.
-    Marked is_synthetic=true since this is the prototype's demo endpoint,
-    not a production citizen-facing intake.
+
+    Authenticated only. The reporter is always the signed-in user - the
+    request body has no ownership field, and any extra field is ignored.
+    A signed-in account's report is a real submission, so is_synthetic is
+    false; the seeded synthetic dataset keeps its own label. Citizens get
+    the response with every internal field (priority, signals, match,
+    model scores) removed server-side.
     """
     if payload.ward_id is not None:
         with db.cursor() as cur:
@@ -815,11 +903,13 @@ def create_report(payload: ReportCreateRequest, db=Depends(get_db)):
             f"""
             INSERT INTO reports (raw_text, reported_at, category, category_conf, severity,
                                   location_phrase, geom, geom_confidence, ward_id, embedding, is_synthetic,
-                                  photo_url, language, translated_text, photo_severity_score, photo_severity_band)
+                                  photo_url, language, translated_text, photo_severity_score, photo_severity_band,
+                                  reporter_user_id, evidence_due_at)
             VALUES (%(raw_text)s, %(reported_at)s, %(category)s, %(category_conf)s, %(severity)s,
-                    %(location_phrase)s, {geom_expr}, %(geom_conf)s, %(ward_id)s, %(embedding)s::vector, true,
+                    %(location_phrase)s, {geom_expr}, %(geom_conf)s, %(ward_id)s, %(embedding)s::vector, false,
                     %(photo_url)s, %(language)s, %(translated_text)s, %(photo_severity_score)s,
-                    %(photo_severity_band)s)
+                    %(photo_severity_band)s, %(reporter_user_id)s,
+                    %(reported_at)s + make_interval(days => %(evidence_window_days)s))
             RETURNING id
             """,
             {
@@ -828,7 +918,8 @@ def create_report(payload: ReportCreateRequest, db=Depends(get_db)):
                 "lat": lat, "lon": lon, "geom_conf": geom_conf, "ward_id": ward_id,
                 "embedding": embedding_literal, "photo_url": payload.photo_url, "language": language,
                 "translated_text": translated_text, "photo_severity_score": photo_severity_score,
-                "photo_severity_band": photo_severity_band,
+                "photo_severity_band": photo_severity_band, "reporter_user_id": user.id,
+                "evidence_window_days": EVIDENCE_SUBMISSION_WINDOW_DAYS,
             },
         )
         report_id = cur.fetchone()[0]
@@ -893,11 +984,13 @@ def create_report(payload: ReportCreateRequest, db=Depends(get_db)):
 
     db.commit()
 
-    return ReportCreateResponse(
+    response = ReportCreateResponse(
         report=ReportInIssue(
             id=report_id, raw_text=payload.raw_text, reported_at=reported_at, category=category,
             category_conf=category_conf, severity=severity_band, location_phrase=location_phrase,
-            geom_confidence=geom_conf, ward_id=ward_id, is_synthetic=True,
+            geom_confidence=geom_conf, ward_id=ward_id, is_synthetic=False,
+            evidence_status="pending",
+            evidence_due_at=reported_at + timedelta(days=EVIDENCE_SUBMISSION_WINDOW_DAYS),
             photo_url=payload.photo_url, language=language, translated_text=translated_text,
             photo_severity_score=photo_severity_score, photo_severity_band=photo_severity_band,
         ),
@@ -911,5 +1004,168 @@ def create_report(payload: ReportCreateRequest, db=Depends(get_db)):
                            source_record_ids=r["source_record_ids"])
             for r in signal_rows
         ],
-        is_synthetic=True,
+        is_synthetic=False,
+    )
+    if user.is_staff:
+        return response
+    return response.model_copy(update={
+        "report": response.report.model_copy(update={
+            "category_conf": None, "severity": None, "geom_confidence": None,
+            "photo_severity_score": None, "photo_severity_band": None,
+        }),
+        "category_confidence": None, "severity": None, "priority_score": None,
+        "priority_breakdown": None, "matched_work": None, "signals": [],
+    })
+
+
+# --- Account ---------------------------------------------------------------
+
+def _me_response(user: CurrentUser) -> MeResponse:
+    return MeResponse(
+        id=user.id, role=user.role, display_name=user.display_name, email=user.email,
+        ward_ids=sorted(user.ward_ids), departments=sorted(user.departments),
+    )
+
+
+@app.get("/api/me", response_model=MeResponse)
+def me(user: CurrentUser = Depends(get_current_user)):
+    return _me_response(user)
+
+
+@app.post("/api/me/register", response_model=MeResponse)
+def register(claims: dict = Depends(get_verified_claims), db=Depends(get_db)):
+    """First sign-in: link a verified identity to a new CivicFix account.
+    Always creates a citizen - takes no body, so a caller can't choose a
+    role. Officers and admins are promoted by an administrator (app/users.py).
+    Idempotent: an existing account is returned unchanged.
+    """
+    user = get_user(db, claims["sub"])
+    if user is None:
+        # Keep the provider's email only if it doesn't say it's unverified.
+        email = claims.get("email") if claims.get("email_verified", True) else None
+        try:
+            user = create_user(db, claims["sub"], "citizen", email, claims.get("name"))
+        except psycopg.errors.UniqueViolation:  # concurrent first sign-in
+            db.rollback()
+            user = get_user(db, claims["sub"])
+    if not user.is_active:
+        raise HTTPException(status_code=403, detail="account is deactivated")
+    return _me_response(user)
+
+
+MY_REPORT_SQL = """
+    SELECT r.id AS report_id, r.raw_text, r.reported_at, r.category, r.ward_id, r.photo_url,
+           r.language, r.translated_text, r.issue_id, i.status AS issue_status, r.is_synthetic,
+           {evidence_status} AS evidence_status, {evidence_due} AS evidence_due_at,
+           i.reverification_due_at AS issue_reverification_due_at
+    FROM reports r LEFT JOIN issues i ON i.id = r.issue_id
+    WHERE r.reporter_user_id = %(user_id)s
+""".format(evidence_status=evidence_status_sql(), evidence_due=evidence_due_sql())
+
+
+@app.get("/api/me/reports", response_model=list[MyReport])
+def my_reports(db=Depends(get_db), user: CurrentUser = Depends(get_current_user)):
+    """Only the signed-in user's reports. Ownership comes from the token,
+    never from a query parameter."""
+    with db.cursor(row_factory=dict_row) as cur:
+        cur.execute(f"{MY_REPORT_SQL} ORDER BY r.reported_at DESC", {"user_id": user.id})
+        return [MyReport(**r) for r in cur.fetchall()]
+
+
+@app.get("/api/me/reports/{report_id}", response_model=MyReport)
+def my_report(report_id: int, db=Depends(get_db), user: CurrentUser = Depends(get_current_user)):
+    with db.cursor(row_factory=dict_row) as cur:
+        cur.execute(f"{MY_REPORT_SQL} AND r.id = %(report_id)s", {"user_id": user.id, "report_id": report_id})
+        row = cur.fetchone()
+    if row is None:
+        # 404, not 403: don't reveal that another citizen's report exists.
+        raise HTTPException(status_code=404, detail=f"report {report_id} not found")
+    return MyReport(**row)
+
+
+# --- Public (no sign-in) ------------------------------------------------------
+
+PUBLIC_ISSUE_SQL = """
+    SELECT i.id, i.category, i.ward_id, w.name AS ward_name, i.status, i.report_count,
+           i.first_reported, i.last_reported, i.closed_at, i.priority_breakdown,
+           ST_Y(i.geom) AS lat, ST_X(i.geom) AS lon
+    FROM issues i LEFT JOIN wards w ON w.id = i.ward_id
+"""
+PUBLIC_COORD_DECIMALS = 3  # ~110 m: shows the street, not a doorstep
+
+
+def _public_issue(r: dict, is_synthetic: Optional[bool]) -> PublicIssue:
+    # priority_breakdown is read only to tell a ward centroid from a real
+    # point; it is never copied into the response.
+    precision = {"precise": "approximate", "ward_level": "ward_level"}.get(
+        _location_precision_from_breakdown(r["priority_breakdown"]), "unknown")
+    location = None
+    if r["lat"] is not None:
+        location = GeoPoint(lat=round(r["lat"], PUBLIC_COORD_DECIMALS), lon=round(r["lon"], PUBLIC_COORD_DECIMALS))
+    return PublicIssue(
+        issue_id=r["id"], category=r["category"], ward_id=r["ward_id"], ward_name=r["ward_name"],
+        status=r["status"], report_count=r["report_count"], first_reported=r["first_reported"],
+        last_reported=r["last_reported"], closed_at=r["closed_at"], location=location,
+        location_precision=precision, is_synthetic=is_synthetic if is_synthetic is not None else True,
+    )
+
+
+@app.get("/api/public/issues", response_model=PublicIssueListResponse)
+def public_issues(
+    ward_id: Optional[int] = None,
+    category: Optional[str] = None,
+    status: Optional[str] = None,
+    limit: int = Query(50, ge=1, le=200),
+    offset: int = Query(0, ge=0),
+    db=Depends(get_db),
+):
+    where, params = [live_issue_sql("i")], {}
+    if ward_id is not None:
+        where.append("i.ward_id = %(ward_id)s")
+        params["ward_id"] = ward_id
+    if category is not None:
+        where.append("i.category::text = %(category)s")  # unknown category -> empty, not a 500
+        params["category"] = category
+    if status is not None:
+        where.append("i.status = %(status)s")
+        params["status"] = status
+    where_sql = f"WHERE {' AND '.join(where)}" if where else ""
+    with db.cursor(row_factory=dict_row) as cur:
+        cur.execute(f"SELECT count(*) AS n FROM issues i {where_sql}", params)
+        total = cur.fetchone()["n"]
+        # Newest first, never by priority: the ranking is internal.
+        cur.execute(
+            f"{PUBLIC_ISSUE_SQL} {where_sql} ORDER BY i.last_reported DESC NULLS LAST, i.id DESC "
+            "LIMIT %(limit)s OFFSET %(offset)s",
+            {**params, "limit": limit, "offset": offset},
+        )
+        rows = cur.fetchall()
+    synthetic = _synthetic_flags_for_issues(db, [r["id"] for r in rows])
+    return PublicIssueListResponse(
+        total=total, limit=limit, offset=offset,
+        items=[_public_issue(r, synthetic.get(r["id"])) for r in rows],
+    )
+
+
+@app.get("/api/public/issues/{issue_id}", response_model=PublicIssue)
+def public_issue(issue_id: int, db=Depends(get_db)):
+    with db.cursor(row_factory=dict_row) as cur:
+        cur.execute(f"{PUBLIC_ISSUE_SQL} WHERE i.id = %s AND {live_issue_sql('i')}", (issue_id,))
+        row = cur.fetchone()
+    if row is None:
+        raise HTTPException(status_code=404, detail=f"issue {issue_id} not found")
+    return _public_issue(row, _synthetic_flags_for_issues(db, [issue_id]).get(issue_id))
+
+
+@app.get("/api/public/map", response_model=PublicMapResponse)
+def public_map(db=Depends(get_db)):
+    with db.cursor(row_factory=dict_row) as cur:
+        cur.execute(f"{PUBLIC_ISSUE_SQL} WHERE i.geom IS NOT NULL AND {live_issue_sql('i')}")
+        rows = cur.fetchall()
+        cur.execute(WARDS_WITH_OUTLINE_SQL)
+        ward_rows = cur.fetchall()
+    synthetic = _synthetic_flags_for_issues(db, [r["id"] for r in rows])
+    return PublicMapResponse(
+        issues=[_public_issue(r, synthetic.get(r["id"])) for r in rows],
+        wards=[MapWard(ward_id=r["id"], name=r["name"], geometry=r["geometry"]) for r in ward_rows],
     )

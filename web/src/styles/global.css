@@ -8,6 +8,76 @@
   --color-foreground: #0f172a;
   --color-muted: #f8fafc;
   --color-border: #e2e8f0;
+
+  /* Stitch "Municipal Spatial Intelligence" tokens - admin shell (ws-*) */
+  --color-ws-surface: #f9f9ff;
+  --color-ws-surface-lowest: #ffffff;
+  --color-ws-surface-low: #f0f3ff;
+  --color-ws-surface-container: #e7eeff;
+  --color-ws-surface-high: #dee8ff;
+  --color-ws-surface-highest: #d6e3fe;
+  --color-ws-surface-variant: #d6e3fe;
+  --color-ws-on-surface: #0e1c2f;
+  --color-ws-on-surface-variant: #414754;
+  --color-ws-navy: #0e1c2f;
+  --color-ws-inverse: #243145;
+  --color-ws-outline: #727786;
+  --color-ws-primary: #0058c3;
+  --color-ws-blue: #0070f3;
+  --color-ws-tertiary: #006296;
+  --color-ws-tertiary-container: #007cbc;
+  --color-ws-tertiary-fixed: #cce5ff;
+  --color-ws-secondary-container: #d4e0f9;
+  --color-ws-on-secondary-container: #586378;
+  --color-ws-error: #ba1a1a;
+  --font-ws-headline: "Space Grotesk", sans-serif;
+  --font-ws-body: "Plus Jakarta Sans", sans-serif;
+  --font-ws-label: "Inter", sans-serif;
+
+  /* Stitch "Sentry Editorial Civic" tokens - citizen site (se-*) */
+  --color-se-surface: #f9f9fa;
+  --color-se-lowest: #ffffff;
+  --color-se-low: #f3f3f4;
+  --color-se-container: #eeeeef;
+  --color-se-high: #e8e8e9;
+  --color-se-highest: #e2e2e3;
+  --color-se-dim: #dadadb;
+  --color-se-on: #1a1c1d;
+  --color-se-variant: #444748;
+  --color-se-secondary: #555f6d;
+  --color-se-outline: #747878;
+  --color-se-outline-variant: #c4c7c7;
+  --color-se-primary: #000000;
+  --color-se-primary-container: #1c1b1b;
+  --color-se-on-primary-container: #858383;
+  --font-se-sans: "Public Sans", sans-serif;
+  --font-se-code: "Space Grotesk", sans-serif;
+  --text-se-hero: 76px;
+  --text-se-hero--line-height: 82px;
+  --text-se-hero--letter-spacing: -0.035em;
+  --text-se-xl: 56px;
+  --text-se-xl--line-height: 64px;
+  --text-se-xl--letter-spacing: -0.03em;
+  --text-se-lg: 40px;
+  --text-se-lg--line-height: 48px;
+  --text-se-lg--letter-spacing: -0.025em;
+  --text-se-md: 28px;
+  --text-se-md--line-height: 36px;
+  --text-se-md--letter-spacing: -0.015em;
+  --text-se-title: 22px;
+  --text-se-title--line-height: 30px;
+  --text-se-body-xl: 20px;
+  --text-se-body-xl--line-height: 32px;
+  --text-se-body: 15px;
+  --text-se-body--line-height: 24px;
+  --text-se-sm: 13px;
+  --text-se-sm--line-height: 20px;
+  --text-se-code: 12px;
+  --text-se-code--line-height: 16px;
+  --text-se-code--letter-spacing: 0.06em;
+  --text-se-caps: 11px;
+  --text-se-caps--line-height: 14px;
+  --text-se-caps--letter-spacing: 0.08em;
 }
 
 :root {

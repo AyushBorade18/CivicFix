@@ -1,20 +1,48 @@
+import uuid
+
 import pytest
 from fastapi.testclient import TestClient
 
 from app.api.main import app
+from app.auth import get_current_user
+from app.users import create_user
 
 
 @pytest.fixture
-def real_client(monkeypatch, real_database_url):
+def real_admin(monkeypatch, real_database_url):
+    """A throwaway system_admin account in the real database, deleted after
+    the test. Reports these tests submit are owned by it (reporter_user_id
+    is a real foreign key), and every test cleans its reports up first."""
+    monkeypatch.setattr("app.db.DATABASE_URL", real_database_url)
+    from app.db import get_connection
+    conn = get_connection()
+    admin = create_user(conn, f"pytest|api-admin|{uuid.uuid4().hex[:8]}", "system_admin")
+    try:
+        yield admin
+    finally:
+        with conn.cursor() as cur:
+            cur.execute("DELETE FROM users WHERE id = %s", (admin.id,))
+        conn.commit()
+        conn.close()
+
+
+@pytest.fixture
+def real_client(monkeypatch, real_database_url, real_admin):
     """These API tests deliberately verify against the real, seeded
     civicfix database (per this task's explicit instructions), not the
     isolated civicfix_test every other test in this suite uses. Restoring
     app.db.DATABASE_URL just for the duration of one test is safe: it's a
     monkeypatch, auto-reverted afterward, and get_connection() re-reads the
     module global on every call rather than caching it.
+
+    They test the pipeline, not auth: the caller is resolved straight to a
+    system_admin, skipping token verification. The auth boundary itself is
+    tested in tests/test_auth.py.
     """
     monkeypatch.setattr("app.db.DATABASE_URL", real_database_url)
-    return TestClient(app)
+    app.dependency_overrides[get_current_user] = lambda: real_admin
+    yield TestClient(app)
+    app.dependency_overrides.pop(get_current_user, None)
 
 
 @pytest.fixture
@@ -111,6 +139,21 @@ def test_list_issues_pagination(real_client):
     assert ids1.isdisjoint(ids2)
 
 
+def test_list_issues_triage_fields_and_queues(real_client, real_conn):
+    body = real_client.get("/api/issues", params={"limit": 20}).json()
+    for item in body["items"]:
+        for key in ("location_phrase", "evidence_accuracy_m", "pending_evidence", "has_resolution_evidence", "assigned_worker_id"):
+            assert key in item
+    with real_conn.cursor() as cur:
+        cur.execute("SELECT count(DISTINCT issue_id) FROM evidence WHERE review_status = 'pending_review'")
+        pending = cur.fetchone()[0]
+        cur.execute("SELECT count(*) FROM issues WHERE assigned_worker_id IS NOT NULL")
+        assigned = cur.fetchone()[0]
+    assert real_client.get("/api/issues", params={"queue": "verification_pending"}).json()["total"] == pending
+    assert real_client.get("/api/issues", params={"queue": "assigned"}).json()["total"] == assigned
+    assert real_client.get("/api/issues", params={"queue": "bogus"}).status_code == 422
+
+
 def test_list_issues_is_synthetic_true_for_all_current_issues(real_client):
     # every report in this dataset is synthetic (no real citizen intake exists yet)
     resp = real_client.get("/api/issues", params={"limit": 200})
@@ -177,6 +220,23 @@ def test_map_endpoint_shape(real_client):
     assert len(body["matched_works"]) > 0
     for site in body["sensitive_sites"][:5]:
         assert site["location"]["lat"] is not None
+    # Command Center groups issues by ward and draws ward outlines.
+    assert all("ward_id" in i and i["first_reported"] for i in body["issues"])
+    assert any(i["ward_id"] is not None for i in body["issues"])
+    for ward in body["wards"]:
+        assert ward["geometry"]["type"] in ("Polygon", "MultiPolygon")
+
+
+def test_public_map_carries_ward_outlines(real_client):
+    wards = real_client.get("/api/public/map").json()["wards"]
+    assert len(wards) == 58
+    assert all(w["geometry"]["type"] in ("Polygon", "MultiPolygon") for w in wards)
+
+
+def test_large_responses_are_gzipped(real_client):
+    resp = real_client.get("/api/public/map", headers={"Accept-Encoding": "gzip"})
+    assert resp.status_code == 200
+    assert resp.headers.get("content-encoding") == "gzip"
 
 
 def test_post_reports_rejects_unknown_ward_id(real_client):
@@ -210,8 +270,9 @@ def test_post_reports_full_live_pipeline_then_cleanup(real_client, real_conn):
 
     try:
         assert body["report"]["raw_text"] == unique_marker
-        assert body["report"]["is_synthetic"] is True
-        assert body["is_synthetic"] is True
+        # a signed-in account's submission is a real report, not synthetic
+        assert body["report"]["is_synthetic"] is False
+        assert body["is_synthetic"] is False
         assert body["category"] in (
             "pothole_road", "drainage_sewage", "water_supply", "streetlight",
             "garbage_waste", "footpath", "traffic_signage", "other",
@@ -455,7 +516,7 @@ def test_close_then_recurrence_reopens_via_live_reports(real_client, real_conn):
         assert cur.fetchone()[0] == issues_before
 
 
-def _insert_throwaway_issue(conn, category="pothole_road", ward_id=1, status="open"):
+def _insert_throwaway_issue(conn, category="pothole_road", ward_id=1, status="open", reporter_user_id=None):
     with conn.cursor() as cur:
         cur.execute(
             "INSERT INTO issues (category, ward_id, status, report_count, first_reported, last_reported) "
@@ -463,6 +524,12 @@ def _insert_throwaway_issue(conn, category="pothole_road", ward_id=1, status="op
             (category, ward_id, status),
         )
         issue_id = cur.fetchone()[0]
+        if reporter_user_id is not None:  # feedback is only accepted from a reporter of the issue
+            cur.execute(
+                "INSERT INTO reports (raw_text, reported_at, category, issue_id, reporter_user_id) "
+                "VALUES ('throwaway test report', now(), %s, %s, %s)",
+                (category, issue_id, reporter_user_id),
+            )
     conn.commit()
     return issue_id
 
@@ -509,8 +576,8 @@ def test_feedback_rejects_unknown_id(real_client):
     assert resp.status_code == 404
 
 
-def test_feedback_rejects_non_closed_issue(real_client, real_conn):
-    issue_id = _insert_throwaway_issue(real_conn, status="open")
+def test_feedback_rejects_non_closed_issue(real_client, real_conn, real_admin):
+    issue_id = _insert_throwaway_issue(real_conn, status="open", reporter_user_id=real_admin.id)
     try:
         resp = real_client.post(f"/api/issues/{issue_id}/feedback", json={"resolved_confirmed": True})
         assert resp.status_code == 400
@@ -518,8 +585,8 @@ def test_feedback_rejects_non_closed_issue(real_client, real_conn):
         _delete_throwaway_issue(real_conn, issue_id)
 
 
-def test_feedback_confirming_resolution_keeps_issue_closed(real_client, real_conn):
-    issue_id = _insert_throwaway_issue(real_conn, status="closed")
+def test_feedback_confirming_resolution_keeps_issue_closed(real_client, real_conn, real_admin):
+    issue_id = _insert_throwaway_issue(real_conn, status="closed", reporter_user_id=real_admin.id)
     try:
         resp = real_client.post(
             f"/api/issues/{issue_id}/feedback",
@@ -538,8 +605,8 @@ def test_feedback_confirming_resolution_keeps_issue_closed(real_client, real_con
         _delete_throwaway_issue(real_conn, issue_id)
 
 
-def test_feedback_disputing_resolution_reopens_issue(real_client, real_conn):
-    issue_id = _insert_throwaway_issue(real_conn, status="closed")
+def test_feedback_disputing_resolution_reopens_issue(real_client, real_conn, real_admin):
+    issue_id = _insert_throwaway_issue(real_conn, status="closed", reporter_user_id=real_admin.id)
     try:
         resp = real_client.post(
             f"/api/issues/{issue_id}/feedback",
@@ -565,8 +632,8 @@ def test_feedback_disputing_resolution_reopens_issue(real_client, real_conn):
         _delete_throwaway_issue(real_conn, issue_id)
 
 
-def test_issue_detail_includes_feedback_and_routing_fields(real_client, real_conn):
-    issue_id = _insert_throwaway_issue(real_conn, category="streetlight", status="closed")
+def test_issue_detail_includes_feedback_and_routing_fields(real_client, real_conn, real_admin):
+    issue_id = _insert_throwaway_issue(real_conn, category="streetlight", status="closed", reporter_user_id=real_admin.id)
     try:
         real_client.post(f"/api/issues/{issue_id}/feedback", json={"resolved_confirmed": True})
         body = real_client.get(f"/api/issues/{issue_id}").json()

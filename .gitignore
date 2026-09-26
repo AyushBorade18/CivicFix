@@ -25,3 +25,24 @@ backups/
 # resident_name/email/phone columns. Wrong geography for Pune and never
 # ingested by anything - kept out of the repo rather than committed.
 complaints.zip
+
+# Local dev identity issuer keys (scripts/dev_auth.py) - never commit
+.dev_auth/
+
+# Location-verified evidence photos - private, served only through the API
+data/evidence/
+
+# The runtime classifier head (16 KB) must ship with the code: without it the
+# hosted API silently falls back to the keyword baseline.
+!models/classifier_v1.pkl
+
+# Design/reference material, not app source
+*.mp4
+stitch_*.zip
+PMC.zip
+WardSentry-UI-References/
+.env.bak-*
+
+# Real citizen complaints - the repo is public
+data/labelling/lo2_gold_real_complaints.csv
+.DS_Store

@@ -14,11 +14,15 @@ load_dotenv()
 # duration of just those tests.
 REAL_DATABASE_URL = os.environ["DATABASE_URL"]
 os.environ["DATABASE_URL"] = os.environ["TEST_DATABASE_URL"]
+# Fixtures are generated test data; tests/test_test_data.py switches this off
+# to check the live-site behaviour.
+os.environ.setdefault("SHOW_TEST_DATA", "1")
 
 import pytest  # noqa: E402
 
 from app.db import get_connection  # noqa: E402
 from app.ingest.wards import load_wards  # noqa: E402
+from app.migrate import migrate  # noqa: E402
 
 WARDS_GEOJSON = "data/wards/pune-2022-wards.geojson"
 
@@ -26,6 +30,8 @@ WARDS_GEOJSON = "data/wards/pune-2022-wards.geojson"
 @pytest.fixture(scope="session", autouse=True)
 def _ensure_test_wards():
     load_wards(WARDS_GEOJSON)
+    # Bring the test database's schema up to date (users, report ownership...).
+    migrate()
 
 
 @pytest.fixture(scope="session")

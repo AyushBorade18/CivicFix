@@ -1,19 +1,15 @@
 import { Outlet } from "react-router-dom";
-import { Header } from "../components/Header";
-import { Footer } from "../components/Footer";
+import { AdminSidebar, AdminTopBar } from "./components/AdminNav";
 import "./admin.css";
 
 export function AdminLayout() {
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <a href="#admin-main" className="skip-link">
-        Skip to content
-      </a>
-      <Header type="admin" />
-      <main id="admin-main" className="max-w-7xl mx-auto px-6 py-8">
+    <div className="w-screen h-screen overflow-hidden bg-ws-surface text-ws-on-surface font-ws-body antialiased">
+      <AdminSidebar />
+      <AdminTopBar />
+      <main id="admin-main" className="absolute top-16 left-64 right-0 bottom-0 overflow-auto select-text">
         <Outlet />
       </main>
-      <Footer />
     </div>
   );
 }

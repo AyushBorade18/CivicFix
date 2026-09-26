@@ -1,0 +1,49 @@
+# Render Blueprint for the WardSentry API. Secrets are `sync: false`: Render asks
+# for them in the dashboard, and they never live in this repo.
+services:
+  - type: web
+    name: wardsentry-api
+    runtime: python
+    # The encoder + PyTorch need ~1.5 GB RAM; the 512 MB tiers run out of memory.
+    plan: standard
+    region: singapore
+    buildCommand: >-
+      pip install torch==2.14.0 --index-url https://download.pytorch.org/whl/cpu &&
+      pip install -r requirements.txt &&
+      python -m spacy download en_core_web_sm &&
+      python -m scripts.encoder_hub fetch
+    startCommand: uvicorn app.api.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.8
+      # Supabase session pooler URI (IPv4), ending in ?sslmode=require
+      - key: DATABASE_URL
+        sync: false
+      # Supabase Auth - asymmetric JWT signing keys must be enabled
+      - key: AUTH_JWKS_URL
+        sync: false
+      - key: AUTH_ISSUER
+        sync: false
+      - key: AUTH_AUDIENCE
+        value: authenticated
+      - key: AUTH_ALGORITHMS
+        value: ES256,RS256
+      # Private Storage bucket for evidence photos
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: EVIDENCE_BUCKET
+        value: evidence
+      # Private Hugging Face repo holding models/civicfix-encoder-v1
+      - key: ENCODER_REPO
+        sync: false
+      - key: HF_TOKEN
+        sync: false
+      # The two Vercel URLs, comma-separated
+      - key: CORS_ORIGINS
+        sync: false
+      # Generated test complaints never appear on the live site.
+      - key: SHOW_TEST_DATA
+        value: "0"

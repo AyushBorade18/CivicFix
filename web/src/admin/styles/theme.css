@@ -1,0 +1,162 @@
+/* WardSentry Command Design System (CARTO-Inspired) */
+
+:root {
+  /* Precision Colors */
+  --ws-bg-primary: #ffffff;
+  --ws-bg-secondary: #f9fafb; /* minimal contrast */
+  --ws-border: #e5e7eb;
+  --ws-border-focus: #9ca3af;
+  --ws-text-primary: #111827;
+  --ws-text-secondary: #4b5563;
+  --ws-text-muted: #9ca3af;
+  
+  /* Status/Data Colors (Semantic, restrained) */
+  --ws-priority-high: #ef4444;
+  --ws-priority-med: #f59e0b;
+  --ws-priority-low: #3b82f6;
+  --ws-verified: #10b981;
+
+  /* Typography */
+  --ws-font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  
+  /* Geometry */
+  --ws-radius: 4px; /* minimal rounding */
+  --ws-panel-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+body {
+  font-family: var(--ws-font-sans);
+  color: var(--ws-text-primary);
+  background-color: var(--ws-bg-primary);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Animations: Editorial Reveals */
+@keyframes textReveal {
+  0% {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes panelFadeIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.98) translateY(4px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.animate-reveal {
+  animation: textReveal 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  opacity: 0;
+}
+
+.animate-reveal-stagger-1 {
+  animation: textReveal 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.1s forwards;
+  opacity: 0;
+}
+
+.animate-reveal-stagger-2 {
+  animation: textReveal 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards;
+  opacity: 0;
+}
+
+.animate-panel {
+  animation: panelFadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  opacity: 0;
+}
+
+/* UI Components */
+.ws-panel {
+  background: var(--ws-bg-primary);
+  border: 1px solid var(--ws-border);
+  border-radius: var(--ws-radius);
+  box-shadow: var(--ws-panel-shadow);
+  /* Optional very subtle opacity for map context, no heavy glass blur */
+  background-color: rgba(255, 255, 255, 0.96);
+}
+
+.ws-btn {
+  font-family: var(--ws-font-sans);
+  font-weight: 500;
+  border-radius: var(--ws-radius);
+  border: 1px solid var(--ws-border);
+  background: var(--ws-bg-primary);
+  color: var(--ws-text-primary);
+  padding: 0.5rem 1rem;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.ws-btn:hover {
+  border-color: var(--ws-border-focus);
+  background: var(--ws-bg-secondary);
+}
+
+/* Map specific overrides for a clean look */
+.leaflet-container {
+  font-family: var(--ws-font-sans) !important;
+}
+.leaflet-control-zoom {
+  border: 1px solid var(--ws-border) !important;
+  border-radius: var(--ws-radius) !important;
+  box-shadow: var(--ws-panel-shadow) !important;
+}
+.leaflet-control-zoom a {
+  color: var(--ws-text-primary) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Stitch "Municipal Spatial Intelligence" palette and type for every admin
+   page. Tailwind v4 utilities read these variables, so pages written with the
+   stock gray/blue/mono classes pick up the Stitch look without a rewrite.
+   Scoped to #admin-main so the citizen app is untouched. */
+#admin-main {
+  --font-sans: "Plus Jakarta Sans", sans-serif;
+  --font-mono: "Space Grotesk", sans-serif;
+  --ws-font-sans: "Plus Jakarta Sans", sans-serif;
+  --color-gray-50: #f0f3ff;
+  --color-gray-100: #e7eeff;
+  --color-gray-200: #dee8ff;
+  --color-gray-300: #c1c6d7;
+  --color-gray-400: #8b92a4;
+  --color-gray-500: #727786;
+  --color-gray-600: #535f74;
+  --color-gray-700: #414754;
+  --color-gray-800: #243145;
+  --color-gray-900: #0e1c2f;
+  --color-blue-50: #f0f3ff;
+  --color-blue-100: #d8e2ff;
+  --color-blue-200: #aec6ff;
+  --color-blue-500: #0070f3;
+  --color-blue-600: #0058c3;
+  --color-blue-700: #004397;
+  --color-blue-800: #004397;
+  --color-blue-900: #001a43;
+  --ws-border: #dee8ff;
+  --ws-text-primary: #0e1c2f;
+  --ws-text-secondary: #414754;
+}
+#admin-main .ws-panel {
+  border: none;
+  border-radius: 0.75rem;
+  background: #ffffff;
+  box-shadow: 0 1px 3px rgba(11, 25, 44, 0.04), 0 4px 12px rgba(11, 25, 44, 0.03);
+}
+#admin-main h1, #admin-main h2, #admin-main h3 { font-family: "Space Grotesk", sans-serif; }

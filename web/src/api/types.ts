@@ -118,6 +118,11 @@ export interface IssueSummary {
   is_synthetic: boolean;
   routed_agency: string | null;
   routed_at: string | null;
+  location_phrase?: string | null;
+  evidence_accuracy_m?: number | null;
+  pending_evidence?: number;
+  has_resolution_evidence?: boolean;
+  assigned_worker_id?: number | null;
 }
 
 export interface IssueListResponse {
@@ -143,6 +148,111 @@ export interface ReportInIssue {
   translated_text: string | null;
   photo_severity_score: number | null;
   photo_severity_band: string | null;
+  evidence_status: EvidenceStatus | null;
+  evidence_due_at: string | null;
+}
+
+// A report without a photo is "pending" or "not_provided" - never false.
+export type EvidenceStatus =
+  | "submitted"
+  | "alternative_confirmed"
+  | "alternative_in_progress"
+  | "pending"
+  | "not_provided";
+
+export interface EvidenceItem {
+  evidence_id: number;
+  issue_id: number;
+  report_id: number | null;
+  submitted_by: number;
+  actor_type: "citizen" | "worker";
+  evidence_type: "initial_report" | "resolution";
+  capture_method: "camera";
+  file_url: string;
+  mime_type: string;
+  byte_size: number;
+  sha256: string;
+  location: GeoPoint;
+  accuracy_m: number;
+  captured_at: string | null;
+  location_captured_at: string | null;
+  submitted_at: string;
+  distance_from_issue_m: number | null;
+  issue_location_precision: LocationPrecision;
+  review_status: "pending_review" | "verified" | "review_required";
+  reviewed_by: number | null;
+  reviewed_at: string | null;
+  review_note: string | null;
+}
+
+export interface AlternativeVerification {
+  id: number;
+  report_id: number;
+  channel: "phone" | "whatsapp" | "in_person" | "other";
+  status: "initiated" | "confirmed" | "not_confirmed" | "unreachable";
+  initiated_by: number;
+  initiated_at: string;
+  completed_by: number | null;
+  completed_at: string | null;
+  notes: string | null;
+}
+
+export interface FieldWorker {
+  id: number;
+  display_name: string | null;
+}
+
+export interface MeResponse {
+  id: number;
+  role: string;
+  display_name: string | null;
+  email: string | null;
+  ward_ids: number[];
+  departments: string[];
+}
+
+export interface MyReport {
+  report_id: number;
+  raw_text: string;
+  reported_at: string;
+  category: string | null;
+  ward_id: number | null;
+  photo_url: string | null;
+  language: string | null;
+  translated_text: string | null;
+  issue_id: number | null;
+  issue_status: string | null;
+  is_synthetic: boolean;
+  evidence_status: EvidenceStatus | null;
+  evidence_due_at: string | null;
+  issue_reverification_due_at: string | null;
+}
+
+/** Public projection of an issue: no report text, no priority, location rounded to ~100 m. */
+export interface PublicIssue {
+  issue_id: number;
+  category: string;
+  ward_id: number | null;
+  ward_name: string | null;
+  status: string;
+  report_count: number;
+  first_reported: string | null;
+  last_reported: string | null;
+  closed_at: string | null;
+  location: GeoPoint | null;
+  location_precision: "approximate" | "ward_level" | "unknown";
+}
+
+export interface PublicIssueListResponse {
+  total: number;
+  limit: number;
+  offset: number;
+  items: PublicIssue[];
+}
+
+export interface PublicMapResponse {
+  issues: PublicIssue[];
+  wards: MapWard[];
 }
 
 export interface PhotoUploadResponse {
@@ -231,6 +341,12 @@ export interface IssueDetailResponse {
   feedback: FeedbackSummary[];
   routed_agency: string | null;
   routed_at: string | null;
+  evidence: EvidenceItem[];
+  alternative_verifications: AlternativeVerification[];
+  assigned_worker_id: number | null;
+  assigned_at: string | null;
+  closed_at: string | null;
+  reverification_due_at: string | null;
 }
 
 export interface MapIssuePoint {
@@ -240,6 +356,8 @@ export interface MapIssuePoint {
   priority_score: number | null;
   location: GeoPoint;
   location_precision: LocationPrecision;
+  ward_id: number | null;
+  first_reported: string | null;
 }
 
 export interface MapWorkPoint {
@@ -259,6 +377,7 @@ export interface MapSitePoint {
 export interface MapWard {
   ward_id: number;
   name: string;
+  geometry: GeoJSON.Geometry | null;
 }
 
 export interface MapResponse {
@@ -279,8 +398,8 @@ export interface ReportCreateResponse {
   issue_id: number;
   joined_existing_issue: boolean;
   category: string;
-  category_confidence: number;
-  severity: string;
+  category_confidence: number | null; // null for citizens (internal)
+  severity: string | null;
   location_precision: LocationPrecision;
   priority_score: number | null;
   priority_breakdown: PriorityBreakdown | null;

@@ -1,54 +1,92 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { api, ApiError, mediaUrl } from "../../api/client";
+import { GeoJSON, MapContainer, TileLayer, CircleMarker, useMap } from "react-leaflet";
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
+import { api, ApiError, mediaUrl, type EvidencePackage } from "../../api/client";
+import { useSignedIn } from "../../lib/auth";
+import { SignIn } from "../../components/SignIn";
+import { EvidenceCamera, formatTime } from "../../evidence/EvidenceCamera";
+import { captureAndUpload, type UploadResult } from "../../evidence/pendingUploads";
 import { useApi } from "../../hooks/useApi";
 import { useSpeechRecognition } from "../../hooks/useSpeechRecognition";
 import { CATEGORY_LABELS } from "../../api/types";
-import type { ReportCreateResponse } from "../../api/types";
-import { LanguageTag } from "../../components/Badges";
-import { GlowingCard } from "../../components/ui/GlowingCard";
-import { 
-  Mic, 
-  MicOff, 
-  UploadCloud, 
-  Send, 
-  CheckCircle2, 
-  AlertCircle, 
-  MapPin, 
-  Layers,
-  ArrowRight
-} from "lucide-react";
+import type { MapWard, ReportCreateResponse } from "../../api/types";
+import { Icon } from "../../admin/components/ws";
+import { Kicker, SplitCTA } from "../Shell";
+
+// Report page, ported from the Stitch export
+// stitch_wardsentry_citizen_portal/report_an_issue_wardsentry.
 
 const VOICE_LANGUAGES = [
   { code: "en-IN", label: "English" },
   { code: "hi-IN", label: "हिंदी (Hindi)" },
   { code: "mr-IN", label: "मराठी (Marathi)" },
 ];
+const CHIPS = ["pothole_road", "streetlight", "water_supply", "drainage_sewage", "garbage_waste", "footpath", "traffic_signage"];
+const DRAFT_KEY = "ws-report-draft";
+const PUNE: [number, number] = [18.5204, 73.8567];
 
-function severityMessage(severity: string): string {
-  if (severity === "critical") return "This looks serious and has been flagged for prompt attention.";
-  if (severity === "moderate") return "This has been logged as a moderate-priority issue.";
-  return "This has been logged as a minor issue.";
+type Draft = { text: string; wardId: string; landmark: string; chip: string };
+
+function loadDraft(): Draft | null {
+  try { return JSON.parse(localStorage.getItem(DRAFT_KEY) ?? "null"); } catch { return null; }
 }
 
+function severityMessage(severity: string): string {
+  if (severity === "critical") return "This looks serious - it has been marked urgent for your ward team.";
+  if (severity === "moderate") return "Your ward team will attend to this soon.";
+  return "Your ward team has been told.";
+}
+
+const input = "w-full h-12 px-3 border border-se-outline-variant bg-se-lowest font-se-sans text-se-body text-se-on focus:outline-none focus:border-se-primary";
+const label = "block font-se-code text-se-caps uppercase tracking-widest text-se-variant mb-2";
+
 export function ReportIssue() {
-  const { data: mapData } = useApi(() => api.map(), []);
-  const [text, setText] = useState("");
-  const [wardId, setWardId] = useState<string>("");
-  const [photo, setPhoto] = useState<File | null>(null);
-  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  const signedIn = useSignedIn();
+  const { data: mapData } = useApi(() => api.publicMap(), []);
+  const { data: stats } = useApi(() => api.stats(), []);
+  const draft = useMemo(loadDraft, []);
+  const [chip, setChip] = useState(draft?.chip ?? "");
+  const [text, setText] = useState(draft?.text ?? "");
+  const [wardId, setWardId] = useState<string>(draft?.wardId ?? "");
+  const [landmark, setLandmark] = useState(draft?.landmark ?? "");
+  const [tipOpen, setTipOpen] = useState(true);
+  const [draftSaved, setDraftSaved] = useState(false);
+  const [cameraOpen, setCameraOpen] = useState(false);
+  const [evidence, setEvidence] = useState<EvidencePackage | null>(null);
+  const [evidencePreview, setEvidencePreview] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<ReportCreateResponse | null>(null);
+  const [evidenceResult, setEvidenceResult] = useState<UploadResult | null>(null);
   const [voiceLang, setVoiceLang] = useState(VOICE_LANGUAGES[0].code);
   const speech = useSpeechRecognition(voiceLang, (finalText) => {
     setText((prev) => (prev.trim() ? `${prev.trim()} ${finalText.trim()}` : finalText.trim()));
   });
 
-  function handlePhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0] ?? null;
-    setPhoto(file);
-    setPhotoPreview(file ? URL.createObjectURL(file) : null);
+  const issues = mapData?.issues ?? [];
+  const open = issues.filter((i) => i.status !== "closed").length;
+  const ward = mapData?.wards.find((w) => String(w.ward_id) === wardId) ?? null;
+
+  function keepCapture(pkg: EvidencePackage) {
+    if (evidencePreview) URL.revokeObjectURL(evidencePreview);
+    setEvidence(pkg);
+    setEvidencePreview(URL.createObjectURL(pkg.photo));
+    setCameraOpen(false);
+  }
+
+  function removeCapture() {
+    if (evidencePreview) URL.revokeObjectURL(evidencePreview);
+    setEvidence(null);
+    setEvidencePreview(null);
+  }
+
+  function saveDraft() {
+    try {
+      localStorage.setItem(DRAFT_KEY, JSON.stringify({ text, wardId, landmark, chip } satisfies Draft));
+      setDraftSaved(true);
+    } catch { /* storage blocked: nothing to save to */ }
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -56,321 +94,334 @@ export function ReportIssue() {
     if (!text.trim()) return;
     setSubmitting(true);
     setError(null);
+    // The citizen's own words, prefixed with the kind of problem they picked
+    // (unless they already said it) and followed by their landmark.
+    const kind = chip ? CATEGORY_LABELS[chip] : "";
+    const saidKind = kind && text.toLowerCase().includes(kind.split(" ")[0].toLowerCase());
+    const parts = [kind && !saidKind ? `${kind}:` : "", text.trim(), landmark.trim() ? `Near ${landmark.trim()}.` : ""];
     try {
-      let photo_url: string | null = null;
-      if (photo) {
-        photo_url = (await api.uploadPhoto(photo)).photo_url;
-      }
       const response = await api.createReport({
-        raw_text: text.trim(),
+        raw_text: parts.filter(Boolean).join(" "),
         ward_id: wardId ? Number(wardId) : null,
-        photo_url,
       });
+      // The report is saved at this point; the photo follows as its own
+      // request and survives a network drop (kept on the device for retry).
+      setEvidenceResult(evidence ? await captureAndUpload(response.issue_id, evidence, response.report.id) : null);
+      try { localStorage.removeItem(DRAFT_KEY); } catch { /* ignore */ }
       setResult(response);
+      window.scrollTo(0, 0);
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : "Something went wrong submitting your report. Please try again.");
+      if (err instanceof ApiError && (err.status === 401 || err.status === 403)) {
+        setError("Please sign in to send a report.");
+      } else if (!navigator.onLine) {
+        setError("You're offline. Your report hasn't been sent yet - reconnect and send again. Nothing you entered is lost.");
+      } else {
+        setError(err instanceof ApiError ? err.message : "Something went wrong sending your report. Please try again.");
+      }
     } finally {
       setSubmitting(false);
     }
   }
 
+  const hero = (
+    <section className="w-full bg-se-surface px-5 md:px-12 pt-10 pb-12">
+      <h1 className="font-se-sans text-[40px] leading-[46px] md:text-se-xl text-se-on tracking-tight">Report a Problem in Your Ward</h1>
+      <p className="mt-4 max-w-2xl font-se-sans text-se-body-xl text-se-variant">
+        Goes straight to your ward’s team. Add a photo from the spot and follow it until it’s fixed.
+      </p>
+    </section>
+  );
+
   if (result) {
-    return <ReportResult result={result} onReportAnother={() => { setResult(null); setText(""); setPhoto(null); setPhotoPreview(null); }} />;
+    return (
+      <ReportResult result={result} evidenceResult={evidenceResult}
+        onReportAnother={() => { setResult(null); setEvidenceResult(null); setText(""); setLandmark(""); setChip(""); removeCapture(); }} />
+    );
+  }
+
+  if (!signedIn) {
+    return (
+      <>
+        {hero}
+        <section className="bg-se-lowest border-t border-se-outline-variant/40 px-5 md:px-12 py-12">
+          <SignIn title="Sign in to report a problem" blurb="Your reports are linked to your account so you can add a photo later, follow progress and confirm the fix. Your name is never shown publicly." />
+        </section>
+      </>
+    );
   }
 
   return (
-    <div className="max-w-3xl mx-auto space-y-8">
-      <div>
-        <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground mb-2">
-          Report a Civic Issue
-        </h1>
-        <p className="text-secondary text-base sm:text-lg leading-relaxed">
-          Describe the problem in your own words. Mentioning a landmark or selecting your ward helps place it accurately on the Pune spatial map.
-        </p>
-      </div>
+    <>
+      {hero}
 
-      <GlowingCard className="border-border">
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Textarea description */}
-          <div className="space-y-2">
-            <label htmlFor="raw_text" className="text-sm font-semibold text-foreground flex items-center justify-between">
-              <span>What is the issue? *</span>
-              <span className="text-xs text-secondary font-normal">Min 10 characters</span>
-            </label>
-            <textarea
-              id="raw_text"
-              rows={4}
-              required
-              minLength={10}
-              placeholder="e.g. Deep pothole right outside Pune Railway Station gate 2, traffic slowing down severely..."
-              value={text}
-              onChange={(e) => setText(e.target.value)}
-              className="w-full font-sans text-sm sm:text-base p-3.5 border border-border rounded-xl bg-muted/40 text-foreground placeholder:text-secondary/60 focus:bg-background focus:outline-none focus:ring-2 focus:ring-primary transition-all"
-            />
+      {/* Category rail */}
+      <section className="w-full bg-se-lowest border-y border-se-outline-variant/40 px-5 md:px-12 py-4 flex items-center justify-between gap-4">
+        <div className="flex items-center gap-1 overflow-x-auto [scrollbar-width:none] font-se-code text-se-code whitespace-nowrap">
+          {CHIPS.map((c) => (
+            <button key={c} type="button" onClick={() => setChip(chip === c ? "" : c)}
+              className={`px-4 py-2 transition-colors ${chip === c ? "bg-se-primary text-white" : "bg-se-container text-se-on hover:bg-se-high"}`}>
+              {CATEGORY_LABELS[c]}
+            </button>
+          ))}
+        </div>
+        {speech.supported && (
+          <button type="button" onClick={speech.listening ? speech.stop : speech.start}
+            className={`shrink-0 hidden sm:flex items-center gap-1 px-3 py-2 border font-se-code text-se-caps uppercase tracking-wider transition-colors ${speech.listening ? "bg-se-primary text-white border-se-primary" : "border-se-outline-variant hover:border-se-primary"}`}>
+            <Icon name={speech.listening ? "stop_circle" : "mic"} className="text-[16px]" /> {speech.listening ? "Listening… tap to stop" : "Speak instead"}
+          </button>
+        )}
+      </section>
+      {tipOpen && (
+        <div className="w-full bg-se-container px-5 md:px-12 py-2 flex items-center justify-between gap-4 font-se-code text-se-code text-se-variant">
+          <span className="flex items-center gap-2"><Icon name="graphic_eq" className="text-[16px]" />Tip: pick the kind of problem, tell us where it is, and add a photo if you can.</span>
+          <button type="button" onClick={() => setTipOpen(false)} className="hover:text-se-on shrink-0">Dismiss</button>
+        </div>
+      )}
 
-            {/* Speech Input */}
-            {speech.supported && (
-              <div className="flex flex-wrap items-center gap-3 pt-1">
-                <select
-                  value={voiceLang}
-                  onChange={(e) => setVoiceLang(e.target.value)}
-                  disabled={speech.listening}
-                  aria-label="Spoken language"
-                  className="px-3 py-1.5 border border-border rounded-lg bg-background text-foreground text-xs font-medium"
-                >
-                  {VOICE_LANGUAGES.map((l) => (
-                    <option key={l.code} value={l.code}>
-                      {l.label}
-                    </option>
-                  ))}
+      <form onSubmit={handleSubmit} className="w-full bg-se-surface px-5 md:px-12 py-12 grid grid-cols-1 lg:grid-cols-12 gap-12">
+        {/* Left column */}
+        <div className="lg:col-span-7 space-y-12">
+          <div>
+            <PhaseHead n="01" title="The problem" right="Required" />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+              <div>
+                <span className={label}>Kind of problem</span>
+                <div className="h-12 px-3 flex items-center bg-se-high border border-se-outline-variant font-se-sans text-se-body">
+                  {chip ? CATEGORY_LABELS[chip] : <span className="text-se-variant">Pick one above, or just describe it</span>}
+                </div>
+              </div>
+              <div>
+                <label htmlFor="voice-lang" className={label}>Language you’ll speak</label>
+                <select id="voice-lang" value={voiceLang} onChange={(e) => setVoiceLang(e.target.value)} disabled={speech.listening} className={input}>
+                  {VOICE_LANGUAGES.map((l) => <option key={l.code} value={l.code}>{l.label}</option>)}
                 </select>
-                <button
-                  type="button"
-                  onClick={speech.listening ? speech.stop : speech.start}
-                  className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-                    speech.listening 
-                      ? "bg-red-600 text-white animate-pulse" 
-                      : "bg-muted border border-border text-foreground hover:bg-border/60"
-                  }`}
-                >
-                  {speech.listening ? (
-                    <>
-                      <MicOff className="w-3.5 h-3.5" />
-                      Stop recording
-                    </>
-                  ) : (
-                    <>
-                      <Mic className="w-3.5 h-3.5 text-primary" />
-                      Speak instead
-                    </>
-                  )}
-                </button>
-                {speech.listening && (
-                  <span className="text-xs text-secondary font-mono">
-                    {speech.interimTranscript || "Listening…"}
-                  </span>
-                )}
-                {speech.error && (
-                  <span className="text-xs text-red-600 flex items-center gap-1">
-                    <AlertCircle className="w-3.5 h-3.5" />
-                    {speech.error}
-                  </span>
-                )}
               </div>
-            )}
-          </div>
-
-          {/* Optional Ward */}
-          <div className="space-y-2">
-            <label htmlFor="ward" className="text-sm font-semibold text-foreground flex items-center gap-1.5">
-              <MapPin className="w-4 h-4 text-primary" />
-              <span>Ward location (optional)</span>
-            </label>
-            <select
-              id="ward"
-              value={wardId}
-              onChange={(e) => setWardId(e.target.value)}
-              className="w-full px-3.5 py-2.5 border border-border rounded-xl bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-            >
-              <option value="">I didn't mention a ward above / not sure</option>
-              {mapData?.wards.map((w) => (
-                <option key={w.ward_id} value={w.ward_id}>
-                  Ward {w.ward_id} — {w.name}
-                </option>
-              ))}
-            </select>
-            <p className="text-xs text-secondary">
-              Our spatial engine detects locations from text, but you can explicitly specify a ward if known.
-            </p>
-          </div>
-
-          {/* Photo attachment */}
-          <div className="space-y-2">
-            <label htmlFor="photo" className="text-sm font-semibold text-foreground flex items-center gap-1.5">
-              <UploadCloud className="w-4 h-4 text-primary" />
-              <span>Attach a photo (optional)</span>
-            </label>
-            <input
-              id="photo"
-              type="file"
-              accept="image/jpeg,image/png,image/webp"
-              onChange={handlePhotoChange}
-              className="block w-full text-xs text-secondary file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 cursor-pointer border border-border rounded-xl p-2 bg-muted/20"
-            />
-            <p className="text-xs text-secondary">
-              Stored as evidence for ward officer verification — never solely used to score severity.
-            </p>
-            {photoPreview && (
-              <div className="mt-3 relative rounded-xl overflow-hidden border border-border max-w-sm">
-                <img src={photoPreview} alt="Report preview" className="w-full h-48 object-cover" />
-              </div>
-            )}
-          </div>
-
-          {error && (
-            <div className="p-3.5 bg-red-50 border border-red-200 text-red-700 rounded-xl text-sm flex items-start gap-2" role="alert">
-              <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-red-600" />
-              <span>{error}</span>
             </div>
-          )}
-
-          <div className="pt-2">
-            <button
-              type="submit"
-              disabled={submitting || !text.trim()}
-              className="btn btn-black w-full py-3.5 rounded-xl font-semibold text-base shadow-sm flex items-center justify-center gap-2 disabled:opacity-50"
-            >
-              {submitting ? (
-                <>Submitting report…</>
-              ) : (
-                <>
-                  <Send className="w-4 h-4" />
-                  Submit Civic Report
-                </>
+            <label htmlFor="raw_text" className={label}>Describe the problem</label>
+            <textarea id="raw_text" rows={4} required minLength={10} value={text} onChange={(e) => setText(e.target.value)}
+              placeholder="e.g. Big pothole outside the school gate, bikes are slipping, water collects when it rains…"
+              className="w-full p-3 border border-se-outline-variant bg-se-lowest font-se-sans text-se-body text-se-on focus:outline-none focus:border-se-primary" />
+            <div className="flex flex-wrap items-center gap-3 mt-2 font-se-code text-se-code text-se-variant">
+              {speech.supported && (
+                <button type="button" onClick={speech.listening ? speech.stop : speech.start}
+                  className="sm:hidden flex items-center gap-1 px-3 py-1.5 border border-se-outline-variant uppercase">
+                  <Icon name={speech.listening ? "stop_circle" : "mic"} className="text-[16px]" /> {speech.listening ? "Stop" : "Speak instead"}
+                </button>
               )}
+              {speech.listening && <span>{speech.interimTranscript || "Listening…"}</span>}
+              {speech.error && <span className="text-red-700">{speech.error}</span>}
+              {!speech.listening && !speech.error && <span>At least 10 characters</span>}
+            </div>
+          </div>
+
+          <div>
+            <PhaseHead n="02" title="Photo from the spot" right="Recommended" />
+            <div className="relative w-full aspect-video bg-se-primary-container overflow-hidden">
+              {evidence && evidencePreview ? (
+                <img src={evidencePreview} alt="Your photo of the problem" className="absolute inset-0 w-full h-full object-cover" />
+              ) : (
+                <div className="absolute inset-0 bg-cover bg-center opacity-25 grayscale" style={{ backgroundImage: "url(/media/how-it-works.jpg)" }} />
+              )}
+              <span className="absolute top-3 left-3 px-2 py-1 bg-black/70 text-white font-se-code text-se-caps uppercase flex items-center gap-1.5">
+                <span className={`w-1.5 h-1.5 rounded-full ${evidence ? "bg-emerald-400" : "bg-red-500 animate-pulse"}`} />
+                {evidence ? "Photo added" : "Camera"}
+              </span>
+              {evidence && (
+                <span className="absolute top-3 right-3 px-2 py-1 bg-black/70 text-white font-se-code text-se-caps uppercase">
+                  {formatTime(evidence.capturedAt)} · Location added
+                </span>
+              )}
+              {!evidence && (
+                <div className="absolute left-1/2 top-[42%] -translate-x-1/2 -translate-y-1/2 w-28 h-24">
+                  <span className="absolute top-0 left-0 w-5 h-5 border-t-2 border-l-2 border-white/70" />
+                  <span className="absolute top-0 right-0 w-5 h-5 border-t-2 border-r-2 border-white/70" />
+                  <span className="absolute bottom-0 left-0 w-5 h-5 border-b-2 border-l-2 border-white/70" />
+                  <span className="absolute bottom-0 right-0 w-5 h-5 border-b-2 border-r-2 border-white/70" />
+                  <Icon name="location_on" className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-white/80 text-[22px]" />
+                </div>
+              )}
+              <div className="absolute bottom-0 inset-x-0 p-3 flex items-end justify-between gap-3 bg-gradient-to-t from-black/80 to-transparent">
+                <p className="text-white font-se-sans text-se-sm max-w-xs">
+                  {evidence ? "This photo will be sent with your report." : "Take a photo right where the problem is. Optional — you can add one later."}
+                </p>
+                <div className="flex gap-1 shrink-0">
+                  <button type="button" onClick={() => setCameraOpen(true)} className="px-3 py-2 bg-white text-se-on font-se-code text-se-caps uppercase flex items-center gap-1">
+                    <Icon name="photo_camera" className="text-[16px]" /> {evidence ? "Retake" : "Open camera"}
+                  </button>
+                  {evidence && (
+                    <button type="button" onClick={removeCapture} className="px-3 py-2 border border-white/60 text-white font-se-code text-se-caps uppercase">Remove</button>
+                  )}
+                </div>
+              </div>
+            </div>
+            <div className="mt-2 p-3 bg-se-container flex items-start gap-2 font-se-sans text-se-sm text-se-variant">
+              <Icon name="verified_user" className="text-[18px] shrink-0" />
+              Only live photos are accepted — the time and place are recorded so your ward officer can trust it.
+            </div>
+          </div>
+        </div>
+
+        {/* Right column */}
+        <div className="lg:col-span-5 space-y-12">
+          <div>
+            <PhaseHead n="03" title="Where is it" right="Pune wards" />
+            <label htmlFor="ward" className={label}>Your ward</label>
+            <select id="ward" value={wardId} onChange={(e) => setWardId(e.target.value)} className={`${input} mb-4`}>
+              <option value="">Not sure — find it for me</option>
+              {mapData?.wards.map((w) => <option key={w.ward_id} value={w.ward_id}>{w.name} (Ward {w.ward_id})</option>)}
+            </select>
+            <label htmlFor="landmark" className={label}>Street or nearby landmark</label>
+            <input id="landmark" value={landmark} onChange={(e) => setLandmark(e.target.value)} className={`${input} mb-4`}
+              placeholder="e.g. Opposite Balgandharva Rangmandir, JM Road" />
+            <div className="relative h-56 border border-se-outline-variant bg-se-high">
+              <MapContainer center={PUNE} zoom={11} zoomControl={false} scrollWheelZoom={false} attributionControl={false} style={{ height: "100%", background: "#e8e8e9" }}>
+                <TileLayer url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png" />
+                {ward && <WardFocus ward={ward} />}
+                {evidence && <CircleMarker center={[evidence.latitude, evidence.longitude]} radius={7} pathOptions={{ color: "#fff", weight: 2, fillColor: "#000", fillOpacity: 1 }} />}
+              </MapContainer>
+              <span className="absolute bottom-2 left-2 z-[500] px-2 py-1 bg-se-primary text-white font-se-code text-[10px] uppercase tracking-wider">
+                {ward ? `Ward ${ward.ward_id} // ${ward.name.split(" - ")[0]}` : "Pune // ward found from your description"}
+              </span>
+              {evidence && <span className="absolute top-2 right-2 z-[500] px-2 py-1 bg-se-lowest border border-se-outline-variant font-se-code text-[10px] uppercase flex items-center gap-1"><Icon name="my_location" className="text-[14px]" />Photo location</span>}
+            </div>
+          </div>
+
+          <div>
+            <PhaseHead n="04" title="Updates on your report" right="My reports" />
+            <div className="p-4 bg-se-lowest border border-se-outline-variant font-se-sans text-se-sm text-se-variant space-y-1">
+              <p className="text-se-on font-medium flex items-center gap-2"><Icon name="check_circle" className="text-[18px]" />You’re signed in</p>
+              <p>Follow this report any time from <Link to="/citizen/my-reports" className="underline text-se-on">Track My Report</Link>. Your name is never shown publicly.</p>
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            {error && (
+              <div className="p-3 bg-red-50 border border-red-200 text-red-700 font-se-sans text-se-sm flex items-start gap-2" role="alert">
+                <Icon name="error" className="text-[18px] shrink-0" />{error}
+              </div>
+            )}
+            <button type="submit" disabled={submitting || text.trim().length < 10}
+              className="w-full h-14 px-5 bg-se-primary text-white flex items-center justify-between font-se-code text-se-code uppercase tracking-wider font-semibold hover:bg-se-primary-container disabled:opacity-40 transition-colors">
+              <span>{submitting ? "Sending…" : "Send to my ward team"}</span><Icon name="arrow_forward" className="text-[20px]" />
+            </button>
+            <button type="button" onClick={saveDraft}
+              className="w-full h-11 border border-se-outline-variant bg-se-lowest font-se-code text-se-caps uppercase tracking-wider hover:border-se-primary transition-colors">
+              {draftSaved ? "Draft saved on this device" : "Save draft on this device"}
+            </button>
+            <div className="flex justify-between pt-2 font-se-code text-[10px] uppercase tracking-wider text-se-variant">
+              <span>Your name is never shown publicly</span><span className="text-se-on font-semibold">Takes under a minute</span>
+            </div>
+          </div>
+        </div>
+      </form>
+
+      <SplitCTA
+        left={{ to: "/citizen/my-reports", kicker: "Your reports // Check progress", title: "Track Previous Reports", text: "See where each of your complaints stands, add a photo later, and confirm when it’s fixed." }}
+        right={{ to: "/citizen/issues", kicker: "Pune Pulse // Your city", title: "See What’s Reported Nearby", text: "Problems reported across Pune’s wards on one map — and how many have been fixed." }}
+      />
+
+      <section className="w-full bg-se-lowest border-t border-se-outline-variant/40 px-5 md:px-12 py-10 grid grid-cols-2 md:grid-cols-4 gap-7">
+        <Stat label="Wards covered" value={stats?.wards} note="Across Pune city" />
+        <Stat label="Reports from residents" value={stats?.reports} note="And counting" />
+        <Stat label="Waiting to be fixed" value={mapData ? open : undefined} note="Open right now" />
+        <Stat label="Fixed" value={mapData ? issues.length - open : undefined} note="With a photo from the spot" />
+      </section>
+
+      {cameraOpen && <EvidenceCamera title="Photo of the problem" onCancel={() => setCameraOpen(false)} onConfirm={keepCapture} />}
+    </>
+  );
+}
+
+function PhaseHead({ n, title, right }: { n: string; title: string; right: string }) {
+  return (
+    <div className="flex items-center justify-between pb-2 mb-5 border-b border-se-outline-variant/60">
+      <Kicker>Step {n} // {title}</Kicker>
+      <Kicker className="text-se-on">{right}</Kicker>
+    </div>
+  );
+}
+
+function Stat({ label, value, note }: { label: string; value: number | undefined; note: string }) {
+  return (
+    <div>
+      <Kicker>{label}</Kicker>
+      <div className="font-se-sans text-se-lg text-se-on mt-1">{value == null ? "—" : value.toLocaleString("en-IN")}</div>
+      <div className="font-se-code text-[11px] text-se-variant">{note}</div>
+    </div>
+  );
+}
+
+/** Outline the chosen ward and fit the map to it. */
+function WardFocus({ ward }: { ward: MapWard }) {
+  const map = useMap();
+  useEffect(() => {
+    if (!ward.geometry) return;
+    const b = L.geoJSON(ward.geometry as GeoJSON.GeoJsonObject).getBounds();
+    if (b.isValid()) map.fitBounds(b, { padding: [16, 16] });
+  }, [map, ward]);
+  if (!ward.geometry) return null;
+  return <GeoJSON key={ward.ward_id} data={ward.geometry as GeoJSON.GeoJsonObject} style={{ color: "#000", weight: 1.5, fillColor: "#555f6d", fillOpacity: 0.25 }} />;
+}
+
+function EvidenceOutcome({ outcome, dueAt }: { outcome: UploadResult | null; dueAt: string | null }) {
+  if (outcome === null) {
+    return <p>No photo added yet.{dueAt && <> You can add one from Track My Report until {formatTime(dueAt)}.</>}</p>;
+  }
+  if (outcome.ok) return <p className="text-emerald-700">Photo received — your ward officer will look at it.</p>;
+  return (
+    <p className="text-amber-700" role="alert">
+      Your report is saved. {outcome.message}
+      {outcome.retryable && <> Open <Link to="/citizen/my-reports" className="underline">Track My Report</Link> to send it.</>}
+    </p>
+  );
+}
+
+function ReportResult({ result, evidenceResult, onReportAnother }: {
+  result: ReportCreateResponse; evidenceResult: UploadResult | null; onReportAnother: () => void;
+}) {
+  const where =
+    result.location_precision === "precise" ? "We found the exact spot."
+    : result.location_precision === "ward_level" ? `Sent to Ward ${result.report.ward_id ?? "—"}.`
+    : "We couldn't find the exact spot yet - a ward officer will place it.";
+  const rows: [string, React.ReactNode][] = [
+    ["Kind of problem", CATEGORY_LABELS[result.category] ?? result.category],
+    ["Where", where],
+    ["Others nearby", result.joined_existing_issue ? "Others have reported this too. Your report has been added to theirs - more reports means it gets attention sooner." : "You're the first to report this. Thank you!"],
+    ["How urgent", result.severity ? severityMessage(result.severity) : "Your ward team will assess it."],
+    ["Your photo", <EvidenceOutcome outcome={evidenceResult} dueAt={result.report.evidence_due_at} />],
+  ];
+  return (
+    <>
+      <section className="w-full bg-se-surface px-5 md:px-12 pt-10 pb-12">
+        <Kicker>Report #{result.report.id} // Sent</Kicker>
+        <h1 className="mt-3 font-se-sans text-[40px] leading-[46px] md:text-se-xl text-se-on tracking-tight">Thank you — your report has been sent.</h1>
+        <p className="mt-4 max-w-2xl font-se-sans text-se-body-xl text-se-variant">
+          {result.report.language && result.report.language !== "en" ? "Thanks for writing in your language — a ward officer will read it. " : ""}Here’s what happens with it.
+        </p>
+      </section>
+      <section className="w-full bg-se-lowest border-t border-se-outline-variant/40 px-5 md:px-12 py-12">
+        <div className="max-w-4xl">
+          {result.report.photo_url && (
+            <img src={mediaUrl(result.report.photo_url)} alt="Your photo of the problem" className="max-h-72 mb-7 border border-se-outline-variant object-cover" />
+          )}
+          {rows.map(([k, v], i) => (
+            <div key={k} className="grid grid-cols-1 md:grid-cols-12 gap-2 py-5 border-b border-se-high">
+              <div className="md:col-span-4 flex items-baseline gap-3"><span className="font-se-code text-se-code text-se-secondary">/0.{i + 1}</span><span className="font-se-sans text-se-title text-se-on">{k}</span></div>
+              <div className="md:col-span-8 font-se-sans text-se-body text-se-variant">{v}</div>
+            </div>
+          ))}
+          <div className="flex flex-col sm:flex-row gap-2 mt-10">
+            <Link to={`/citizen/issues/${result.issue_id}`} className="h-14 px-6 bg-se-primary text-white flex items-center justify-between gap-6 font-se-code text-se-code uppercase tracking-wider font-semibold hover:bg-se-primary-container">
+              Follow this problem <Icon name="arrow_forward" className="text-[20px]" />
+            </Link>
+            <button type="button" onClick={onReportAnother} className="h-14 px-6 border border-se-outline-variant font-se-code text-se-code uppercase tracking-wider hover:border-se-primary">
+              Report another problem
             </button>
           </div>
-        </form>
-      </GlowingCard>
-    </div>
+        </div>
+      </section>
+    </>
   );
 }
 
-function ReportResult({
-  result,
-  onReportAnother,
-}: {
-  result: ReportCreateResponse;
-  onReportAnother: () => void;
-}) {
-  const categoryLabel = CATEGORY_LABELS[result.category] ?? result.category;
-  const locationMessage =
-    result.location_precision === "precise"
-      ? "Placed at a verified precise coordinate."
-      : result.location_precision === "ward_level"
-      ? `Placed within Ward ${result.report.ward_id ?? "—"}.`
-      : "Couldn't determine a specific geographic coordinate from description.";
-
-  return (
-    <div className="max-w-3xl mx-auto space-y-8">
-      <div className="text-center space-y-2">
-        <div className="w-12 h-12 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-600 mx-auto flex items-center justify-center">
-          <CheckCircle2 className="w-6 h-6" />
-        </div>
-        <h1 className="text-3xl font-bold tracking-tight text-foreground">
-          Thank you — your report is registered.
-        </h1>
-        <p className="text-secondary text-base">
-          Here is how our deterministic intake engine analyzed and placed your complaint:
-        </p>
-      </div>
-
-      <GlowingCard className="border-border">
-        {result.report.language && result.report.language !== "en" && (
-          <div className="mb-6 p-4 bg-muted/60 rounded-xl border border-border/70">
-            <LanguageTag language={result.report.language} />
-            {result.report.translated_text && (
-              <p className="mt-2 text-sm text-secondary">
-                Translated for automated clustering: <em>&ldquo;{result.report.translated_text}&rdquo;</em>
-              </p>
-            )}
-          </div>
-        )}
-
-        {result.report.photo_url && (
-          <div className="mb-6 p-4 bg-muted/40 rounded-xl border border-border">
-            <img
-              src={mediaUrl(result.report.photo_url)}
-              alt="Reported evidence"
-              className="max-h-56 rounded-lg border border-border object-cover mx-auto"
-            />
-            {result.report.photo_severity_band && (
-              <p className="mt-2 text-xs text-secondary text-center">
-                Photo severity metric: <strong>{result.report.photo_severity_band}</strong>
-                {result.report.photo_severity_score != null && ` (score ${result.report.photo_severity_score.toFixed(2)})`}
-              </p>
-            )}
-          </div>
-        )}
-
-        <ol className="space-y-4 mb-8">
-          <li className="flex items-start gap-3 p-3 bg-muted/30 rounded-lg border border-border/60">
-            <span className="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">
-              1
-            </span>
-            <div>
-              <strong className="text-foreground text-sm block">Category Classification</strong>
-              <span className="text-secondary text-sm">{categoryLabel}</span>
-            </div>
-          </li>
-
-          <li className="flex items-start gap-3 p-3 bg-muted/30 rounded-lg border border-border/60">
-            <span className="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">
-              2
-            </span>
-            <div>
-              <strong className="text-foreground text-sm block">Spatial Resolution</strong>
-              <span className="text-secondary text-sm">{locationMessage}</span>
-            </div>
-          </li>
-
-          <li className="flex items-start gap-3 p-3 bg-muted/30 rounded-lg border border-border/60">
-            <span className="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">
-              3
-            </span>
-            <div>
-              <strong className="text-foreground text-sm block">Clustering Status</strong>
-              <span className="text-secondary text-sm">
-                {result.joined_existing_issue
-                  ? "Matched an existing tracked issue nearby. Added as corroborating evidence to increase resolution priority."
-                  : "Registered as a newly discovered distinct civic issue."}
-              </span>
-            </div>
-          </li>
-
-          <li className="flex items-start gap-3 p-3 bg-muted/30 rounded-lg border border-border/60">
-            <span className="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">
-              4
-            </span>
-            <div>
-              <strong className="text-foreground text-sm block">Public Works Cross-Check</strong>
-              <span className="text-secondary text-sm">
-                {result.matched_work
-                  ? "Surfaced related MPLADS government works record in this vicinity."
-                  : "No related MPLADS public works record found for this coordinate."}
-              </span>
-            </div>
-          </li>
-
-          <li className="flex items-start gap-3 p-3 bg-muted/30 rounded-lg border border-border/60">
-            <span className="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">
-              5
-            </span>
-            <div>
-              <strong className="text-foreground text-sm block">Severity Band</strong>
-              <span className="text-secondary text-sm">{severityMessage(result.severity)}</span>
-            </div>
-          </li>
-        </ol>
-
-        <div className="flex flex-col sm:flex-row gap-3.5 pt-2">
-          <Link
-            to={`/citizen/issues/${result.issue_id}`}
-            className="btn btn-black flex-1 py-3 rounded-xl justify-center text-sm font-semibold flex items-center gap-2"
-          >
-            <Layers className="w-4 h-4" />
-            View Tracked Issue #{result.issue_id}
-            <ArrowRight className="w-4 h-4" />
-          </Link>
-          <button
-            onClick={onReportAnother}
-            className="btn py-3 px-6 rounded-xl border border-border hover:bg-muted text-foreground text-sm font-medium transition-colors"
-          >
-            Report Another Issue
-          </button>
-        </div>
-      </GlowingCard>
-    </div>
-  );
-}
 export default ReportIssue;

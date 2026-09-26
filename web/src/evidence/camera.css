@@ -1,0 +1,218 @@
+/* Full-screen, portrait-first capture UI. Self-contained (no Tailwind) so the
+   worker app can reuse it as-is. */
+.ev-cam {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  background: #000;
+  color: #fff;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  overscroll-behavior: contain;
+}
+
+.ev-cam__bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 52px;
+  padding: 0 8px;
+}
+.ev-cam__title {
+  flex: 1;
+  text-align: center;
+  font-weight: 600;
+  font-size: 16px;
+}
+.ev-cam__spacer {
+  width: 72px;
+}
+.ev-cam__textbtn {
+  width: 72px;
+  min-height: 44px;
+  background: none;
+  border: 0;
+  color: #fff;
+  font-size: 16px;
+  text-align: left;
+  padding: 0 8px;
+  cursor: pointer;
+}
+
+.ev-cam__viewfinder {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+.ev-cam__video {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  object-fit: cover;
+  background: #111;
+}
+.ev-cam__overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 24px;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.6);
+}
+.ev-cam__privacy {
+  max-width: 320px;
+  font-size: 14px;
+  line-height: 1.45;
+  color: #d4d4d4;
+}
+.ev-cam__status {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 124px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.55);
+  font-size: 14px;
+  line-height: 1.4;
+  text-align: center;
+}
+.ev-cam__status:empty {
+  display: none;
+}
+.ev-cam__shutterbar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 112px;
+}
+.ev-cam__shutter {
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  border: 5px solid #fff;
+  background: #fff;
+  box-shadow: inset 0 0 0 4px #000;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.ev-cam__shutter:active {
+  transform: scale(0.94);
+}
+.ev-cam__shutter:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.ev-cam__preview,
+.ev-cam__message {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+  overflow-y: auto;
+}
+.ev-cam__message {
+  justify-content: center;
+  text-align: center;
+  max-width: 420px;
+  margin: 0 auto;
+}
+.ev-cam__message h2 {
+  font-size: 20px;
+  font-weight: 700;
+}
+.ev-cam__message p {
+  font-size: 15px;
+  line-height: 1.5;
+  color: #d4d4d4;
+}
+.ev-cam__photo {
+  width: 100%;
+  max-height: 48vh;
+  object-fit: contain;
+  border-radius: 12px;
+  background: #111;
+}
+.ev-cam__facts {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.ev-cam__fact {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-left: 28px;
+  position: relative;
+  font-weight: 600;
+  font-size: 15px;
+}
+.ev-cam__fact::before {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 20px;
+  text-align: center;
+}
+.ev-cam__fact--ok::before {
+  content: "✓";
+  color: #4ade80;
+}
+.ev-cam__fact--warn::before {
+  content: "!";
+  color: #facc15;
+}
+.ev-cam__fact--error::before {
+  content: "✕";
+  color: #f87171;
+}
+.ev-cam__fact--pending::before {
+  content: "…";
+  color: #d4d4d4;
+}
+.ev-cam__detail {
+  font-weight: 400;
+  font-size: 14px;
+  color: #d4d4d4;
+  font-variant-numeric: tabular-nums;
+}
+
+.ev-cam__actions {
+  display: flex;
+  gap: 12px;
+  margin-top: auto;
+}
+.ev-cam__message .ev-cam__actions {
+  flex-direction: column;
+  margin-top: 8px;
+}
+.ev-cam__btn {
+  flex: 1;
+  min-height: 52px;
+  border-radius: 12px;
+  border: 1px solid #525252;
+  background: #1f1f1f;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.ev-cam__btn--primary {
+  background: #fff;
+  color: #000;
+  border-color: #fff;
+}

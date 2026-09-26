@@ -42,9 +42,6 @@ export function PrecisionTag({ precision }: { precision: LocationPrecision }) {
   );
 }
 
-export function SyntheticTag() {
-  return <span className="tag tag--synthetic">Demo data</span>;
-}
 
 export function StatusTag({ status }: { status: string }) {
   return <span className="tag tag--status">{status}</span>;

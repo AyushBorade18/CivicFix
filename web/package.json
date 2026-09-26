@@ -4,12 +4,18 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "npm run dev:citizen & npm run dev:admin",
+    "dev:citizen": "vite",
+    "dev:admin": "vite --config vite.admin.config.ts",
     "build": "tsc -b && vite build",
+    "build:citizen": "vite build",
+    "build:admin": "vite build --config vite.admin.config.ts && mv dist-admin/admin.html dist-admin/index.html",
     "lint": "oxlint",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "cert": "mkdir -p .cert && IP=$(ipconfig getifaddr en0 || hostname -I | cut -d' ' -f1) && openssl req -x509 -newkey rsa:2048 -nodes -days 365 -subj /CN=wardsentry-dev -addext \"subjectAltName=DNS:localhost,IP:127.0.0.1,IP:$IP\" -keyout .cert/key.pem -out .cert/cert.pem && echo \"Phone URL: https://$IP:5173/citizen\""
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.117.2",
     "leaflet": "^1.9.4",
     "leaflet.markercluster": "^1.5.3",
     "lucide-react": "^1.47.0",

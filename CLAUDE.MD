@@ -133,6 +133,28 @@ built today.
   PCMC and village numbering (see `data/eval/mplads_ward_review.csv`).
   Works are placed by geocoded landmark (`geom_confidence` 1.0), reviewed
   ward or gazetteer place (0.5), else left unplaced.
+- **Schema changes go in `migrations/NNN_*.sql`, applied with `python -m app.migrate`.**
+  `schema.sql` is `CREATE ... IF NOT EXISTS` only, so a column added there never
+  reaches an existing database. Migrations must be additive and idempotent;
+  `tests/conftest.py` applies them to `civicfix_test` automatically. Back up the
+  real DB first (v17 `pg_dump`, see above).
+- **PyJWT's `PyJWKClient` refuses `file://` JWKS URLs** ("only 'http' and 'https'
+  are supported"). Local dev and tests serve the public JWKS over localhost HTTP
+  instead (see `docs/backend_auth_foundation.md` §11) - don't add a file-loading
+  path to `app/auth.py`.
+- **iCloud evicts files from this repo.** It lives in `~/Documents`, which macOS
+  syncs to iCloud with "Optimize Mac Storage": ~30k `.venv` files (and some
+  `.pyc`/uploads) became dataless placeholders, so `import torch` failed with
+  `OSError: could not get source code` and even `head` read 0 bytes. Check with
+  `find .venv -flags +dataless | wc -l`; restore with
+  `find .venv -flags +dataless -print0 | xargs -0 -n 200 brctl download` (async,
+  ~500 files/min). Lasting fix: move the repo out of `~/Documents`, or rename the
+  venv to `.venv.nosync` and symlink `.venv` to it.
+- **Phone cameras need https.** `getUserMedia` only works in a secure context,
+  so `http://<laptop-ip>:5173` gets no camera. `cd web && npm run cert` makes a
+  self-signed cert for the LAN IP; the citizen dev server then serves https on
+  the network (accept the warning once on the phone). The API is reached
+  same-origin through Vite's `/api` proxy - never point the phone at :8000.
 -
 
 ## graphify
