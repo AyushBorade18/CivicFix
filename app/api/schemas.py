@@ -147,6 +147,7 @@ class ReportInIssue(BaseModel):
     # "pending" | "not_provided". A missing photo is never read as false.
     evidence_status: Optional[str] = None
     evidence_due_at: Optional[datetime] = None
+    photo_checks: Optional[dict[str, Any]] = None
 
 
 class WorkSummary(BaseModel):
@@ -329,6 +330,7 @@ class ReportCreateRequest(BaseModel):
 
 class PhotoUploadResponse(BaseModel):
     photo_url: str
+    photo_checks: dict[str, Any]
 
 
 class ReportCreateResponse(BaseModel):

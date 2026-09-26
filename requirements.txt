@@ -14,6 +14,8 @@ python-multipart==0.0.32
 httpx==0.28.1  # Supabase Storage calls for evidence photos (app/api/evidence.py)
 langdetect==1.0.9
 Pillow==12.3.0
+# Photo encryption at rest.
+cryptography==49.0.0
 pytest==9.1.1
 PyJWT[crypto]==2.15.0  # verifies identity-provider tokens (app/auth.py)
 xlrd==2.0.2

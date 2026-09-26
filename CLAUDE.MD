@@ -155,6 +155,12 @@ built today.
   self-signed cert for the LAN IP; the citizen dev server then serves https on
   the network (accept the warning once on the phone). The API is reached
   same-origin through Vite's `/api` proxy - never point the phone at :8000.
+- **`PHOTO_ENCRYPTION_KEY` is unrecoverable.** Photos in `data/uploads/` are
+  Fernet-encrypted with it; lose or change the key and every encrypted photo
+  becomes unreadable (serve_photo returns 503 saying so). All teammates must
+  share the same key out of band. Photos uploaded before 2026-09-27 are still
+  plaintext *and still carry their original EXIF GPS*; the new intake only
+  cleans new uploads.
 -
 
 ## graphify

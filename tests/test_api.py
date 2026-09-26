@@ -667,6 +667,8 @@ def test_post_reports_translates_hindi_and_analyzes_uploaded_photo(real_client, 
     )
     assert upload_resp.status_code == 201
     photo_url = upload_resp.json()["photo_url"]
+    assert "stored_encrypted" in upload_resp.json()["photo_checks"]
+    assert real_client.get(photo_url).status_code == 404  # not attached to any report yet
 
     # No English "zzqx" marker here (unlike other tests in this file): a
     # short Hindi sentence with a long Latin-script suffix confuses
@@ -696,6 +698,10 @@ def test_post_reports_translates_hindi_and_analyzes_uploaded_photo(real_client, 
         assert report["photo_severity_score"] is not None
         assert report["photo_severity_band"] in ("cosmetic", "moderate", "critical")
         assert 0.0 <= report["photo_severity_score"] <= 1.0
+        assert report["photo_checks"]["had_gps"] is False
+        served = real_client.get(photo_url)
+        assert served.status_code == 200
+        assert served.headers["content-type"] == "image/jpeg"
         # Photo is evidence only: severity (and so priority) comes from text + category.
         from app.nlp.severity import severity
         assert report["severity"] == severity(report["translated_text"] or hindi_text, body["category"])
@@ -719,6 +725,9 @@ def test_post_reports_translates_hindi_and_analyzes_uploaded_photo(real_client, 
     uploaded_path = os.path.join("data", "uploads", os.path.basename(photo_url))
     if os.path.exists(uploaded_path):
         os.remove(uploaded_path)
+    with real_conn.cursor() as cur:
+        cur.execute("DELETE FROM photo_uploads WHERE filename = %s", (os.path.basename(photo_url),))
+    real_conn.commit()
 
 
 def test_refresh_match_for_issue_survives_prior_signal_on_its_own_match(real_client, real_conn):

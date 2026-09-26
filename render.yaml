@@ -14,6 +14,13 @@ services:
       python -m scripts.encoder_hub fetch
     startCommand: uvicorn app.api.main:app --host 0.0.0.0 --port $PORT
     healthCheckPath: /api/health
+    # Report photos (app/nlp/photo_validate.py) are written to data/uploads;
+    # without a disk every deploy would wipe them.
+    # ponytail: single-instance disk; move to the Supabase bucket if the API scales out.
+    disk:
+      name: uploads
+      mountPath: /opt/render/project/src/data/uploads
+      sizeGB: 1
     envVars:
       - key: PYTHON_VERSION
         value: 3.12.8
@@ -36,6 +43,10 @@ services:
         sync: false
       - key: EVIDENCE_BUCKET
         value: evidence
+      # Fernet key for report photos at rest. Losing it makes every stored
+      # photo unreadable - keep the same value the team shares.
+      - key: PHOTO_ENCRYPTION_KEY
+        sync: false
       # Private Hugging Face repo holding models/civicfix-encoder-v1
       - key: ENCODER_REPO
         sync: false

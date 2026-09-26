@@ -5,7 +5,7 @@ import "leaflet/dist/leaflet.css";
 import { api, mediaUrl, ApiError } from "../../api/client";
 import { useApi } from "../../hooks/useApi";
 import { CATEGORY_LABELS } from "../../api/types";
-import type { EvidenceItem, IssueDetailResponse, MapSitePoint } from "../../api/types";
+import type { EvidenceItem, IssueDetailResponse, MapSitePoint, PhotoChecks } from "../../api/types";
 import { useEvidencePhoto } from "./EvidenceTimeline";
 import { Icon, SITE_ICON, issueCode, fmtTime, metres, bearing, SectionLabel, landmark } from "./ws";
 
@@ -148,6 +148,7 @@ function DossierBody({ issue, wardName, sites, onChanged }: {
             <Meta title="Citizen Capture">
               <span>{citizenEv ? `Camera capture • ±${citizenEv.accuracy_m.toFixed(1)} m GPS` : report ? "Text report only" : "—"}</span>
               <span className="text-ws-tertiary">{citizenEv ? reviewLabel(citizenEv) : `${issue.report_count} report(s) clustered`}</span>
+              {!citizenEv && reportPhoto && <span>{photoChecksLine(reportPhoto.photo_checks ?? null)}</span>}
             </Meta>
           </div>
           <div className="flex flex-col gap-2">
@@ -389,4 +390,16 @@ function Meta({ title, children }: { title: string; children: React.ReactNode })
       {children}
     </div>
   );
+}
+
+// Upload-time authenticity signals (app/nlp/photo_validate.py) - for the
+// reviewer only, never a verdict.
+function photoChecksLine(checks: PhotoChecks | null): string {
+  if (!checks) return "Authenticity signals: not checked";
+  const flags = Object.keys(checks.flags);
+  return [
+    flags.length ? `Review: ${flags.map((f) => f.replace(/_/g, " ")).join(", ")}` : "No generator markers",
+    checks.had_gps ? "GPS removed" : null,
+    checks.stored_encrypted ? null : "not encrypted",
+  ].filter(Boolean).join(" • ");
 }

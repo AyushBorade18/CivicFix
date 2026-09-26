@@ -57,7 +57,16 @@ CREATE TABLE IF NOT EXISTS reports (
   language        text,  -- ISO 639-1 code from langdetect, NULL if undetectable; never assumed "en"
   translated_text text,  -- English translation used for classify/severity/location when language != "en"
   photo_severity_score real,       -- see app/nlp/photo_severity.py
-  photo_severity_band  severity_band
+  photo_severity_band  severity_band,
+  photo_checks    jsonb            -- authenticity signals + encryption status, see app/nlp/photo_validate.py
+);
+
+-- One row per uploaded photo, written at upload time (before any report
+-- exists), so the signals read from the original bytes survive the strip.
+CREATE TABLE IF NOT EXISTS photo_uploads (
+  filename     text PRIMARY KEY,
+  uploaded_at  timestamptz NOT NULL DEFAULT now(),
+  checks       jsonb NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS works (
@@ -125,3 +134,6 @@ CREATE INDEX IF NOT EXISTS works_geom_idx   ON works   USING GIST (geom);
 CREATE INDEX IF NOT EXISTS sensitive_sites_geom_idx ON sensitive_sites USING GIST (geom);
 CREATE INDEX IF NOT EXISTS reports_embedding_idx ON reports USING ivfflat (embedding vector_cosine_ops);
 CREATE INDEX IF NOT EXISTS works_embedding_idx   ON works   USING ivfflat (embedding vector_cosine_ops);
+
+-- Columns added after the first release; lets re-running this file migrate an existing database.
+ALTER TABLE reports ADD COLUMN IF NOT EXISTS photo_checks jsonb;
