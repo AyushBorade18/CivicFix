@@ -1,5 +1,6 @@
 import { Outlet } from "react-router-dom";
 import { AdminSidebar, AdminTopBar } from "./components/AdminNav";
+import { AssistantLauncher } from "../assistant/Assistant";
 import "./admin.css";
 
 export function AdminLayout() {
@@ -10,6 +11,7 @@ export function AdminLayout() {
       <main id="admin-main" className="absolute top-16 left-64 right-0 bottom-0 overflow-auto select-text">
         <Outlet />
       </main>
+      <AssistantLauncher surface="admin" />
     </div>
   );
 }

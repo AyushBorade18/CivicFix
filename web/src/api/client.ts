@@ -28,6 +28,8 @@ import type {
   PhotoUploadResponse,
   ReportCreateRequest,
   ReportCreateResponse,
+  ChatTurnRequest,
+  ChatTurnResponse,
   StatsResponse,
   WorkSummary,
 } from "./types";
@@ -160,6 +162,8 @@ export const api = {
     form.append("file", file);
     return request<PhotoUploadResponse>("/api/uploads/photo", { method: "POST", body: form });
   },
+
+  chatTurn: (turn: ChatTurnRequest) => post<ChatTurnResponse>("/api/chat/turn", turn),
 
   register: () => post<MeResponse>("/api/me/register"),
   me: () => request<MeResponse>("/api/me"),

@@ -5,6 +5,7 @@ import { ReportIssue } from "./citizen/pages/ReportIssue";
 import { PublicIssues } from "./citizen/pages/PublicIssues";
 import { PublicIssueDetail } from "./citizen/pages/PublicIssueDetail";
 import { MyReports } from "./citizen/pages/MyReports";
+import { AssistantLauncher, AssistantPage } from "./assistant/Assistant";
 
 export default function App() {
   return (
@@ -18,10 +19,12 @@ export default function App() {
           <Route path="/citizen/my-reports" element={<MyReports />} />
           <Route path="/citizen/issues" element={<PublicIssues />} />
           <Route path="/citizen/issues/:issueId" element={<PublicIssueDetail />} />
+          <Route path="/citizen/assistant" element={<AssistantPage />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
+      <AssistantLauncher surface="citizen" />
     </BrowserRouter>
   );
 }

@@ -533,3 +533,73 @@ export const CATEGORY_LABELS: Record<string, string> = {
   traffic_signage: "Traffic signage",
   other: "Other",
 };
+
+// --- CivicFix Assistant (POST /api/chat/turn; app/chat/schemas.py) -----------
+
+export type ChatLang = "en" | "hi" | "mr" | "hinglish";
+
+export interface ChatDraft {
+  text: string;
+  category: string | null;
+  landmark: string | null;
+  since: string | null;
+  latitude: number | null;
+  longitude: number | null;
+  location_label: string | null;
+  location_done: boolean;
+  photo_url: string | null;
+  photo_done: boolean;
+}
+
+/** Held by the client and sent back every turn; the server keeps none. */
+export interface ChatState {
+  conversation_id: string;
+  step: string;
+  lang: ChatLang;
+  lang_locked: boolean;
+  draft: ChatDraft;
+  issue_id: number | null;
+}
+
+export interface ChatAction {
+  kind: "reply" | "location" | "pin" | "photo" | "link" | "sign_in";
+  label: string;
+  action: string | null;
+  value: string | null;
+  href: string | null;
+}
+
+export interface ChatCard {
+  type: "issue" | "priority" | "work" | "outcome" | "summary" | "briefing" | "verification" | "history" | "list";
+  title: string;
+  subtitle: string | null;
+  badge: string | null;
+  tone: "high" | "med" | "low" | "neutral" | "warn" | null;
+  rows: { label: string; value: string }[];
+  factors: { label: string; points: number | null }[];
+  steps: { label: string; value: string }[];
+  items: { title: string; meta: string; action: string | null; value: string | null }[];
+  evidence: { label: string; detail: string }[];
+  note: string | null;
+  href: string | null;
+  href_label: string | null;
+}
+
+export interface ChatTurnRequest {
+  message?: string;
+  action?: string;
+  value?: string | null;
+  latitude?: number;
+  longitude?: number;
+  photo_url?: string;
+  surface: "citizen" | "admin";
+  state?: ChatState;
+}
+
+export interface ChatTurnResponse {
+  reply: string;
+  cards: ChatCard[];
+  actions: ChatAction[];
+  state: ChatState;
+  intent: string;
+}

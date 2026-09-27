@@ -15,6 +15,7 @@ import { HeldReports } from "./pages/HeldReports";
 import { RoleDashboard } from "./pages/RoleDashboard";
 import { AuditLog, StaffRoles } from "./pages/StaffRoles";
 import { StaffGate, useMe } from "./components/StaffGate";
+import { AssistantPage } from "../assistant/Assistant";
 
 /** Pages only a system administrator may open (the API refuses others too). */
 function AdminOnly({ children }: { children: React.ReactNode }) {
@@ -42,6 +43,7 @@ export function AdminApp() {
           <Route path="verification" element={<Verification />} />
           <Route path="analytics" element={<Analytics />} />
           <Route path="held" element={<HeldReports />} />
+          <Route path="assistant" element={<AssistantPage surface="admin" />} />
           {/* Catch-all redirect to the role dashboard */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>

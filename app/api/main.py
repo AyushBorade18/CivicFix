@@ -55,6 +55,7 @@ from app.api.evidence import (
 )
 from app.api.evidence import location_precision_from_breakdown as _location_precision_from_breakdown
 from app.api.admin import router as admin_router
+from app.api.chat import router as chat_router
 from app.api.evidence import router as evidence_router
 from app.auth import (audit, ensure_issue_access, get_current_user, get_verified_claims, issue_scope_sql,
                       live_issue_sql, require_staff, show_test_data)
@@ -70,6 +71,7 @@ from app.ingest.location import extract_ward_number
 from app.nlp.classify import classify
 from app.nlp.embeddings import get_embedding_model as _get_embedding_model
 from app.nlp.language import detect_language
+from app.nlp.location import _ward_containing as ward_containing
 from app.nlp.location import resolve_report_location
 from app.nlp.photo_severity import estimate_photo_severity
 from app.nlp.photo_validate import process_upload, read_photo, write_photo
@@ -108,6 +110,7 @@ app.add_middleware(
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 app.include_router(evidence_router)
 app.include_router(admin_router)
+app.include_router(chat_router)
 
 
 
@@ -736,7 +739,14 @@ def _create_issue_from_report(conn, report: dict) -> int:
         return cur.fetchone()[0]
 
 
-def _attach_or_create_issue(conn, report: dict) -> tuple[int, bool]:
+def _attach_or_create_issue(conn, report: dict, separate: bool = False) -> tuple[int, bool]:
+    best_issue_id = None if separate else find_matching_issue(conn, report)
+    if best_issue_id is not None:
+        return best_issue_id, True
+    return _create_issue_from_report(conn, report), False
+
+
+def find_matching_issue(conn, report: dict) -> Optional[int]:
     """Live-add version of clustering: checks this ONE new report against
     EXISTING open/reopened issues using the exact same rules as
     app.core.clustering.cluster_reports (same category, spatial_ok, 7-day
@@ -783,10 +793,7 @@ def _attach_or_create_issue(conn, report: dict) -> tuple[int, bool]:
         sim = _cosine_similarity(report["embedding"], _parse_embedding(c["embedding"]))
         if sim >= COSINE_THRESHOLD and sim > best_sim:
             best_sim, best_issue_id = sim, c["id"]
-
-    if best_issue_id is not None:
-        return best_issue_id, True
-    return _create_issue_from_report(conn, report), False
+    return best_issue_id
 
 
 def _recompute_issue_aggregates(conn, issue_id: int) -> None:
@@ -919,6 +926,61 @@ def serve_photo(filename: str, db=Depends(get_db)):
     return Response(content=content, media_type=PHOTO_MEDIA_TYPES[match.group(1)])
 
 
+def analyse_report(db, raw_text: str, ward_id: Optional[int] = None,
+                   latitude: Optional[float] = None, longitude: Optional[float] = None) -> dict:
+    """The read-only half of create_report: language, category, location,
+    embedding. The assistant's duplicate preview calls this too, so the
+    preview can never disagree with what submitting would do. Writes nothing.
+    """
+    # Non-English text is translated before running the (English-only)
+    # pipeline, so a Hindi/Marathi complaint gets a real category instead of
+    # falling into "other" - see app/nlp/translate.py. Translation failure
+    # (unsupported language, or the free translation service being down)
+    # degrades to running the pipeline on the original text, same as before.
+    language = detect_language(raw_text)
+    translated_text = translate_to_english(raw_text, language) if language and language != "en" else None
+    pipeline_text = translated_text or raw_text
+
+    # The fine-tuned encoder reads Hindi/Marathi/romanized/code-mixed text
+    # directly, so category and embedding use the original words. Location
+    # still uses the English translation until the gazetteer covers
+    # Hindi/Marathi.
+    category, category_conf = classify(raw_text)
+    lat, lon, geom_conf, resolved_ward, location_phrase = resolve_report_location(pipeline_text, conn=db)
+
+    # A pin/GPS point the citizen gave is the spot itself - better than a
+    # geocoded landmark ("bus stop" geocodes to *a* bus stop). Outside every
+    # ward is refused, never snapped: CivicFix only covers PMC wards.
+    if latitude is not None and longitude is not None:
+        pin_ward = ward_containing(db, latitude, longitude)
+        if pin_ward is None:
+            raise HTTPException(status_code=400, detail="that location is outside the PMC wards CivicFix covers")
+        lat, lon, geom_conf, resolved_ward = latitude, longitude, 1.0, pin_ward
+
+    # Only fills in a location the pipeline itself couldn't find - never
+    # overrides a pipeline result, and never turns a ward selection into a
+    # fabricated precise point (still ward-centroid confidence 0.4).
+    if lat is None and ward_id is not None:
+        with db.cursor() as cur:
+            cur.execute(
+                "SELECT ST_Y(ST_Centroid(geom)), ST_X(ST_Centroid(geom)) FROM wards WHERE id = %s",
+                (ward_id,),
+            )
+            row = cur.fetchone()
+        if row:
+            lat, lon = row
+            geom_conf = 0.4
+            resolved_ward = ward_id
+
+    embedding = _get_embedding_model().encode([raw_text], show_progress_bar=False)[0]
+    return {
+        "language": language, "translated_text": translated_text, "pipeline_text": pipeline_text,
+        "category": category, "category_conf": category_conf, "lat": lat, "lon": lon,
+        "geom_conf": geom_conf, "ward_id": resolved_ward, "location_phrase": location_phrase,
+        "embedding": embedding,
+    }
+
+
 @app.post("/api/reports", response_model=ReportCreateResponse, status_code=201)
 def create_report(payload: ReportCreateRequest, db=Depends(get_db), user: CurrentUser = Depends(get_current_user)):
     """Live citizen-complaint flow: classify -> location -> severity ->
@@ -938,20 +1000,11 @@ def create_report(payload: ReportCreateRequest, db=Depends(get_db), user: Curren
             if cur.fetchone() is None:
                 raise HTTPException(status_code=400, detail=f"ward_id {payload.ward_id} does not exist")
 
-    # Non-English text is translated before running the (English-only)
-    # pipeline, so a Hindi/Marathi complaint gets a real category instead of
-    # falling into "other" - see app/nlp/translate.py. Translation failure
-    # (unsupported language, or the free translation service being down)
-    # degrades to running the pipeline on the original text, same as before.
-    language = detect_language(payload.raw_text)
-    translated_text = translate_to_english(payload.raw_text, language) if language and language != "en" else None
-    pipeline_text = translated_text or payload.raw_text
-
-    # The fine-tuned encoder reads Hindi/Marathi/romanized/code-mixed text
-    # directly, so category and embedding use the original words. Location
-    # still uses the English translation until the gazetteer covers
-    # Hindi/Marathi.
-    category, category_conf = classify(payload.raw_text)
+    a = analyse_report(db, payload.raw_text, payload.ward_id, payload.latitude, payload.longitude)
+    language, translated_text, pipeline_text = a["language"], a["translated_text"], a["pipeline_text"]
+    category, category_conf = a["category"], a["category_conf"]
+    lat, lon, geom_conf, ward_id, location_phrase = a["lat"], a["lon"], a["geom_conf"], a["ward_id"], a["location_phrase"]
+    embedding = a["embedding"]
     # The classifier couldn't place it: an LLM decides accept / review / spam
     # (app/nlp/triage.py). Any failure there comes back as "review", which is
     # exactly the old behaviour. category_conf stays the classifier's own score.
@@ -974,7 +1027,6 @@ def create_report(payload: ReportCreateRequest, db=Depends(get_db), user: Curren
         severity(pipeline_text, category),
         key=BAND_ORDER.index,
     )
-    lat, lon, geom_conf, ward_id, location_phrase = resolve_report_location(pipeline_text, conn=db)
 
     # Photo severity: a deterministic formula over the uploaded image's
     # pixels (see app/nlp/photo_severity.py), stored and shown to the
@@ -997,22 +1049,6 @@ def create_report(payload: ReportCreateRequest, db=Depends(get_db), user: Curren
         # None for photos uploaded before intake checks existed - shown as "not checked".
         photo_checks = row[0] if row else None
 
-    # Only fills in a location the pipeline itself couldn't find - never
-    # overrides a pipeline result, and never turns a ward selection into a
-    # fabricated precise point (still ward-centroid confidence 0.4).
-    if lat is None and payload.ward_id is not None:
-        with db.cursor() as cur:
-            cur.execute(
-                "SELECT ST_Y(ST_Centroid(geom)), ST_X(ST_Centroid(geom)) FROM wards WHERE id = %s",
-                (payload.ward_id,),
-            )
-            row = cur.fetchone()
-        if row:
-            lat, lon = row
-            geom_conf = 0.4
-            ward_id = payload.ward_id
-
-    embedding = _get_embedding_model().encode([payload.raw_text], show_progress_bar=False)[0]
     embedding_literal = "[" + ",".join(str(float(v)) for v in embedding) + "]"
     # timestamptz columns round-trip as timezone-aware datetimes; datetime.now()
     # alone is naive and can't be subtracted from them (_time_ok does exactly
@@ -1061,7 +1097,7 @@ def create_report(payload: ReportCreateRequest, db=Depends(get_db), user: Curren
             cur.execute("UPDATE reports SET issue_id = %s WHERE id = %s", (issue_id, report_id))
         match = None
     else:
-        issue_id, joined_existing = _attach_or_create_issue(db, report_dict)
+        issue_id, joined_existing = _attach_or_create_issue(db, report_dict, separate=payload.separate_issue)
 
         with db.cursor() as cur:
             cur.execute("UPDATE reports SET issue_id = %s WHERE id = %s", (issue_id, report_id))

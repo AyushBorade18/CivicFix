@@ -1,7 +1,7 @@
 from datetime import date, datetime
 from typing import Any, Literal, Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class HealthResponse(BaseModel):
@@ -328,6 +328,13 @@ class ReportCreateRequest(BaseModel):
     raw_text: str
     ward_id: Optional[int] = None
     photo_url: Optional[str] = None
+    # Device GPS or a dropped map pin. Must fall inside a PMC ward. Preferred
+    # over a geocoded text landmark: the citizen pointed at the spot.
+    latitude: Optional[float] = Field(None, ge=-90, le=90)
+    longitude: Optional[float] = Field(None, ge=-180, le=180)
+    # The citizen looked at the matching open issue and said "different
+    # problem": start a new issue instead of joining it. Recurrence still applies.
+    separate_issue: bool = False
 
 
 class PhotoUploadResponse(BaseModel):
