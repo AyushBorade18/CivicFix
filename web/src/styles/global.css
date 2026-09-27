@@ -93,39 +93,57 @@
   box-sizing: border-box;
 }
 
-html {
-  color-scheme: light;
+/* Element defaults live in the base layer so Tailwind utilities (e.g. font-se-sans,
+   text-se-variant on a link) can override them. */
+@layer base {
+  html {
+    color-scheme: light;
+  }
+
+  body {
+    margin: 0;
+    background: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    line-height: 1.2;
+    margin: 0;
+    color: var(--foreground);
+  }
+
+  a {
+    color: inherit;
+  }
+
+  button {
+    font-family: inherit;
+    font-size: inherit;
+  }
+
+  code, .mono {
+    font-family: var(--font-mono);
+  }
+
+  /* Citizen site (Stitch "Sentry Editorial Civic"): regular-weight headings that
+     take their colour from the section they sit in. */
+  .se-root :is(h1, h2, h3, h4) {
+    font-family: var(--font-se-sans);
+    font-weight: 400;
+    color: inherit;
+    line-height: inherit;
+  }
 }
 
-body {
-  margin: 0;
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-body);
-  font-size: 15px;
-  line-height: 1.5;
-  -webkit-font-smoothing: antialiased;
-}
-
-h1, h2, h3, h4 {
-  font-family: var(--font-display);
-  font-weight: 600;
-  line-height: 1.2;
-  margin: 0;
-  color: var(--foreground);
-}
-
-a {
-  color: inherit;
-}
-
-button {
-  font-family: inherit;
-  font-size: inherit;
-}
-
-code, .mono {
-  font-family: var(--font-mono);
+/* Greyscale street map, as in the Stitch Pune Pulse design. */
+.se-gray-tiles {
+  filter: grayscale(1) contrast(0.92) brightness(1.04);
 }
 
 .visually-hidden {

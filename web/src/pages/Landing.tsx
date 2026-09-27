@@ -82,7 +82,7 @@ function Hero({ wards, reports, open, closed }: { wards?: number; reports?: numb
       </div>
 
       <div className="relative z-10 w-full px-5 md:px-12 my-auto flex flex-col items-center text-center">
-        <h1 className="max-w-5xl font-se-sans text-[40px] leading-[46px] md:text-se-hero text-white tracking-tight font-normal drop-shadow-md">
+        <h1 className="max-w-5xl font-se-sans text-[40px] leading-[46px] md:text-se-hero md:leading-[82px] text-white tracking-tight font-normal drop-shadow-md">
           Spotted a problem on your street?<br className="hidden md:inline" /> Report it. Watch it get fixed.
         </h1>
         <p className="mt-4 max-w-2xl font-se-sans text-se-body-xl text-white/80 tracking-tight">
@@ -219,7 +219,7 @@ function FixSplit({ issues }: { issues: PublicIssue[] }) {
           <div className="w-full h-[400px] md:h-[520px] bg-cover bg-center transition-transform duration-700 group-hover:scale-105" style={{ backgroundImage: `url(${POSTER})` }} />
         </div>
         <div className="lg:col-span-6 flex flex-col items-start lg:pl-12">
-          <h2 className="font-se-sans text-[32px] leading-[38px] md:text-se-xl text-se-on font-normal tracking-tight mb-4">There is so much left to fix</h2>
+          <h2 className="font-se-sans text-[32px] leading-[38px] md:text-se-xl md:leading-[64px] text-se-on font-normal tracking-tight mb-4">There is so much left to fix</h2>
           <p className="font-se-sans text-se-body-xl text-se-variant leading-relaxed max-w-xl mb-12">
             Every report helps. When you and your neighbours report the same pothole, your ward team sees how many people it affects — and the worst problems get fixed first.
           </p>

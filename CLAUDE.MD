@@ -161,6 +161,14 @@ built today.
   share the same key out of band. Photos uploaded before 2026-09-27 are still
   plaintext *and still carry their original EXIF GPS*; the new intake only
   cleans new uploads.
+- **Changing `.env` / `web/.env` needs a server restart, and `scripts/dev.sh`
+  won't do it** - it leaves anything already listening alone. Vite bakes
+  `VITE_*` in at startup and the API reads `AUTH_*` at startup, so a stale
+  server after switching to Supabase means "Sign-in isn't configured" (UI) and
+  401s (API). Kill the old processes, then rerun `scripts/dev.sh`.
+- **Port 5173 is taken by a system PostgreSQL 18** (`/Library/PostgreSQL/18`,
+  user `postgres`) - `lsof` without sudo doesn't show it; `netstat -anv` does.
+  The citizen dev server runs on **5175** instead: `cd web && npx vite --port 5175`.
 -
 
 ## graphify

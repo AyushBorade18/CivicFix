@@ -110,7 +110,7 @@ export function MyReports() {
 
   const hero = (
     <section className="w-full bg-se-surface px-5 md:px-12 pt-10 pb-10">
-      <h1 className="max-w-4xl font-se-sans text-[40px] leading-[46px] md:text-se-xl text-se-on tracking-tight">Track Your Report, Step by Step.</h1>
+      <h1 className="max-w-4xl font-se-sans text-[40px] leading-[46px] md:text-se-xl md:leading-[64px] text-se-on tracking-tight">Track Your Report, Step by Step.</h1>
       <p className="mt-4 max-w-2xl font-se-sans text-se-body-xl text-se-variant">
         See whether your complaint has reached your ward, how many neighbours reported it too, and when it’s fixed.
       </p>
@@ -206,7 +206,7 @@ export function MyReports() {
 
       <section className="w-full bg-se-surface px-5 md:px-12 py-20 text-center">
         <Kicker>Our promise to Pune</Kicker>
-        <h2 className="mt-4 max-w-4xl mx-auto font-se-sans text-[32px] leading-[38px] md:text-se-xl text-se-on tracking-tight">
+        <h2 className="mt-4 max-w-4xl mx-auto font-se-sans text-[32px] leading-[38px] md:text-se-xl md:leading-[64px] text-se-on tracking-tight">
           No hidden complaints. Every fix is checked by the people who reported it.
         </h2>
         <p className="mt-4 max-w-2xl mx-auto font-se-sans text-se-body text-se-variant">

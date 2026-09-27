@@ -125,7 +125,7 @@ export function ReportIssue() {
 
   const hero = (
     <section className="w-full bg-se-surface px-5 md:px-12 pt-10 pb-12">
-      <h1 className="font-se-sans text-[40px] leading-[46px] md:text-se-xl text-se-on tracking-tight">Report a Problem in Your Ward</h1>
+      <h1 className="font-se-sans text-[40px] leading-[46px] md:text-se-xl md:leading-[64px] text-se-on tracking-tight">Report a Problem in Your Ward</h1>
       <p className="mt-4 max-w-2xl font-se-sans text-se-body-xl text-se-variant">
         Goes straight to your ward’s team. Add a photo from the spot and follow it until it’s fixed.
       </p>
@@ -275,7 +275,7 @@ export function ReportIssue() {
               placeholder="e.g. Opposite Balgandharva Rangmandir, JM Road" />
             <div className="relative h-56 border border-se-outline-variant bg-se-high">
               <MapContainer center={PUNE} zoom={11} zoomControl={false} scrollWheelZoom={false} attributionControl={false} style={{ height: "100%", background: "#e8e8e9" }}>
-                <TileLayer url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png" />
+                <TileLayer className="se-gray-tiles" url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                 {ward && <WardFocus ward={ward} />}
                 {evidence && <CircleMarker center={[evidence.latitude, evidence.longitude]} radius={7} pathOptions={{ color: "#fff", weight: 2, fillColor: "#000", fillOpacity: 1 }} />}
               </MapContainer>
@@ -399,7 +399,7 @@ function ReportResult({ result, evidenceResult, onReportAnother }: {
     <>
       <section className="w-full bg-se-surface px-5 md:px-12 pt-10 pb-12">
         <Kicker>Report #{result.report.id} // Sent</Kicker>
-        <h1 className="mt-3 font-se-sans text-[40px] leading-[46px] md:text-se-xl text-se-on tracking-tight">Thank you — your report has been sent.</h1>
+        <h1 className="mt-3 font-se-sans text-[40px] leading-[46px] md:text-se-xl md:leading-[64px] text-se-on tracking-tight">Thank you — your report has been sent.</h1>
         <p className="mt-4 max-w-2xl font-se-sans text-se-body-xl text-se-variant">
           {result.report.language && result.report.language !== "en" ? "Thanks for writing in your language — a ward officer will read it. " : ""}Here’s what happens with it.
         </p>

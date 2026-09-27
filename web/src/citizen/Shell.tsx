@@ -108,7 +108,7 @@ function CTABlock({ to, kicker, title, text, cta, dark }: { to: string; kicker?:
       <div>
         {kicker && <span className={`font-se-code text-se-caps uppercase tracking-widest block mb-6 ${dark ? "text-white/60" : "text-se-variant"}`}>{kicker}</span>}
         <div className="flex items-start justify-between gap-4">
-          <h3 className="font-se-sans text-[26px] leading-8 md:text-se-lg tracking-tight">{title}</h3>
+          <h3 className={`${dark ? "text-white" : "text-se-on"} font-se-sans text-[26px] leading-8 md:text-se-lg md:leading-[48px] tracking-tight`}>{title}</h3>
           <Icon name="arrow_forward" className="text-[36px] transform group-hover:translate-x-2 transition-transform duration-300" />
         </div>
       </div>
