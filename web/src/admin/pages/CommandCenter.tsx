@@ -165,7 +165,7 @@ export function CommandCenter() {
     <div className="relative w-full h-full overflow-hidden bg-ws-navy select-none font-ws-body">
       {/* 1. Full-viewport map */}
       <div className="absolute inset-0 z-0 cc-map">
-        <MapContainer center={PUNE} zoom={12} zoomControl={false} preferCanvas style={{ height: "100%", width: "100%", background: "#070e19" }}>
+        <MapContainer center={PUNE} zoom={12} zoomControl={false} preferCanvas style={{ height: "100%", width: "100%", background: "#eef1f5" }}>
           <TileLayer
             className="cc-tiles"
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
@@ -519,7 +519,7 @@ function WardBoundaries({ wards, activeWard, onPick }: { wards: MapWard[]; activ
       style={(f) => {
         const active = f?.properties.ward_id === activeWard;
         return {
-          color: active ? "#0070f3" : "#4f7cc2",
+          color: active ? "#0070f3" : "#2b5ea8",
           weight: active ? 2.5 : 0.8,
           opacity: active ? 1 : 0.55,
           fillColor: "#0070f3",
