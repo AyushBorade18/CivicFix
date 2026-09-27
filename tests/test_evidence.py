@@ -238,6 +238,27 @@ def test_field_worker_list_is_staff_only(client, ev):
     assert ev["users"]["worker"].id in ids and ev["users"]["alice"].id not in ids
 
 
+def test_worker_sees_only_their_own_assignments(client, ev, db_conn):
+    road = ev["issues"]["road_w1"]
+    with db_conn.cursor() as cur:
+        cur.execute("UPDATE issues SET status = 'open', closed_at = NULL WHERE id = %s", (road,))
+    db_conn.commit()
+    assert client.get("/api/me/assignments", headers=ev["as"]("worker")).json() == []
+    client.post(f"/api/issues/{road}/assign", headers=ev["as"]("admin"), json={"worker_user_id": ev["users"]["worker"].id})
+
+    [job] = client.get("/api/me/assignments", headers=ev["as"]("worker")).json()
+    assert job["issue_id"] == road and job["category"] == "pothole_road" and job["status"] == "open"
+    assert job["location"] is not None and job["complaint_text"] and job["resolution_submitted"] is False
+    assert client.get("/api/me/assignments", headers=ev["as"]("other_worker")).json() == []
+    # Not a worker's screen for anyone else.
+    assert client.get("/api/me/assignments", headers=ev["as"]("alice")).status_code == 403
+    assert client.get("/api/me/assignments", headers=ev["as"]("admin")).status_code == 403
+
+    submit(client, ev["as"]("worker"), road, lat=ISSUE_LAT, lon=ISSUE_LON, capture_method="upload")
+    [job] = client.get("/api/me/assignments", headers=ev["as"]("worker")).json()
+    assert job["resolution_submitted"] is True
+
+
 def test_worker_cannot_submit_after_issue_is_closed(client, ev):
     road = ev["issues"]["road_w1"]  # world creates it closed
     client.post(f"/api/issues/{road}/assign", headers=ev["as"]("admin"),

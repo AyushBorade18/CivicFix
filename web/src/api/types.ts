@@ -216,6 +216,21 @@ export interface MeResponse {
   zone_ids: number[];
 }
 
+/** GET /api/me/assignments: an issue assigned to the signed-in crew worker. */
+export interface CrewAssignment {
+  issue_id: number;
+  category: string;
+  status: string;
+  ward_id: number | null;
+  ward_name: string | null;
+  location: { lat: number; lon: number } | null;
+  location_phrase: string | null;
+  complaint_text: string | null;
+  first_reported: string | null;
+  assigned_at: string | null;
+  resolution_submitted: boolean;
+}
+
 // --- RBAC administration (app/api/admin.py) ---------------------------------
 
 export interface OrgWard { id: number; name: string; verified: boolean }

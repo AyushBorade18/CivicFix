@@ -1,6 +1,7 @@
 import { currentToken } from "../lib/auth";
 import type {
   AuditEntry,
+  CrewAssignment,
   DashboardResponse,
   OrgResponse,
   StaffUser,
@@ -202,6 +203,7 @@ export const api = {
   },
   reviewEvidence: (evidenceId: number, review_status: "verified" | "review_required", note?: string) =>
     post<EvidenceItem>(`/api/evidence/${evidenceId}/review`, { review_status, note: note || null }),
+  myAssignments: () => request<CrewAssignment[]>("/api/me/assignments"),
   dashboard: () => request<DashboardResponse>("/api/dashboard"),
   org: () => request<OrgResponse>("/api/admin/org"),
   adminUsers: (params: { role?: string; q?: string } = {}) =>

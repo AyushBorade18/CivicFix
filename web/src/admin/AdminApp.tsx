@@ -15,6 +15,7 @@ import { HeldReports } from "./pages/HeldReports";
 import { RoleDashboard } from "./pages/RoleDashboard";
 import { AuditLog, StaffRoles } from "./pages/StaffRoles";
 import { StaffGate, useMe } from "./components/StaffGate";
+import { CrewHome } from "./pages/CrewHome";
 import { AssistantPage } from "../assistant/Assistant";
 
 /** Pages only a system administrator may open (the API refuses others too). */
@@ -22,9 +23,15 @@ function AdminOnly({ children }: { children: React.ReactNode }) {
   return useMe().role === "system_admin" ? <>{children}</> : <Navigate to="/" replace />;
 }
 
+/** Crew workers get their job list only; everyone else the admin portal. */
+function Portal({ children }: { children: React.ReactNode }) {
+  return useMe().role === "field_worker" ? <CrewHome /> : <>{children}</>;
+}
+
 export function AdminApp() {
   return (
     <StaffGate>
+    <Portal>
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<AdminLayout />}>
@@ -49,6 +56,7 @@ export function AdminApp() {
         </Route>
       </Routes>
     </BrowserRouter>
+    </Portal>
     </StaffGate>
   );
 }

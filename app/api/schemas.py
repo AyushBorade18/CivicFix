@@ -221,6 +221,22 @@ class EvidenceReviewRequest(BaseModel):
     note: Optional[str] = None
 
 
+class CrewAssignment(BaseModel):
+    """GET /api/me/assignments: one issue assigned to the signed-in field
+    worker - enough to find the site and do the job."""
+    issue_id: int
+    category: str
+    status: str
+    ward_id: Optional[int]
+    ward_name: Optional[str]
+    location: Optional[GeoPoint]
+    location_phrase: Optional[str]
+    complaint_text: Optional[str]
+    first_reported: Optional[datetime]
+    assigned_at: Optional[datetime]
+    resolution_submitted: bool
+
+
 class FieldWorker(BaseModel):
     id: int
     display_name: Optional[str]

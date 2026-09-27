@@ -28,6 +28,7 @@ from app.api.schemas import (
     AlternativeVerification,
     AlternativeVerificationCompleteRequest,
     AlternativeVerificationCreateRequest,
+    CrewAssignment,
     EvidenceItem,
     EvidenceUrlResponse,
     EvidenceReviewRequest,
@@ -453,6 +454,35 @@ def review_evidence(evidence_id: int, payload: EvidenceReviewRequest, db=Depends
         )
     db.commit()
     return _one_item(db, evidence_id)
+
+
+@router.get("/api/me/assignments", response_model=list[CrewAssignment])
+def my_assignments(db=Depends(get_db), user: CurrentUser = Depends(get_current_user)):
+    """The crew worker's job list: issues assigned to them, open first. The
+    complaint text is the earliest report's, so they know what to fix."""
+    if user.role != "field_worker":
+        raise HTTPException(status_code=403, detail="field workers only")
+    with db.cursor(row_factory=dict_row) as cur:
+        cur.execute(
+            """
+            SELECT i.id AS issue_id, i.category::text AS category, i.status, i.ward_id, w.name AS ward_name,
+                   ST_Y(i.geom) AS lat, ST_X(i.geom) AS lon, i.first_reported, i.assigned_at,
+                   first.location_phrase, coalesce(first.translated_text, first.raw_text) AS complaint_text,
+                   EXISTS (SELECT 1 FROM evidence e WHERE e.issue_id = i.id AND e.evidence_type = 'resolution')
+                     AS resolution_submitted
+            FROM issues i
+            LEFT JOIN wards w ON w.id = i.ward_id
+            LEFT JOIN LATERAL (SELECT r.location_phrase, r.raw_text, r.translated_text FROM reports r
+                               WHERE r.issue_id = i.id ORDER BY r.reported_at, r.id LIMIT 1) first ON TRUE
+            WHERE i.assigned_worker_id = %s
+            ORDER BY (i.status = 'closed'), i.assigned_at DESC NULLS LAST, i.id DESC
+            """,
+            (user.id,),
+        )
+        rows = cur.fetchall()
+    return [CrewAssignment(**{k: v for k, v in r.items() if k not in ("lat", "lon")},
+                           location=GeoPoint(lat=r["lat"], lon=r["lon"]) if r["lat"] is not None else None)
+            for r in rows]
 
 
 @router.get("/api/field-workers", response_model=list[FieldWorker])

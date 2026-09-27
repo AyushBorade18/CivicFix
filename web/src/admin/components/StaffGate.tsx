@@ -5,7 +5,8 @@ import { SignIn } from "../../components/SignIn";
 import { useApi } from "../../hooks/useApi";
 import { currentSubject, signOut, useSignedIn } from "../../lib/auth";
 
-const STAFF_ROLES = ["ward_officer", "zonal_commissioner", "department_officer", "system_admin"];
+// field_worker gets the crew screen (AdminApp), not the admin pages.
+const PORTAL_ROLES = ["ward_officer", "zonal_commissioner", "department_officer", "system_admin", "field_worker"];
 
 /** PMC titles for each role (app/users.py). */
 export const ROLE_TITLES: Record<string, string> = {
@@ -41,7 +42,7 @@ function SignOutButton() {
 function RoleCheck({ children }: { children: React.ReactNode }) {
   const { data: me, loading, error } = useApi(() => api.me(), []);
   if (loading) return <p className="p-8 text-sm font-mono text-gray-500">Checking your account…</p>;
-  if (me && STAFF_ROLES.includes(me.role)) {
+  if (me && PORTAL_ROLES.includes(me.role)) {
     return (
       <MeContext.Provider value={me}>
         {children}
