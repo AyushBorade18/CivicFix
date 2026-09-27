@@ -50,7 +50,7 @@ function Row({ k, v }: { k: string; v: React.ReactNode }) {
   );
 }
 
-/** Evidence photos need the bearer token, so they load as blob URLs. */
+/** Signed Storage URL, or a blob URL when photos are on local disk. */
 export function useEvidencePhoto(fileUrl: string) {
   const [src, setSrc] = useState<string | null>(null);
   const [failed, setFailed] = useState(false);
@@ -68,7 +68,7 @@ export function useEvidencePhoto(fileUrl: string) {
       });
     return () => {
       cancelled = true;
-      if (url) URL.revokeObjectURL(url);
+      if (url?.startsWith("blob:")) URL.revokeObjectURL(url);
     };
   }, [fileUrl]);
   return { src, failed };

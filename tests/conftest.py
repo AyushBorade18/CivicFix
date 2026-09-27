@@ -20,6 +20,10 @@ os.environ.setdefault("SHOW_TEST_DATA", "1")
 # LLM triage (app/nlp/triage.py) is off without a key, so no test ever calls
 # the real API; tests/test_triage.py sets a fake key around a fake client.
 os.environ.pop("GEMINI_API_KEY", None)
+# Photo storage: local disk in tests. Only tests/test_evidence.py opts into a
+# stub bucket; nothing may write to the real Supabase bucket.
+for _var in ("SUPABASE_URL", "SUPABASE_SERVICE_ROLE_KEY", "EVIDENCE_BUCKET"):
+    os.environ.pop(_var, None)
 
 import pytest  # noqa: E402
 

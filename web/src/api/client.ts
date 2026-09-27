@@ -192,9 +192,14 @@ export const api = {
   /** Every capture in the caller's scope, newest first. */
   evidenceQueue: (review_status?: EvidenceItem["review_status"]) =>
     request<EvidenceItem[]>(`/api/evidence${query({ review_status })}`),
-  /** Evidence photos need the bearer token, which an <img src> can't send. */
-  evidencePhotoUrl: async (fileUrl: string): Promise<string> =>
-    URL.createObjectURL(await (await raw(fileUrl)).blob()),
+  /** A displayable URL for an evidence photo. With the private Storage bucket
+   * the server returns a short-lived signed URL (after checking access); with
+   * local storage it returns null and the photo is fetched with the bearer
+   * token, which an <img src> can't send, as a blob URL. */
+  evidencePhotoUrl: async (fileUrl: string): Promise<string> => {
+    const { url } = await request<{ url: string | null }>(fileUrl.replace(/\/file$/, "/url"));
+    return url ?? URL.createObjectURL(await (await raw(fileUrl)).blob());
+  },
   reviewEvidence: (evidenceId: number, review_status: "verified" | "review_required", note?: string) =>
     post<EvidenceItem>(`/api/evidence/${evidenceId}/review`, { review_status, note: note || null }),
   dashboard: () => request<DashboardResponse>("/api/dashboard"),

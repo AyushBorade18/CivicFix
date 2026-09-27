@@ -449,6 +449,13 @@ class AuditEntry(BaseModel):
     details: dict[str, Any]
 
 
+class EvidenceUrlResponse(BaseModel):
+    """A short-lived signed URL for one evidence photo, or url=None when
+    photos are on local disk (fetch /api/evidence/{id}/file with a token)."""
+    url: Optional[str]
+    expires_in: Optional[int]
+
+
 class DashboardWardRow(BaseModel):
     ward_id: Optional[int]
     ward_name: Optional[str]

@@ -29,6 +29,7 @@ from app.api.schemas import (
     AlternativeVerificationCompleteRequest,
     AlternativeVerificationCreateRequest,
     EvidenceItem,
+    EvidenceUrlResponse,
     EvidenceReviewRequest,
     FieldWorker,
     GeoPoint,
@@ -48,25 +49,28 @@ EVIDENCE_DIR = Path("data/evidence")  # deliberately not mounted as static files
 MAX_EVIDENCE_BYTES = 8 * 1024 * 1024
 
 # Photo storage. With SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY set, photos go
-# to a PRIVATE Supabase Storage bucket (EVIDENCE_BUCKET, default "evidence"):
-# a hosted server's disk is wiped on redeploy. The service key stays on this
-# server; browsers only ever get photos through evidence_file's checks.
+# to a PRIVATE Supabase Storage bucket (EVIDENCE_BUCKET, default
+# "complaint-images"), keyed issues/<issue_id>/<uuid>.<ext>. The service key
+# stays on this server; a browser gets a photo only after evidence_url /
+# evidence_file check its access - as a short-lived signed URL or the bytes.
 # Unset (local dev, tests): EVIDENCE_DIR on disk.
+SIGNED_URL_SECONDS = 300
 
 
 def _bucket() -> Optional[tuple[str, dict]]:
     url, key = os.environ.get("SUPABASE_URL"), os.environ.get("SUPABASE_SERVICE_ROLE_KEY")
     if not url or not key:
         return None
-    bucket = os.environ.get("EVIDENCE_BUCKET", "evidence")
+    bucket = os.environ.get("EVIDENCE_BUCKET", "complaint-images")
     return f"{url.rstrip('/')}/storage/v1/object/{bucket}", {"Authorization": f"Bearer {key}", "apikey": key}
 
 
 def _store(file_key: str, body: bytes, mime_type: str) -> None:
     bucket = _bucket()
     if bucket is None:
-        EVIDENCE_DIR.mkdir(parents=True, exist_ok=True)
-        (EVIDENCE_DIR / file_key).write_bytes(body)
+        path = EVIDENCE_DIR / file_key
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_bytes(body)
         return
     base, headers = bucket
     resp = httpx.post(f"{base}/{file_key}", headers={**headers, "Content-Type": mime_type, "x-upsert": "false"},
@@ -82,6 +86,20 @@ def _load(file_key: str) -> bytes:
     resp = httpx.get(f"{base}/{file_key}", headers=headers, timeout=30)
     resp.raise_for_status()
     return resp.content
+
+
+def _signed_url(file_key: str) -> Optional[str]:
+    """A URL that serves this one object for SIGNED_URL_SECONDS, or None when
+    photos are on local disk (then only evidence_file can serve them)."""
+    bucket = _bucket()
+    if bucket is None:
+        return None
+    base, headers = bucket
+    sign_base = base.replace("/storage/v1/object/", "/storage/v1/object/sign/", 1)
+    resp = httpx.post(f"{sign_base}/{file_key}", headers=headers, json={"expiresIn": SIGNED_URL_SECONDS}, timeout=10)
+    resp.raise_for_status()
+    storage_root = base.split("/storage/v1/", 1)[0] + "/storage/v1"
+    return storage_root + resp.json()["signedURL"]
 
 
 def _discard(file_key: str) -> None:
@@ -301,7 +319,7 @@ def submit_evidence(
         raise HTTPException(status_code=400, detail="file is not a JPEG, PNG or WebP image")
     mime_type, ext = sniffed
 
-    file_key = f"{uuid.uuid4().hex}{ext}"
+    file_key = f"issues/{issue_id}/{uuid.uuid4().hex}{ext}"
     try:
         _store(file_key, body, mime_type)
     except (OSError, httpx.HTTPError):
@@ -365,8 +383,8 @@ def evidence_queue(review_status: Optional[str] = Query(None, pattern="^(pending
         return [_item(r, citizen_view=False) for r in cur.fetchall()]
 
 
-@router.get("/api/evidence/{evidence_id}/file")
-def evidence_file(evidence_id: int, db=Depends(get_db), user: CurrentUser = Depends(get_current_user)):
+def _authorized_file(db, user: CurrentUser, evidence_id: int) -> tuple[str, str]:
+    """(file_key, mime_type) if this user may see this photo, else 404/403."""
     with db.cursor() as cur:
         cur.execute("SELECT issue_id, submitted_by, file_key, mime_type FROM evidence WHERE id = %s", (evidence_id,))
         row = cur.fetchone()
@@ -376,6 +394,25 @@ def evidence_file(evidence_id: int, db=Depends(get_db), user: CurrentUser = Depe
     only = _evidence_scope(user, db, issue_id)
     if only is not None and only != submitted_by:
         raise HTTPException(status_code=404, detail=f"evidence {evidence_id} not found")
+    return file_key, mime_type
+
+
+@router.get("/api/evidence/{evidence_id}/url", response_model=EvidenceUrlResponse)
+def evidence_url(evidence_id: int, db=Depends(get_db), user: CurrentUser = Depends(get_current_user)):
+    """Same access rule as evidence_file. With a Storage bucket, returns a
+    signed URL valid for SIGNED_URL_SECONDS; with local storage, url is null
+    and the client fetches evidence_file with its token instead."""
+    file_key, _ = _authorized_file(db, user, evidence_id)
+    try:
+        url = _signed_url(file_key)
+    except (httpx.HTTPError, KeyError, ValueError):
+        raise HTTPException(status_code=502, detail=f"couldn't sign a URL for evidence {evidence_id}")
+    return EvidenceUrlResponse(url=url, expires_in=SIGNED_URL_SECONDS if url else None)
+
+
+@router.get("/api/evidence/{evidence_id}/file")
+def evidence_file(evidence_id: int, db=Depends(get_db), user: CurrentUser = Depends(get_current_user)):
+    file_key, mime_type = _authorized_file(db, user, evidence_id)
     try:
         body = _load(file_key)
     except (OSError, httpx.HTTPError):

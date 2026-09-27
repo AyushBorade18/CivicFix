@@ -42,7 +42,7 @@ services:
       - key: SUPABASE_SERVICE_ROLE_KEY
         sync: false
       - key: EVIDENCE_BUCKET
-        value: evidence
+        value: complaint-images
       # Fernet key for report photos at rest. Losing it makes every stored
       # photo unreadable - keep the same value the team shares.
       - key: PHOTO_ENCRYPTION_KEY
