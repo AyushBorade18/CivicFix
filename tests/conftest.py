@@ -18,8 +18,8 @@ os.environ["DATABASE_URL"] = os.environ["TEST_DATABASE_URL"]
 # to check the live-site behaviour.
 os.environ.setdefault("SHOW_TEST_DATA", "1")
 # LLM triage (app/nlp/triage.py) is off without a key, so no test ever calls
-# the paid API; tests/test_triage.py sets a fake key around a fake client.
-os.environ.pop("ANTHROPIC_API_KEY", None)
+# the real API; tests/test_triage.py sets a fake key around a fake client.
+os.environ.pop("GEMINI_API_KEY", None)
 
 import pytest  # noqa: E402
 

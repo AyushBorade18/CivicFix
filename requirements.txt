@@ -17,7 +17,7 @@ Pillow==12.3.0
 # Photo encryption at rest.
 cryptography==49.0.0
 # LLM triage fallback for complaints the classifier can't place (app/nlp/triage.py).
-anthropic==1.8.0
+google-genai==2.25.0
 pytest==9.1.1
 PyJWT[crypto]==2.15.0  # verifies identity-provider tokens (app/auth.py)
 xlrd==2.0.2
