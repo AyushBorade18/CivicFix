@@ -66,8 +66,8 @@ function Hero({ wards, reports, open, closed }: { wards?: number; reports?: numb
     <section className="relative w-full h-[calc(100vh-104px)] min-h-[600px] max-h-[980px] bg-se-primary flex flex-col justify-between overflow-hidden select-none">
       <video ref={video} className="absolute inset-0 w-full h-full object-cover scale-105" src={VIDEO} poster={POSTER}
         autoPlay muted loop playsInline preload="metadata" aria-hidden="true" />
-      <div className="absolute inset-0 bg-gradient-to-b from-se-primary/80 via-se-primary/45 to-se-primary" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(0,0,0,0.3)_50%,rgba(0,0,0,0.8)_100%)]" />
+      <div className="absolute inset-0 bg-gradient-to-b from-se-primary/50 via-se-primary/15 to-se-primary/90" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(0,0,0,0.1)_50%,rgba(0,0,0,0.45)_100%)]" />
 
       <div className="relative z-10 w-full pt-10 px-5 md:px-12 flex items-center justify-between text-white/70 font-se-code text-se-code">
         <div className="flex items-center gap-2">
