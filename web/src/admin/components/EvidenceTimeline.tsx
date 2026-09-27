@@ -314,7 +314,8 @@ function AssignWorker({ issue, onChanged }: { issue: IssueDetailResponse; onChan
   if (workers && workers.length === 0) {
     return (
       <p className="text-xs text-gray-500 font-mono">
-        No field-worker accounts yet (create one with <code>python -m app.users create &lt;id&gt; --role field_worker</code>).
+        No field-worker accounts yet. Crew members sign in once, then a system administrator sets their role to
+        Field Worker on the Staff &amp; Roles page.
       </p>
     );
   }

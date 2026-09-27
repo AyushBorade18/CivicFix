@@ -701,7 +701,7 @@ function Inspector({ issueId, wardName, onClose, onOpen }: {
                 onChange={(e) => e.target.value && run(() => api.assignIssue(issueId, Number(e.target.value)))}
                 className="w-full h-9 px-2 rounded border border-ws-surface-highest text-xs"
               >
-                <option value="" disabled>{workers?.length ? "Choose a field worker…" : "No field workers registered"}</option>
+                <option value="" disabled>{workers?.length ? "Choose a field worker…" : "No field workers yet: add them in Staff & Roles"}</option>
                 {workers?.map((w) => <option key={w.id} value={w.id}>{w.display_name ?? `Worker #${w.id}`}</option>)}
               </select>
             )}
