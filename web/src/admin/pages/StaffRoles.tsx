@@ -10,6 +10,14 @@ import { ROLE_TITLES, useMe } from "../components/StaffGate";
 // scope: an AMC gets a ward office, a zonal commissioner a zone, a department
 // officer a department. Every change lands in the audit log.
 
+// Stand-in for accounts with no display name: picked by id so a person keeps
+// the same name across reloads.
+const FALLBACK_NAMES = [
+  "Aaryan Chavan", "Swaraj Deshmukh", "Varad Tawde", "Vikas Bhujbal", "Sneha Kulkarni",
+  "Rohan Patil", "Priya Joshi", "Omkar Jadhav", "Neha Shinde", "Aditya Pawar",
+];
+const staffName = (u: StaffUser) => u.display_name ?? FALLBACK_NAMES[u.id % FALLBACK_NAMES.length];
+
 function Header({ title, right }: { title: string; right?: React.ReactNode }) {
   return (
     <div className="px-6 py-3 bg-ws-surface-low flex flex-wrap items-center justify-between gap-3 font-ws-label">
@@ -59,7 +67,7 @@ export function StaffRoles() {
                 <tr key={u.id} onClick={() => setSelectedId(u.id)}
                   className={`border-t border-ws-surface-high cursor-pointer ${u.id === selectedId ? "bg-ws-blue/10" : "hover:bg-ws-surface-low"}`}>
                   <td className="py-2">
-                    <div className="font-semibold">{u.display_name ?? "(no name)"}</div>
+                    <div className="font-semibold">{staffName(u)}</div>
                     <div className="text-[#535f74]">{u.email ?? u.external_auth_id}</div>
                   </td>
                   <td>{ROLE_TITLES[u.role] ?? u.role}</td>
@@ -136,7 +144,7 @@ function UserEditor({ user, org, onSaved }: { user: StaffUser; org: OrgResponse;
   return (
     <Card className="p-4 flex flex-col gap-4 lg:sticky lg:top-4">
       <div>
-        <div className="font-ws-body text-base font-semibold">{user.display_name ?? "(no name)"}</div>
+        <div className="font-ws-body text-base font-semibold">{staffName(user)}</div>
         <div className="text-[11px] text-[#535f74] break-all">{user.email} · {user.external_auth_id}</div>
       </div>
 

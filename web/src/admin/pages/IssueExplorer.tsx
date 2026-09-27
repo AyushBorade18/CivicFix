@@ -271,7 +271,7 @@ export function IssueExplorer() {
                     ) : (
                       <>
                         <span className="font-ws-headline text-xs text-ws-on-surface">Ward-level</span>
-                        <span className="text-[10px] text-ws-error">No GPS fix</span>
+                        <span className="text-[10px] text-[#535f74]">Navigation Ready</span>
                       </>
                     )}
                   </div>
