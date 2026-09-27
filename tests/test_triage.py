@@ -80,3 +80,11 @@ def test_original_and_translation_are_both_sent(monkeypatch):
     result = triage("गटार तुंबले आहे", "The gutter is blocked")
     assert result["verdict"] == "accept" and result["category"] == "drainage_sewage"
     assert "गटार तुंबले आहे" in seen["contents"] and "The gutter is blocked" in seen["contents"]
+
+
+def test_client_is_kept_alive_between_calls(monkeypatch):
+    """A throwaway genai.Client is garbage-collected before its request goes
+    out, closing its connection - every live call then failed with
+    'client has been closed'. The client must be reused."""
+    monkeypatch.setenv("GEMINI_API_KEY", "test-key")
+    assert triage_mod._client() is triage_mod._client()

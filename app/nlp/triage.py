@@ -16,6 +16,7 @@ Off unless GEMINI_API_KEY is set, so tests and keyless machines never call
 the API. GEMINI_MODEL overrides the model when Google retires this one.
 """
 import os
+from functools import lru_cache
 from typing import Literal
 
 from google import genai
@@ -57,8 +58,16 @@ class Triage(BaseModel):
 def _client():
     # 10 s timeout, no retries: this runs inside the citizen's submit request,
     # and a free-tier 429 should fall through to review, not stall the citizen.
+    return _cached_client(os.environ["GEMINI_API_KEY"])
+
+
+@lru_cache(maxsize=1)
+def _cached_client(api_key: str):
+    # Kept alive on purpose: a throwaway genai.Client() is garbage-collected
+    # before its request goes out, which closes its HTTP connection
+    # ("Cannot send a request, as the client has been closed").
     return genai.Client(
-        api_key=os.environ["GEMINI_API_KEY"],
+        api_key=api_key,
         http_options=types.HttpOptions(timeout=10_000, retry_options=types.HttpRetryOptions(attempts=1)),
     )
 
