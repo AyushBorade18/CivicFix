@@ -1,6 +1,4 @@
 import { Link, useLocation } from "react-router-dom";
-import { useApi } from "../../hooks/useApi";
-import { api } from "../../api/client";
 import { Icon } from "./ws";
 import { ROLE_TITLES, useMe } from "./StaffGate";
 
@@ -18,7 +16,6 @@ const NAV_ITEMS: { path: string; label: string; icon: string; roles?: string[] }
   { path: "/held", label: "Held for Review", icon: "gpp_maybe" },
   { path: "/analytics", label: "Spatial Analytics", icon: "analytics" },
   { path: "/staff", label: "Staff & Roles", icon: "manage_accounts", roles: ["system_admin"] },
-  { path: "/audit", label: "Audit Log", icon: "history", roles: ["system_admin"] },
 ];
 
 function scopeSummary(me: { role: string; ward_ids: number[]; departments: string[] }) {
@@ -28,15 +25,9 @@ function scopeSummary(me: { role: string; ward_ids: number[]; departments: strin
 }
 
 
-function useHealth() {
-  return useApi(() => api.health().catch(() => null), []);
-}
-
 export function AdminSidebar() {
   const location = useLocation();
-  const { data: health, loading: healthLoading } = useHealth();
   const me = useMe();
-  const up = !!health?.database_connected;
   const isActive = (path: string) => (path === "/" ? location.pathname === "/" : location.pathname.startsWith(path));
 
   return (
@@ -70,25 +61,12 @@ export function AdminSidebar() {
           </Link>
         ))}
       </nav>
-      <div className="px-4 pt-2 pb-10">
-        <div className="p-3 rounded bg-ws-navy text-ws-surface text-[11px] font-semibold">
-          <div className="flex items-center justify-between text-ws-tertiary-fixed mb-1">
-            <span>GIS Backend</span>
-            <span className="font-ws-headline">:8000 {up ? "UP" : healthLoading ? "…" : "DOWN"}</span>
-          </div>
-          <div className="text-ws-surface-variant text-[11px]">
-            Issues indexed: {health?.counts?.issues ?? "—"}
-          </div>
-        </div>
-      </div>
     </aside>
   );
 }
 
 export function AdminTopBar() {
-  const { data: health, loading: healthLoading } = useHealth();
   const me = useMe();
-  const chip = "px-2 py-1 rounded bg-ws-inverse/60 font-ws-headline text-xs font-medium tracking-[0.02em] text-ws-tertiary-fixed";
 
   return (
     <header className="fixed top-0 left-64 right-0 h-16 bg-ws-navy z-40 flex items-center justify-between px-6 shadow-[0_1px_8px_rgba(0,0,0,0.18)] font-ws-label">
@@ -106,14 +84,6 @@ export function AdminTopBar() {
         </div>
       </div>
       <div className="flex items-center gap-4">
-        <div className="hidden lg:flex items-center gap-1">
-          <span className={chip}>Citizen :5173</span>
-          <span className={chip}>Admin :5174</span>
-          <div className="flex items-center gap-1.5 px-2 py-1 rounded bg-ws-inverse/40 font-ws-headline text-xs text-ws-surface-high">
-            <span className={`w-2 h-2 rounded-full ${health?.database_connected ? "bg-ws-blue animate-pulse" : healthLoading ? "bg-ws-surface-variant" : "bg-amber-500"}`} />
-            API :8000 {health?.database_connected ? "OK" : healthLoading ? "…" : "DOWN"}
-          </div>
-        </div>
         <button
           onClick={() => window.dispatchEvent(new Event("ws:sync-layers"))}
           className="px-3 py-1.5 rounded bg-ws-blue text-white text-xs font-semibold hover:bg-ws-primary transition-all"
