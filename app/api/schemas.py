@@ -372,6 +372,108 @@ class MeResponse(BaseModel):
     email: Optional[str]
     ward_ids: list[int]
     departments: list[str]
+    ward_office_ids: list[int] = []
+    zone_ids: list[int] = []
+
+
+# --- RBAC administration (system_admin) ----------------------------------------
+
+class OrgWard(BaseModel):
+    id: int
+    name: str
+    verified: bool
+
+
+class OrgWardOffice(BaseModel):
+    id: int
+    name: str
+    wards: list[OrgWard]
+
+
+class OrgZone(BaseModel):
+    id: int
+    name: str
+    ward_offices: list[OrgWardOffice]
+
+
+class OrgResponse(BaseModel):
+    """PMC structure: zones -> ward offices -> prabhags, plus the fixed roles
+    and departments an administrator can assign."""
+    zones: list[OrgZone]
+    unmapped_wards: list[OrgWard]
+    roles: list[str]
+    departments: list[str]
+
+
+class StaffUser(BaseModel):
+    id: int
+    external_auth_id: str
+    email: Optional[str]
+    display_name: Optional[str]
+    role: str
+    is_active: bool
+    ward_ids: list[int]          # direct prabhag assignments only
+    ward_office_ids: list[int]
+    zone_ids: list[int]
+    departments: list[str]
+    effective_ward_count: int    # prabhags reachable through all of the above
+
+
+class UserUpdateRequest(BaseModel):
+    role: Optional[str] = None
+    is_active: Optional[bool] = None
+
+
+class UserScopeRequest(BaseModel):
+    ward_ids: list[int] = []
+    ward_office_ids: list[int] = []
+    zone_ids: list[int] = []
+    departments: list[str] = []
+
+
+class AuditEntry(BaseModel):
+    id: int
+    at: datetime
+    actor_user_id: Optional[int]
+    actor_name: Optional[str]
+    action: str
+    target_type: str
+    target_id: str
+    details: dict[str, Any]
+
+
+class DashboardWardRow(BaseModel):
+    ward_id: Optional[int]
+    ward_name: Optional[str]
+    ward_office_id: Optional[int]
+    ward_office: Optional[str]
+    zone_id: Optional[int]
+    zone: Optional[str]
+    open: int
+    closed: int
+    unrouted: int
+    avg_open_age_days: Optional[float]
+
+
+class DashboardIssue(BaseModel):
+    issue_id: int
+    category: str
+    ward_id: Optional[int]
+    ward_name: Optional[str]
+    priority_score: Optional[float]
+    report_count: int
+    first_reported: Optional[datetime]
+    routed_agency: Optional[str]
+
+
+class DashboardResponse(BaseModel):
+    """Everything below is limited to the caller's ward/office/zone/department
+    scope - the same predicate the issue list uses."""
+    role: str
+    scope_label: str
+    by_ward: list[DashboardWardRow]
+    by_category: dict[str, int]
+    top_open_issues: list[DashboardIssue]
 
 
 class MyReport(BaseModel):

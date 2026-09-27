@@ -209,8 +209,89 @@ export interface MeResponse {
   role: string;
   display_name: string | null;
   email: string | null;
+  /** Effective prabhags: direct + via ward office + via zone. */
   ward_ids: number[];
   departments: string[];
+  ward_office_ids: number[];
+  zone_ids: number[];
+}
+
+// --- RBAC administration (app/api/admin.py) ---------------------------------
+
+export interface OrgWard { id: number; name: string; verified: boolean }
+export interface OrgWardOffice { id: number; name: string; wards: OrgWard[] }
+export interface OrgZone { id: number; name: string; ward_offices: OrgWardOffice[] }
+/** GET /api/admin/org: PMC zones -> ward offices -> prabhags. */
+export interface OrgResponse {
+  zones: OrgZone[];
+  unmapped_wards: OrgWard[];
+  roles: string[];
+  departments: string[];
+}
+
+export interface StaffUser {
+  id: number;
+  external_auth_id: string;
+  email: string | null;
+  display_name: string | null;
+  role: string;
+  is_active: boolean;
+  ward_ids: number[];
+  ward_office_ids: number[];
+  zone_ids: number[];
+  departments: string[];
+  effective_ward_count: number;
+}
+
+export interface UserScope {
+  ward_ids: number[];
+  ward_office_ids: number[];
+  zone_ids: number[];
+  departments: string[];
+}
+
+export interface AuditEntry {
+  id: number;
+  at: string;
+  actor_user_id: number | null;
+  actor_name: string | null;
+  action: string;
+  target_type: string;
+  target_id: string;
+  details: Record<string, unknown>;
+}
+
+export interface DashboardWardRow {
+  ward_id: number | null;
+  ward_name: string | null;
+  ward_office_id: number | null;
+  ward_office: string | null;
+  zone_id: number | null;
+  zone: string | null;
+  open: number;
+  closed: number;
+  unrouted: number;
+  avg_open_age_days: number | null;
+}
+
+export interface DashboardIssue {
+  issue_id: number;
+  category: string;
+  ward_id: number | null;
+  ward_name: string | null;
+  priority_score: number | null;
+  report_count: number;
+  first_reported: string | null;
+  routed_agency: string | null;
+}
+
+/** GET /api/dashboard: the caller's scope only. */
+export interface DashboardResponse {
+  role: string;
+  scope_label: string;
+  by_ward: DashboardWardRow[];
+  by_category: Record<string, number>;
+  top_open_issues: DashboardIssue[];
 }
 
 /** GET /api/held-reports: a report LLM triage held as likely spam, waiting for a human. */

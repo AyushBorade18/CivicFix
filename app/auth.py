@@ -13,6 +13,7 @@ sees or stores passwords.
 With AUTH_JWKS_URL or AUTH_ISSUER unset, every authenticated endpoint
 answers 503 - it never falls back to trusting an unverified token.
 """
+import json
 import os
 from functools import lru_cache
 
@@ -21,7 +22,7 @@ from fastapi import Depends, HTTPException
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
 from app.db import get_db
-from app.users import CurrentUser, get_user
+from app.users import WARD_SCOPED_ROLES, CurrentUser, get_user
 
 # Symmetric (HS*) and "none" are refused: with a shared secret, anyone
 # holding the verification key could also mint tokens.
@@ -87,6 +88,24 @@ def require_staff(user: CurrentUser = Depends(get_current_user)) -> CurrentUser:
     return user
 
 
+def require_admin(user: CurrentUser = Depends(get_current_user)) -> CurrentUser:
+    """Only system_admin manages accounts, roles and scope."""
+    if user.role != "system_admin":
+        raise HTTPException(status_code=403, detail="system administrators only")
+    return user
+
+
+def audit(db, actor: CurrentUser, action: str, target_type: str, target_id, details: dict | None = None) -> None:
+    """Record who did what. Doesn't commit: it lands in the same transaction
+    as the action, so an action is never saved without its audit row."""
+    with db.cursor() as cur:
+        cur.execute(
+            "INSERT INTO audit_log (actor_user_id, action, target_type, target_id, details) "
+            "VALUES (%s, %s, %s, %s, %s::jsonb)",
+            (actor.id, action, target_type, str(target_id), json.dumps(details or {}, default=str)),
+        )
+
+
 def show_test_data() -> bool:
     """Generated test complaints (reports.is_synthetic) stay off the live
     site. Only a developer machine sets SHOW_TEST_DATA=1 to demo with them."""
@@ -112,7 +131,7 @@ def issue_scope_sql(user: CurrentUser, alias: str = "") -> tuple[str, dict]:
     col = f"{alias}." if alias else ""
     if user.role == "system_admin":
         scope, params = "TRUE", {}
-    elif user.role == "ward_officer":
+    elif user.role in WARD_SCOPED_ROLES:
         scope, params = f"{col}ward_id = ANY(%(scope_wards)s)", {"scope_wards": sorted(user.ward_ids)}
     elif user.role == "department_officer":
         scope, params = f"{col}category::text = ANY(%(scope_categories)s)", {"scope_categories": user.department_categories}

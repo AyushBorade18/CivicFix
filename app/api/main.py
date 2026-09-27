@@ -54,9 +54,10 @@ from app.api.evidence import (
     evidence_status_sql,
 )
 from app.api.evidence import location_precision_from_breakdown as _location_precision_from_breakdown
+from app.api.admin import router as admin_router
 from app.api.evidence import router as evidence_router
-from app.auth import (ensure_issue_access, get_current_user, get_verified_claims, issue_scope_sql, live_issue_sql,
-                      require_staff, show_test_data)
+from app.auth import (audit, ensure_issue_access, get_current_user, get_verified_claims, issue_scope_sql,
+                      live_issue_sql, require_staff, show_test_data)
 from app.core.clustering import COSINE_THRESHOLD, spatial_ok
 from app.core.matcher import match_issue_to_work
 from app.core.metrics import compute_metrics
@@ -106,6 +107,7 @@ app.add_middleware(
 
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 app.include_router(evidence_router)
+app.include_router(admin_router)
 
 
 
@@ -265,6 +267,7 @@ def close_issue(issue_id: int, db=Depends(get_db), user: CurrentUser = Depends(r
             (REVERIFICATION_WINDOW_DAYS, issue_id),
         )
         status, closed_at = cur.fetchone()
+    audit(db, user, "issue.close", "issue", issue_id)
     db.commit()
     return IssueCloseResponse(issue_id=issue_id, status=status, closed_at=closed_at)
 
@@ -319,6 +322,7 @@ def release_held_report(report_id: int, db=Depends(get_db), user: CurrentUser = 
             (total, json.dumps(breakdown), issue_id),
         )
     run_signals(conn=db)
+    audit(db, user, "report.release_held", "report", report_id, {"issue_id": issue_id})
     db.commit()
     return {"report_id": report_id, "issue_id": issue_id, "released": True}
 
@@ -357,6 +361,7 @@ def route_issue_endpoint(issue_id: int, db=Depends(get_db), user: CurrentUser = 
                 json.dumps({"issue_id": issue_id, "category": category}),
             ),
         )
+    audit(db, user, "issue.route", "issue", issue_id, {"agency": routed_agency})
     db.commit()
     return IssueRouteResponse(issue_id=issue_id, routed_agency=routed_agency, routed_at=routed_at)
 
@@ -1153,6 +1158,7 @@ def _me_response(user: CurrentUser) -> MeResponse:
     return MeResponse(
         id=user.id, role=user.role, display_name=user.display_name, email=user.email,
         ward_ids=sorted(user.ward_ids), departments=sorted(user.departments),
+        ward_office_ids=sorted(user.ward_office_ids), zone_ids=sorted(user.zone_ids),
     )
 
 

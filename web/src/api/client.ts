@@ -1,5 +1,10 @@
 import { currentToken } from "../lib/auth";
 import type {
+  AuditEntry,
+  DashboardResponse,
+  OrgResponse,
+  StaffUser,
+  UserScope,
   HeldReport,
   AlternativeVerification,
   EvidenceItem,
@@ -185,6 +190,16 @@ export const api = {
     URL.createObjectURL(await (await raw(fileUrl)).blob()),
   reviewEvidence: (evidenceId: number, review_status: "verified" | "review_required", note?: string) =>
     post<EvidenceItem>(`/api/evidence/${evidenceId}/review`, { review_status, note: note || null }),
+  dashboard: () => request<DashboardResponse>("/api/dashboard"),
+  org: () => request<OrgResponse>("/api/admin/org"),
+  adminUsers: (params: { role?: string; q?: string } = {}) =>
+    request<StaffUser[]>(`/api/admin/users${query(params)}`),
+  updateUser: (userId: number, patch: { role?: string; is_active?: boolean }) =>
+    request<StaffUser>(`/api/admin/users/${userId}`, { method: "PATCH", body: JSON.stringify(patch) }),
+  updateUserScope: (userId: number, scope: UserScope) =>
+    request<StaffUser>(`/api/admin/users/${userId}/scope`, { method: "PUT", body: JSON.stringify(scope) }),
+  auditLog: (params: { limit?: number; target_type?: string } = {}) =>
+    request<AuditEntry[]>(`/api/admin/audit${query(params)}`),
   heldReports: () => request<HeldReport[]>("/api/held-reports"),
   releaseHeldReport: (reportId: number) =>
     post<{ report_id: number; issue_id: number; released: boolean }>(`/api/held-reports/${reportId}/release`),

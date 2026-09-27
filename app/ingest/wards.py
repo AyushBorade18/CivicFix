@@ -67,3 +67,37 @@ def load_ward_population(csv_path: str = POPULATION_CSV) -> int:
         conn.commit()
 
     return len(rows)
+
+
+WARD_OFFICES_CSV = "data/wards/ward_offices.csv"
+
+
+def load_ward_offices(csv_path: str = WARD_OFFICES_CSV, conn=None) -> int:
+    """Load PMC zones -> ward offices -> prabhag mapping; returns wards placed.
+
+    Idempotent: zones and offices upsert by name, each ward is (re)pointed at
+    its office. The `verified` column is carried through as-is so a drafted
+    mapping never passes for a confirmed one.
+    """
+    with open(csv_path, newline="", encoding="utf-8") as f:
+        rows = list(csv.DictReader(f))
+
+    own = conn is None
+    conn = conn or get_connection()
+    try:
+        with conn.cursor() as cur:
+            for row in rows:
+                cur.execute("INSERT INTO zones (name) VALUES (%s) ON CONFLICT (name) DO UPDATE SET name = EXCLUDED.name "
+                            "RETURNING id", (row["zone"],))
+                zone_id = cur.fetchone()[0]
+                cur.execute("INSERT INTO ward_offices (name, zone_id) VALUES (%s, %s) "
+                            "ON CONFLICT (name) DO UPDATE SET zone_id = EXCLUDED.zone_id RETURNING id",
+                            (row["ward_office"], zone_id))
+                office_id = cur.fetchone()[0]
+                cur.execute("UPDATE wards SET ward_office_id = %s, ward_office_verified = %s WHERE id = %s",
+                            (office_id, row["verified"].strip().lower() == "true", int(row["ward_id"])))
+        conn.commit()
+    finally:
+        if own:
+            conn.close()
+    return len(rows)

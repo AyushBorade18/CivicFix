@@ -161,9 +161,9 @@ Anyone holding `.dev_auth/private_key.pem` can mint tokens. Never point a shared
 3. **Frontend:** attach the provider's token to API calls, move public pages to `/api/public/*`, call `/api/me/register` on first sign-in, and route on `/api/me`.
 4. **CORS:** `app/api/main.py` allows any `localhost` origin (dev policy). Set the real frontend origin before deploying.
 5. **Evidence photos:** `/uploads/*` is still served statically without auth, protected only by unguessable UUID filenames. Before production, serve photos through an authorized endpoint or signed URLs. Also, a report can reference any existing `photo_url`; uploads aren't yet bound to their uploader.
-6. **Admin HTTP API** (users, roles, assignments) isn't built. The service functions exist in `app/users.py`; the future endpoints should sit behind a `system_admin` check.
+6. ~~Admin HTTP API~~ Done 2026-09-27, see §15.
 7. Rate limiting on registration, report submission and uploads.
-8. Audit log of officer actions (close/route): these writes don't yet record which user performed them.
+8. ~~Audit log~~ Done 2026-09-27, see §15.
 
 ## 13. Security assumptions
 
@@ -190,3 +190,23 @@ Anyone holding `.dev_auth/private_key.pem` can mint tokens. Never point a shared
 - **Ownership:** submission owned by the token holder even when the body names another user; response redacted for citizens; appears only in the owner's `/api/me/reports`.
 
 `tests/test_api.py` (30 tests) still exercises the real pipeline against the real database, now as a throwaway `system_admin` account that is deleted afterwards. Full suite: **332 passed**.
+
+
+## 15. PMC hierarchy RBAC (2026-09-27, migration 005)
+
+PMC administers through **5 zones -> 15 ward offices (kshetriya karyalaya) -> 58 prabhags** (our `wards`).
+
+| Role | PMC post | Scope |
+|---|---|---|
+| `system_admin` | IT / system administrator | All of PMC; the only role that manages accounts |
+| `zonal_commissioner` | Zonal Deputy Commissioner | Every prabhag of every ward office in their zone(s) (`user_zones`) |
+| `ward_officer` | Assistant Municipal Commissioner | Every prabhag of their ward office(s) (`user_ward_offices`), plus any direct `user_wards` |
+| `department_officer` | Department officer | Categories their department(s) own, city-wide (unchanged) |
+| `field_worker` | Field staff | Assigned issues only (unchanged) |
+
+- `get_user` resolves office/zone assignments into the effective `ward_ids`, so `can_access_issue` / `issue_scope_sql` keep one code path for both ward-scoped roles.
+- **Prabhag -> ward office mapping is a draft** (`data/wards/ward_offices.csv`, `verified=false`), written from prabhag names because pmc.gov.in is unreachable here. Fix rows, set `verified=true`, reload: `python -c "from app.ingest.wards import load_ward_offices as l; print(l())"`.
+- **Admin API** (`app/api/admin.py`): `GET /api/admin/org` (any staff), `GET/PATCH /api/admin/users`, `PUT /api/admin/users/{id}/scope`, `GET /api/admin/audit` (system_admin). An admin can't demote or deactivate themselves.
+- **Audit log** (`audit_log`): role/active/scope changes, issue close, route, field-worker assignment, held-report release. Written in the same transaction as the action.
+- **Role dashboards**: `GET /api/dashboard` returns scoped per-prabhag counts; the admin portal home (`RoleDashboard.tsx`) renders a different view per role. Staff & Roles and Audit Log pages are system_admin only.
+- Real DB backed up first: `backups/civicfix_before_pmc_hierarchy.dump`. Row counts before and after were identical.

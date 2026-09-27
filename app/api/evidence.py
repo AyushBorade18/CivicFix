@@ -35,7 +35,7 @@ from app.api.schemas import (
     IssueAssignRequest,
     IssueAssignResponse,
 )
-from app.auth import ensure_issue_access, get_current_user, issue_scope_sql, require_staff
+from app.auth import audit, ensure_issue_access, get_current_user, issue_scope_sql, require_staff
 from app.db import get_db
 from app.users import CurrentUser
 
@@ -425,6 +425,7 @@ def assign_issue(issue_id: int, payload: IssueAssignRequest, db=Depends(get_db),
             (payload.worker_user_id, issue_id),
         )
         assigned_at = cur.fetchone()[0]
+    audit(db, user, "issue.assign_worker", "issue", issue_id, {"worker_user_id": payload.worker_user_id})
     db.commit()
     return IssueAssignResponse(issue_id=issue_id, assigned_worker_id=payload.worker_user_id, assigned_at=assigned_at)
 

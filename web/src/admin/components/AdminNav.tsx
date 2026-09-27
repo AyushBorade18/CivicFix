@@ -2,11 +2,14 @@ import { Link, useLocation } from "react-router-dom";
 import { useApi } from "../../hooks/useApi";
 import { api } from "../../api/client";
 import { Icon } from "./ws";
+import { ROLE_TITLES, useMe } from "./StaffGate";
 
 // Stitch export: WardSentry-UI-References/admin-stitch/wardsentry_admin_command_center
 
-const NAV_ITEMS = [
-  { path: "/", label: "Command Center", icon: "radar" },
+// `roles` limits an item to those roles; the API enforces the same limits.
+const NAV_ITEMS: { path: string; label: string; icon: string; roles?: string[] }[] = [
+  { path: "/", label: "My Dashboard", icon: "space_dashboard" },
+  { path: "/command", label: "Command Center", icon: "radar" },
   { path: "/overview", label: "Overview", icon: "dashboard" },
   { path: "/issues", label: "Issues Triage", icon: "report_problem" },
   { path: "/wards", label: "Wards Directory", icon: "location_city" },
@@ -14,7 +17,15 @@ const NAV_ITEMS = [
   { path: "/verification", label: "Field Verification", icon: "verified" },
   { path: "/held", label: "Held for Review", icon: "gpp_maybe" },
   { path: "/analytics", label: "Spatial Analytics", icon: "analytics" },
+  { path: "/staff", label: "Staff & Roles", icon: "manage_accounts", roles: ["system_admin"] },
+  { path: "/audit", label: "Audit Log", icon: "history", roles: ["system_admin"] },
 ];
+
+function scopeSummary(me: { role: string; ward_ids: number[]; departments: string[] }) {
+  if (me.role === "system_admin") return "All of PMC";
+  if (me.role === "department_officer") return me.departments.join(", ") || "No department assigned";
+  return me.ward_ids.length ? `${me.ward_ids.length} prabhag${me.ward_ids.length === 1 ? "" : "s"}` : "No wards assigned";
+}
 
 
 function useHealth() {
@@ -24,10 +35,9 @@ function useHealth() {
 export function AdminSidebar() {
   const location = useLocation();
   const { data: health, loading: healthLoading } = useHealth();
-  const { data: me } = useApi(() => api.me().catch(() => null), []);
+  const me = useMe();
   const up = !!health?.database_connected;
   const isActive = (path: string) => (path === "/" ? location.pathname === "/" : location.pathname.startsWith(path));
-  const wardLabel = me?.ward_ids.length ? `Ward ${me.ward_ids.join(", ")}` : "All Pune Wards";
 
   return (
     <aside className="fixed left-0 top-0 h-full w-64 bg-ws-surface-low z-50 flex flex-col pt-4 pb-6 shadow-[0_1px_8px_rgba(0,0,0,0.04)] font-ws-label">
@@ -38,14 +48,14 @@ export function AdminSidebar() {
       <div className="px-4 mb-2">
         <div className="p-2.5 rounded bg-ws-surface-container flex items-center justify-between">
           <div className="flex flex-col">
-            <span className="text-[11px] font-semibold tracking-[0.06em] text-ws-on-surface-variant uppercase">Active Ward Node</span>
-            <span className="font-ws-body text-sm text-ws-on-surface">{wardLabel}</span>
+            <span className="text-[11px] font-semibold tracking-[0.06em] text-ws-on-surface-variant uppercase">{ROLE_TITLES[me.role] ?? me.role}</span>
+            <span className="font-ws-body text-sm text-ws-on-surface">{scopeSummary(me)}</span>
           </div>
           <span className="w-2 h-2 rounded-full bg-ws-blue" />
         </div>
       </div>
       <nav className="flex-1 px-2 space-y-1">
-        {NAV_ITEMS.map((item) => (
+        {NAV_ITEMS.filter((item) => !item.roles || item.roles.includes(me.role)).map((item) => (
           <Link
             key={item.path}
             to={item.path}
@@ -77,7 +87,7 @@ export function AdminSidebar() {
 
 export function AdminTopBar() {
   const { data: health, loading: healthLoading } = useHealth();
-  const { data: me } = useApi(() => api.me().catch(() => null), []);
+  const me = useMe();
   const chip = "px-2 py-1 rounded bg-ws-inverse/60 font-ws-headline text-xs font-medium tracking-[0.02em] text-ws-tertiary-fixed";
 
   return (
@@ -92,7 +102,7 @@ export function AdminTopBar() {
         </span>
         <div className="hidden md:flex items-center gap-2 text-ws-surface-variant text-[11px] font-semibold">
           <Icon name="chevron_right" className="text-[16px]" />
-          <span>Municipal Admin Session</span>
+          <span>{ROLE_TITLES[me.role] ?? me.role}</span>
         </div>
       </div>
       <div className="flex items-center gap-4">
@@ -112,7 +122,7 @@ export function AdminTopBar() {
         </button>
         <div
           className="w-8 h-8 rounded-full bg-ws-primary flex items-center justify-center"
-          title={me?.display_name ?? me?.email ?? "Signed in"}
+          title={me.display_name ?? me.email ?? "Signed in"}
         >
           <Icon name="person" className="text-white text-[18px]" />
         </div>

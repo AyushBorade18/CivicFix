@@ -12,7 +12,14 @@ import { WorkDetail } from "./pages/WorkDetail";
 import { Verification } from "./pages/Verification";
 import { Analytics } from "./pages/Analytics";
 import { HeldReports } from "./pages/HeldReports";
-import { StaffGate } from "./components/StaffGate";
+import { RoleDashboard } from "./pages/RoleDashboard";
+import { AuditLog, StaffRoles } from "./pages/StaffRoles";
+import { StaffGate, useMe } from "./components/StaffGate";
+
+/** Pages only a system administrator may open (the API refuses others too). */
+function AdminOnly({ children }: { children: React.ReactNode }) {
+  return useMe().role === "system_admin" ? <>{children}</> : <Navigate to="/" replace />;
+}
 
 export function AdminApp() {
   return (
@@ -20,7 +27,10 @@ export function AdminApp() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<AdminLayout />}>
-          <Route index element={<CommandCenter />} />
+          <Route index element={<RoleDashboard />} />
+          <Route path="command" element={<CommandCenter />} />
+          <Route path="staff" element={<AdminOnly><StaffRoles /></AdminOnly>} />
+          <Route path="audit" element={<AdminOnly><AuditLog /></AdminOnly>} />
           <Route path="overview" element={<Overview />} />
           <Route path="issues" element={<IssueExplorer />} />
           <Route path="issues/:issueId" element={<IssueDetail />} />
@@ -32,7 +42,7 @@ export function AdminApp() {
           <Route path="verification" element={<Verification />} />
           <Route path="analytics" element={<Analytics />} />
           <Route path="held" element={<HeldReports />} />
-          {/* Catch-all redirect to CommandCenter */}
+          {/* Catch-all redirect to the role dashboard */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
       </Routes>

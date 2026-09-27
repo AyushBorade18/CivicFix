@@ -21,8 +21,12 @@ from psycopg.rows import dict_row
 from app.core.routing import AGENCY_MAP
 
 # field_worker: captures resolution evidence for assigned issues only; not staff.
-ROLES = ("citizen", "ward_officer", "department_officer", "system_admin", "field_worker")
-STAFF_ROLES = ("ward_officer", "department_officer", "system_admin")
+# PMC chain: ward_officer = Assistant Municipal Commissioner of a ward office,
+# zonal_commissioner = Zonal Deputy Commissioner over a zone's ward offices.
+ROLES = ("citizen", "ward_officer", "zonal_commissioner", "department_officer", "system_admin", "field_worker")
+STAFF_ROLES = ("ward_officer", "zonal_commissioner", "department_officer", "system_admin")
+# Roles whose issue scope is a set of wards (see get_user for how it's resolved).
+WARD_SCOPED_ROLES = ("ward_officer", "zonal_commissioner")
 DEPARTMENTS = tuple(sorted(set(AGENCY_MAP.values())))
 
 
@@ -34,8 +38,12 @@ class CurrentUser:
     display_name: Optional[str]
     role: str
     is_active: bool
+    # Effective prabhags: direct assignments + every ward of an assigned ward
+    # office + every ward of an assigned zone's offices.
     ward_ids: frozenset[int]
     departments: frozenset[str]
+    ward_office_ids: frozenset[int] = frozenset()
+    zone_ids: frozenset[int] = frozenset()
 
     @property
     def is_staff(self) -> bool:
@@ -50,7 +58,7 @@ class CurrentUser:
     def can_access_issue(self, ward_id: Optional[int], category: str) -> bool:
         if self.role == "system_admin":
             return True
-        if self.role == "ward_officer":
+        if self.role in WARD_SCOPED_ROLES:
             return ward_id is not None and ward_id in self.ward_ids
         if self.role == "department_officer":
             return category in self.department_categories
@@ -67,11 +75,40 @@ def get_user(conn, external_auth_id: str) -> Optional[CurrentUser]:
         row = cur.fetchone()
         if row is None:
             return None
-        cur.execute("SELECT ward_id FROM user_wards WHERE user_id = %s", (row["id"],))
-        wards = frozenset(r["ward_id"] for r in cur.fetchall())
-        cur.execute("SELECT department FROM user_departments WHERE user_id = %s", (row["id"],))
+        uid = {"u": row["id"]}
+        cur.execute(
+            "SELECT ward_id AS id FROM user_wards WHERE user_id = %(u)s "
+            "UNION SELECT w.id FROM wards w JOIN user_ward_offices uo ON uo.ward_office_id = w.ward_office_id "
+            "WHERE uo.user_id = %(u)s "
+            "UNION SELECT w.id FROM wards w JOIN ward_offices o ON o.id = w.ward_office_id "
+            "JOIN user_zones uz ON uz.zone_id = o.zone_id WHERE uz.user_id = %(u)s",
+            uid,
+        )
+        wards = frozenset(r["id"] for r in cur.fetchall())
+        cur.execute("SELECT department FROM user_departments WHERE user_id = %(u)s", uid)
         departments = frozenset(r["department"] for r in cur.fetchall())
-    return CurrentUser(**row, ward_ids=wards, departments=departments)
+        cur.execute("SELECT ward_office_id FROM user_ward_offices WHERE user_id = %(u)s", uid)
+        offices = frozenset(r["ward_office_id"] for r in cur.fetchall())
+        cur.execute("SELECT zone_id FROM user_zones WHERE user_id = %(u)s", uid)
+        zones = frozenset(r["zone_id"] for r in cur.fetchall())
+    return CurrentUser(**row, ward_ids=wards, departments=departments, ward_office_ids=offices, zone_ids=zones)
+
+
+def set_scope(conn, user_id: int, ward_ids: list[int], ward_office_ids: list[int],
+              zone_ids: list[int], departments: list[str]) -> None:
+    """Replace a user's whole scope. Does not commit: the caller commits it
+    together with its audit row."""
+    bad = [d for d in departments if d not in DEPARTMENTS]
+    if bad:
+        raise ValueError(f"unknown department(s) {bad}; expected any of {DEPARTMENTS}")
+    with conn.cursor() as cur:
+        for table, col, values in [("user_wards", "ward_id", ward_ids),
+                                   ("user_ward_offices", "ward_office_id", ward_office_ids),
+                                   ("user_zones", "zone_id", zone_ids),
+                                   ("user_departments", "department", departments)]:
+            cur.execute(f"DELETE FROM {table} WHERE user_id = %s", (user_id,))
+            for v in sorted(set(values)):
+                cur.execute(f"INSERT INTO {table} (user_id, {col}) VALUES (%s, %s)", (user_id, v))
 
 
 def create_user(conn, external_auth_id: str, role: str = "citizen",
