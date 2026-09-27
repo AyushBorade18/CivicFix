@@ -274,7 +274,17 @@ def submit_evidence(
         response.status_code = 200
         return _one_item(db, existing[0], citizen_view=not user.is_staff)
 
-    if user.role == "citizen":
+    # The reporter of a complaint attaches its photo. That is usually a
+    # citizen, but staff may file a complaint from their own account too;
+    # staff still can't attach photos to anyone else's report.
+    if user.role not in ("citizen", "field_worker") and report_id is not None:
+        with db.cursor() as cur:
+            cur.execute("SELECT 1 FROM reports WHERE id = %s AND reporter_user_id = %s", (report_id, user.id))
+            files_as_reporter = cur.fetchone() is not None
+    else:
+        files_as_reporter = user.role == "citizen"
+
+    if files_as_reporter:
         if report_id is None:
             raise HTTPException(status_code=400, detail="report_id is required for citizen evidence")
         with db.cursor() as cur:

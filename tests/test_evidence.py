@@ -164,6 +164,19 @@ def test_staff_do_not_capture_evidence(client, ev):
     assert resp.status_code == 403
 
 
+def test_staff_can_attach_a_photo_to_a_complaint_they_filed_themselves(client, ev, db_conn):
+    admin = ev["users"]["admin"]
+    with db_conn.cursor() as cur:
+        cur.execute("INSERT INTO reports (raw_text, reported_at, category, issue_id, reporter_user_id, is_synthetic) "
+                    "VALUES ('pothole outside my house', now(), 'pothole_road', %s, %s, false) RETURNING id",
+                    (ev["issues"]["road_w1"], admin.id))
+        own_report = cur.fetchone()[0]
+    db_conn.commit()
+    resp = submit(client, ev["as"]("admin"), ev["issues"]["road_w1"], own_report, capture_method="upload")
+    assert resp.status_code == 201, resp.text
+    assert resp.json()["evidence_type"] == "initial_report" and resp.json()["report_id"] == own_report
+
+
 def test_staff_see_evidence_only_in_scope(client, ev):
     submit(client, ev["as"]("alice"), ev["issues"]["road_w1"], ev["reports"]["alice"])
     submit(client, ev["as"]("bob"), ev["issues"]["drain_w2"], ev["reports"]["bob"])
