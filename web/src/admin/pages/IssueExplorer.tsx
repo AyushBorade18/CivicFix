@@ -44,6 +44,7 @@ export function IssueExplorer() {
   const [wardId, setWardId] = useState("");
   const [category, setCategory] = useState("");
   const [nearSensitive, setNearSensitive] = useState(false);
+  const [newestFirst, setNewestFirst] = useState(false);
   const [page, setPage] = useState(0);
   const now = useNow();
 
@@ -98,7 +99,11 @@ export function IssueExplorer() {
     });
   }, [data, search, wardId, category, nearSensitive, nearest]);
 
+  // The API returns priority order; newest-first re-sorts by latest report
+  // so a fresh complaint isn't buried under older high-priority issues.
+  const reportedAt = (i: IssueSummary) => (i.last_reported ? Date.parse(i.last_reported) : 0);
   const rows = base.filter((i) => inTab(i, tab) && inStage(i, stage));
+  if (newestFirst) rows.sort((a, b) => reportedAt(b) - reportedAt(a) || b.issue_id - a.issue_id);
   const pages = Math.max(1, Math.ceil(rows.length / PAGE));
   const current = Math.min(page, pages - 1);
   const visible = rows.slice(current * PAGE, current * PAGE + PAGE);
@@ -173,6 +178,17 @@ export function IssueExplorer() {
                   Within {BUFFER_M}m of Sensitive Sites (Hospitals, Schools)
                 </span>
               </label>
+              <div className="flex items-center gap-1.5">
+                <span className="text-[11px] font-semibold text-[#535f74] uppercase">Sort:</span>
+                {([[false, "Priority"], [true, "Newest first"]] as const).map(([v, l]) => (
+                  <button key={l} aria-pressed={newestFirst === v} onClick={() => { setNewestFirst(v); setPage(0); }}
+                    className={`px-2 py-0.5 rounded font-ws-headline text-[11px] transition-all ${
+                      newestFirst === v ? "bg-ws-primary text-white" : "bg-ws-surface-high text-ws-on-surface-variant hover:bg-ws-primary hover:text-white"
+                    }`}>
+                    {l}
+                  </button>
+                ))}
+              </div>
               <div className="flex items-center gap-1.5">
                 <span className="text-[11px] font-semibold text-[#535f74] uppercase">Status Filter:</span>
                 {([["open", "Open"], ["assigned", "WIP"], ["closed", "Resolved"]] as const).map(([s, l]) => (
