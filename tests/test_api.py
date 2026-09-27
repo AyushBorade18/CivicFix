@@ -71,7 +71,7 @@ MIN_MATCHES = 27  # was 28; a concurrent session's activity took it to 27 - see 
 MIN_SENSITIVE_SITES = 3456  # 861 OSM + 2,263 PMC/PMPML bus stops + 332 L08 hospitals/schools
                              # (app/ingest/pmc_bus_stops.py, app/ingest/l08_sensitive_sites.py)
 MIN_SIGNALS = 36
-MIN_DRAINAGE_SEWAGE_ISSUES = 78  # was 81; same 2026-09-25 demo regen as MIN_ISSUES above.
+MIN_DRAINAGE_SEWAGE_ISSUES = 77  # was 78; 2026-09-27 recurrence merged demo issue 1073 into closed 1074.
 # (Before that: 82 -> 81 via a legitimate recurrence merge - see recurrence.py)
 
 
@@ -407,10 +407,12 @@ def test_post_reports_with_ward_hint_uses_ward_centroid_not_fake_precision(real_
         report_id = body["report"]["id"]
         issue_id = body["issue_id"]
         with real_conn.cursor() as cur:
-            cur.execute("DELETE FROM signals WHERE issue_id = %s", (issue_id,))
-            cur.execute("DELETE FROM matches WHERE issue_id = %s", (issue_id,))
             cur.execute("DELETE FROM reports WHERE id = %s", (report_id,))
-            cur.execute("DELETE FROM issues WHERE id = %s", (issue_id,))
+            # Only an issue this test created; never a real one its report joined.
+            if not body["joined_existing_issue"]:
+                cur.execute("DELETE FROM signals WHERE issue_id = %s", (issue_id,))
+                cur.execute("DELETE FROM matches WHERE issue_id = %s", (issue_id,))
+                cur.execute("DELETE FROM issues WHERE id = %s", (issue_id,))
         real_conn.commit()
 
     with real_conn.cursor() as cur:
