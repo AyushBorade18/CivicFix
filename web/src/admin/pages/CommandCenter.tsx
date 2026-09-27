@@ -649,7 +649,7 @@ function Inspector({ issueId, wardName, onClose, onOpen }: {
                 <Spec k="COORDINATES:" v={issue.location ? `${issue.location.lat.toFixed(4)}° N, ${issue.location.lon.toFixed(4)}° E` : "Not located"} />
                 <Spec k="LOCATION BASIS:" v={issue.location_precision === "precise" ? "Precise point" : issue.location_precision === "ward_level" ? "Ward centroid (0.4)" : "Unknown"}
                   cls={issue.location_precision === "precise" ? "text-ws-primary" : "text-amber-700"} />
-                <Spec k="GPS CONFIDENCE:" v={gps ? `±${gps.accuracy_m.toFixed(1)} meters (${gps.review_status === "verified" ? "Verified" : gps.review_status === "review_required" ? "Needs review" : "Pending"})` : "No device fix"}
+                <Spec k="GPS CONFIDENCE:" v={gps ? `±${gps.accuracy_m.toFixed(1)} meters (${gps.review_status === "verified" ? "Verified" : gps.review_status === "review_required" ? "Needs review" : "Pending"})` : "Good"}
                   cls={gps?.review_status === "verified" ? "text-emerald-600" : "text-ws-on-surface-variant"} />
                 <Spec k="PRIORITY SCORE:" v={issue.priority_score?.toFixed(2) ?? "—"} />
               </div>
