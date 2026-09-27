@@ -148,6 +148,8 @@ class ReportInIssue(BaseModel):
     evidence_status: Optional[str] = None
     evidence_due_at: Optional[datetime] = None
     photo_checks: Optional[dict[str, Any]] = None
+    # LLM triage verdict/reason/model when the classifier couldn't place it (app/nlp/triage.py); staff only.
+    triage: Optional[dict[str, Any]] = None
 
 
 class WorkSummary(BaseModel):
@@ -348,6 +350,19 @@ class ReportCreateResponse(BaseModel):
     matched_work: Optional[MatchSummary]
     signals: list[SignalSummary]
     is_synthetic: bool
+    # True when LLM triage held it as likely spam: off every board until staff release it.
+    held_for_review: bool = False
+
+
+class HeldReport(BaseModel):
+    """A report LLM triage held as likely spam, waiting for a human."""
+    report_id: int
+    issue_id: int
+    raw_text: str
+    translated_text: Optional[str]
+    reported_at: datetime
+    ward_id: Optional[int]
+    triage: dict[str, Any]
 
 
 class MeResponse(BaseModel):

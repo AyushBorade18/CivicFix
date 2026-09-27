@@ -94,11 +94,14 @@ def show_test_data() -> bool:
 
 
 def live_issue_sql(alias: str = "") -> str:
-    """SQL predicate: the issue holds at least one real citizen report.
-    Always TRUE when test data is switched on."""
+    """SQL predicate: the issue holds at least one real citizen report and
+    isn't held as likely spam (app/nlp/triage.py). The real-report half is
+    dropped when test data is switched on."""
+    table = alias or "issues"
+    not_held = f"NOT {table}.held_as_spam"
     if show_test_data():
-        return "TRUE"
-    return (f"EXISTS (SELECT 1 FROM reports r_live WHERE r_live.issue_id = {alias or 'issues'}.id "
+        return not_held
+    return (f"{not_held} AND EXISTS (SELECT 1 FROM reports r_live WHERE r_live.issue_id = {table}.id "
             "AND NOT r_live.is_synthetic)")
 
 

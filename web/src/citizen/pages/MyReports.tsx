@@ -42,6 +42,7 @@ function useOnline(): boolean {
 function statusLabel(status: string | null) {
   if (status === "closed") return "Fixed";
   if (status === "reopened") return "Reopened";
+  if (status === "under_review") return "Under review";
   return "Being worked on";
 }
 

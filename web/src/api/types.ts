@@ -149,6 +149,7 @@ export interface ReportInIssue {
   photo_severity_score: number | null;
   photo_severity_band: string | null;
   photo_checks?: PhotoChecks | null;
+  triage?: Record<string, unknown> | null; // LLM triage verdict/reason, staff only
   evidence_status: EvidenceStatus | null;
   evidence_due_at: string | null;
 }
@@ -416,6 +417,7 @@ export interface ReportCreateResponse {
   matched_work: MatchSummary | null;
   signals: SignalSummary[];
   is_synthetic: boolean;
+  held_for_review: boolean;
 }
 
 export const CIVIC_CATEGORIES = [

@@ -47,6 +47,9 @@ services:
       # photo unreadable - keep the same value the team shares.
       - key: PHOTO_ENCRYPTION_KEY
         sync: false
+      # LLM triage fallback (app/nlp/triage.py). Unset = off, complaints go to manual review.
+      - key: ANTHROPIC_API_KEY
+        sync: false
       # Private Hugging Face repo holding models/civicfix-encoder-v1
       - key: ENCODER_REPO
         sync: false

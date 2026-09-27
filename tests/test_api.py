@@ -801,3 +801,67 @@ def test_devanagari_hazard_keeps_its_critical_band_through_the_api(real_client, 
         assert body["report"]["severity"] == "critical"
     finally:
         _delete_throwaway_issue(real_conn, issue_id)
+
+
+def _delete_report_and_issue(conn, report_id, issue_id):
+    with conn.cursor() as cur:
+        cur.execute("DELETE FROM signals WHERE issue_id = %s", (issue_id,))
+        cur.execute("DELETE FROM matches WHERE issue_id = %s", (issue_id,))
+        cur.execute("DELETE FROM reports WHERE id = %s", (report_id,))
+        cur.execute("DELETE FROM issues WHERE id = %s", (issue_id,))
+    conn.commit()
+
+
+def test_llm_spam_verdict_holds_report_off_the_board_until_released(real_client, real_conn, monkeypatch):
+    """A spam verdict never deletes: the report gets its own hidden issue,
+    shows in the staff held queue, reads 'under_review' to the citizen,
+    and goes live once staff release it. The LLM is faked."""
+    monkeypatch.setattr("app.api.main.classify", lambda text: ("other", 0.2))
+    monkeypatch.setattr("app.api.main.triage", lambda raw, translated: {
+        "verdict": "spam", "category": "other", "reason": "Promotional text, no civic issue.",
+        "model": "fake", "prompt_version": 1,
+    })
+    resp = real_client.post("/api/reports", json={"raw_text": "zzqx held spam test marker earn money fast aaa bbb"})
+    assert resp.status_code == 201
+    body = resp.json()
+    report_id, issue_id = body["report"]["id"], body["issue_id"]
+    try:
+        assert body["held_for_review"] is True
+        assert body["joined_existing_issue"] is False
+        assert body["matched_work"] is None
+        assert body["report"]["triage"]["reason"] == "Promotional text, no civic issue."
+
+        assert real_client.get(f"/api/issues/{issue_id}").status_code == 404
+        assert real_client.get(f"/api/public/issues/{issue_id}").status_code == 404
+        held = real_client.get("/api/held-reports").json()
+        assert [h for h in held if h["report_id"] == report_id][0]["triage"]["verdict"] == "spam"
+        assert real_client.get(f"/api/me/reports/{report_id}").json()["issue_status"] == "under_review"
+
+        released = real_client.post(f"/api/held-reports/{report_id}/release")
+        assert released.status_code == 200
+        assert real_client.post(f"/api/held-reports/{report_id}/release").status_code == 404
+
+        detail = real_client.get(f"/api/issues/{issue_id}").json()
+        triage = detail["reports"][0]["triage"]
+        assert triage["verdict"] == "spam" and triage["released_by"] is not None
+        assert detail["priority_score"] is not None
+        assert report_id not in [h["report_id"] for h in real_client.get("/api/held-reports").json()]
+    finally:
+        _delete_report_and_issue(real_conn, report_id, issue_id)
+
+
+def test_llm_accept_verdict_replaces_other_with_its_category(real_client, real_conn, monkeypatch):
+    monkeypatch.setattr("app.api.main.classify", lambda text: ("other", 0.2))
+    monkeypatch.setattr("app.api.main.triage", lambda raw, translated: {
+        "verdict": "accept", "category": "streetlight", "reason": "Describes a dead streetlight.",
+        "model": "fake", "prompt_version": 1,
+    })
+    resp = real_client.post("/api/reports", json={"raw_text": "zzqx accept test marker lamp aaa bbb ccc"})
+    assert resp.status_code == 201
+    body = resp.json()
+    try:
+        assert body["category"] == "streetlight"
+        assert body["held_for_review"] is False
+        assert body["report"]["category_conf"] == 0.2  # the classifier's own score is kept
+    finally:
+        _delete_report_and_issue(real_conn, body["report"]["id"], body["issue_id"])

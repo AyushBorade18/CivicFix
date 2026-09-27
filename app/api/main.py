@@ -14,6 +14,7 @@ import psycopg
 from psycopg.rows import dict_row
 
 from app.api.schemas import (
+    HeldReport,
     FeedbackCreateRequest,
     FeedbackCreateResponse,
     FeedbackSummary,
@@ -73,6 +74,7 @@ from app.nlp.photo_severity import estimate_photo_severity
 from app.nlp.photo_validate import process_upload, read_photo, write_photo
 from app.nlp.severity import BAND_ORDER, severity
 from app.nlp.translate import translate_to_english
+from app.nlp.triage import triage
 from app.users import CurrentUser, create_user, get_user
 
 # Gitignored, and deliberately not mounted as static files: photos are only
@@ -265,6 +267,60 @@ def close_issue(issue_id: int, db=Depends(get_db), user: CurrentUser = Depends(r
         status, closed_at = cur.fetchone()
     db.commit()
     return IssueCloseResponse(issue_id=issue_id, status=status, closed_at=closed_at)
+
+
+@app.get("/api/held-reports", response_model=list[HeldReport])
+def held_reports(db=Depends(get_db), user: CurrentUser = Depends(require_staff)):
+    """Reports LLM triage held as likely spam, newest first, within the
+    caller's ward/department scope. Held, never deleted: a human decides."""
+    with db.cursor(row_factory=dict_row) as cur:
+        cur.execute(
+            "SELECT r.id AS report_id, r.issue_id, r.raw_text, r.translated_text, r.reported_at, r.ward_id, "
+            "r.triage, i.ward_id AS issue_ward_id, i.category::text AS issue_category "
+            "FROM reports r JOIN issues i ON i.id = r.issue_id WHERE i.held_as_spam ORDER BY r.reported_at DESC"
+        )
+        rows = cur.fetchall()
+    return [
+        HeldReport(**{k: v for k, v in r.items() if not k.startswith("issue_") or k == "issue_id"})
+        for r in rows if user.can_access_issue(r["issue_ward_id"], r["issue_category"])
+    ]
+
+
+@app.post("/api/held-reports/{report_id}/release")
+def release_held_report(report_id: int, db=Depends(get_db), user: CurrentUser = Depends(require_staff)):
+    """Human override: 'not spam'. The issue goes live and gets its match,
+    priority and signals like any other. The LLM verdict is kept, with who
+    released it and when appended."""
+    with db.cursor() as cur:
+        cur.execute(
+            "SELECT i.id, i.ward_id, i.category::text FROM reports r JOIN issues i ON i.id = r.issue_id "
+            "WHERE r.id = %s AND i.held_as_spam",
+            (report_id,),
+        )
+        row = cur.fetchone()
+    if row is None:
+        raise HTTPException(status_code=404, detail=f"no held report {report_id}")
+    issue_id, ward_id, category = row
+    if not user.can_access_issue(ward_id, category):
+        raise HTTPException(status_code=403, detail=f"report {report_id} is outside your ward/department scope")
+
+    with db.cursor() as cur:
+        cur.execute("UPDATE issues SET held_as_spam = false WHERE id = %s", (issue_id,))
+        cur.execute(
+            "UPDATE reports SET triage = triage || jsonb_build_object('released_by', %s::bigint, 'released_at', now()) "
+            "WHERE id = %s",
+            (user.id, report_id),
+        )
+    _refresh_match_for_issue(db, issue_id)
+    total, breakdown = compute_priority(issue_id, db)
+    with db.cursor() as cur:
+        cur.execute(
+            "UPDATE issues SET priority_score = %s, priority_breakdown = %s::jsonb WHERE id = %s",
+            (total, json.dumps(breakdown), issue_id),
+        )
+    run_signals(conn=db)
+    db.commit()
+    return {"report_id": report_id, "issue_id": issue_id, "released": True}
 
 
 @app.post("/api/issues/{issue_id}/route", response_model=IssueRouteResponse)
@@ -473,7 +529,7 @@ def issue_detail(issue_id: int, db=Depends(get_db), user: CurrentUser = Depends(
         cur.execute(
             "SELECT id, raw_text, reported_at, category, category_conf, severity, location_phrase, "
             "geom_confidence, ward_id, is_synthetic, photo_url, language, translated_text, "
-            "photo_severity_score, photo_severity_band, photo_checks, "
+            "photo_severity_score, photo_severity_band, photo_checks, triage, "
             f"{evidence_status_sql()} AS evidence_status, {evidence_due_sql()} AS evidence_due_at "
             "FROM reports r WHERE issue_id = %s ORDER BY reported_at",
             (issue_id,),
@@ -891,6 +947,15 @@ def create_report(payload: ReportCreateRequest, db=Depends(get_db), user: Curren
     # still uses the English translation until the gazetteer covers
     # Hindi/Marathi.
     category, category_conf = classify(payload.raw_text)
+    # The classifier couldn't place it: an LLM decides accept / review / spam
+    # (app/nlp/triage.py). Any failure there comes back as "review", which is
+    # exactly the old behaviour. category_conf stays the classifier's own score.
+    triage_result = None
+    if category == "other":
+        triage_result = triage(payload.raw_text, translated_text)
+        if triage_result["verdict"] == "accept":
+            category = triage_result["category"]
+    held_as_spam = triage_result is not None and triage_result["verdict"] == "spam"
     # Severity reads BOTH the original and the translation, and takes the
     # stronger band. The keyword list now carries Marathi/Hindi/romanized
     # entries, so the original must be scored directly: translating first lost
@@ -956,12 +1021,12 @@ def create_report(payload: ReportCreateRequest, db=Depends(get_db), user: Curren
             INSERT INTO reports (raw_text, reported_at, category, category_conf, severity,
                                   location_phrase, geom, geom_confidence, ward_id, embedding, is_synthetic,
                                   photo_url, language, translated_text, photo_severity_score, photo_severity_band,
-                                  photo_checks, reporter_user_id, evidence_due_at)
+                                  photo_checks, reporter_user_id, evidence_due_at, triage)
             VALUES (%(raw_text)s, %(reported_at)s, %(category)s, %(category_conf)s, %(severity)s,
                     %(location_phrase)s, {geom_expr}, %(geom_conf)s, %(ward_id)s, %(embedding)s::vector, false,
                     %(photo_url)s, %(language)s, %(translated_text)s, %(photo_severity_score)s,
                     %(photo_severity_band)s, %(photo_checks)s::jsonb, %(reporter_user_id)s,
-                    %(reported_at)s + make_interval(days => %(evidence_window_days)s))
+                    %(reported_at)s + make_interval(days => %(evidence_window_days)s), %(triage)s::jsonb)
             RETURNING id
             """,
             {
@@ -973,6 +1038,7 @@ def create_report(payload: ReportCreateRequest, db=Depends(get_db), user: Curren
                 "photo_severity_band": photo_severity_band, "reporter_user_id": user.id,
                 "evidence_window_days": EVIDENCE_SUBMISSION_WINDOW_DAYS,
                 "photo_checks": json.dumps(photo_checks) if photo_checks is not None else None,
+                "triage": json.dumps(triage_result) if triage_result is not None else None,
             },
         )
         report_id = cur.fetchone()[0]
@@ -981,21 +1047,30 @@ def create_report(payload: ReportCreateRequest, db=Depends(get_db), user: Curren
         "category": category, "geom_confidence": geom_conf, "ward_id": ward_id,
         "lat": lat, "lon": lon, "reported_at": reported_at, "embedding": embedding,
     }
-    issue_id, joined_existing = _attach_or_create_issue(db, report_dict)
+    if held_as_spam:
+        # Its own issue, hidden by live_issue_sql, so it never joins or
+        # inflates a real issue, and skips recurrence and the matcher.
+        issue_id, joined_existing = _create_issue_from_report(db, report_dict), False
+        with db.cursor() as cur:
+            cur.execute("UPDATE issues SET held_as_spam = true WHERE id = %s", (issue_id,))
+            cur.execute("UPDATE reports SET issue_id = %s WHERE id = %s", (issue_id, report_id))
+        match = None
+    else:
+        issue_id, joined_existing = _attach_or_create_issue(db, report_dict)
 
-    with db.cursor() as cur:
-        cur.execute("UPDATE reports SET issue_id = %s WHERE id = %s", (issue_id, report_id))
+        with db.cursor() as cur:
+            cur.execute("UPDATE reports SET issue_id = %s WHERE id = %s", (issue_id, report_id))
 
-    if joined_existing:
-        _recompute_issue_aggregates(db, issue_id)
+        if joined_existing:
+            _recompute_issue_aggregates(db, issue_id)
 
-    run_recurrence_check(conn=db)  # existing, unmodified; a no-op unless a prior CLOSED issue exists
+        run_recurrence_check(conn=db)  # existing, unmodified; a no-op unless a prior CLOSED issue exists
 
-    with db.cursor() as cur:
-        cur.execute("SELECT issue_id FROM reports WHERE id = %s", (report_id,))
-        issue_id = cur.fetchone()[0]  # may have changed if recurrence merged it into a reopened issue
+        with db.cursor() as cur:
+            cur.execute("SELECT issue_id FROM reports WHERE id = %s", (report_id,))
+            issue_id = cur.fetchone()[0]  # may have changed if recurrence merged it into a reopened issue
 
-    match = _refresh_match_for_issue(db, issue_id)
+        match = _refresh_match_for_issue(db, issue_id)
     total, breakdown = compute_priority(issue_id, db)
     with db.cursor() as cur:
         cur.execute(
@@ -1046,7 +1121,7 @@ def create_report(payload: ReportCreateRequest, db=Depends(get_db), user: Curren
             evidence_due_at=reported_at + timedelta(days=EVIDENCE_SUBMISSION_WINDOW_DAYS),
             photo_url=payload.photo_url, language=language, translated_text=translated_text,
             photo_severity_score=photo_severity_score, photo_severity_band=photo_severity_band,
-            photo_checks=photo_checks,
+            photo_checks=photo_checks, triage=triage_result,
         ),
         issue_id=issue_id, joined_existing_issue=joined_existing, category=category,
         category_confidence=category_conf, severity=severity_band,
@@ -1058,14 +1133,14 @@ def create_report(payload: ReportCreateRequest, db=Depends(get_db), user: Curren
                            source_record_ids=r["source_record_ids"])
             for r in signal_rows
         ],
-        is_synthetic=False,
+        is_synthetic=False, held_for_review=held_as_spam,
     )
     if user.is_staff:
         return response
     return response.model_copy(update={
         "report": response.report.model_copy(update={
             "category_conf": None, "severity": None, "geom_confidence": None,
-            "photo_severity_score": None, "photo_severity_band": None,
+            "photo_severity_score": None, "photo_severity_band": None, "triage": None,
         }),
         "category_confidence": None, "severity": None, "priority_score": None,
         "priority_breakdown": None, "matched_work": None, "signals": [],
@@ -1109,7 +1184,8 @@ def register(claims: dict = Depends(get_verified_claims), db=Depends(get_db)):
 
 MY_REPORT_SQL = """
     SELECT r.id AS report_id, r.raw_text, r.reported_at, r.category, r.ward_id, r.photo_url,
-           r.language, r.translated_text, r.issue_id, i.status AS issue_status, r.is_synthetic,
+           r.language, r.translated_text, r.issue_id,
+           CASE WHEN i.held_as_spam THEN 'under_review' ELSE i.status END AS issue_status, r.is_synthetic,
            {evidence_status} AS evidence_status, {evidence_due} AS evidence_due_at,
            i.reverification_due_at AS issue_reverification_due_at
     FROM reports r LEFT JOIN issues i ON i.id = r.issue_id

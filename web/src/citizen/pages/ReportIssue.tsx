@@ -383,7 +383,12 @@ function ReportResult({ result, evidenceResult, onReportAnother }: {
     result.location_precision === "precise" ? "We found the exact spot."
     : result.location_precision === "ward_level" ? `Sent to Ward ${result.report.ward_id ?? "—"}.`
     : "We couldn't find the exact spot yet - a ward officer will place it.";
-  const rows: [string, React.ReactNode][] = [
+  // Held by triage: say "under review", never "spam", and don't link to an issue page that isn't public.
+  const held = result.held_for_review;
+  const rows: [string, React.ReactNode][] = held ? [
+    ["What happens next", "A ward officer will read your report before it goes on the public board."],
+    ["Your photo", <EvidenceOutcome outcome={evidenceResult} dueAt={result.report.evidence_due_at} />],
+  ] : [
     ["Kind of problem", CATEGORY_LABELS[result.category] ?? result.category],
     ["Where", where],
     ["Others nearby", result.joined_existing_issue ? "Others have reported this too. Your report has been added to theirs - more reports means it gets attention sooner." : "You're the first to report this. Thank you!"],
@@ -411,9 +416,9 @@ function ReportResult({ result, evidenceResult, onReportAnother }: {
             </div>
           ))}
           <div className="flex flex-col sm:flex-row gap-2 mt-10">
-            <Link to={`/citizen/issues/${result.issue_id}`} className="h-14 px-6 bg-se-primary text-white flex items-center justify-between gap-6 font-se-code text-se-code uppercase tracking-wider font-semibold hover:bg-se-primary-container">
+            {!held && <Link to={`/citizen/issues/${result.issue_id}`} className="h-14 px-6 bg-se-primary text-white flex items-center justify-between gap-6 font-se-code text-se-code uppercase tracking-wider font-semibold hover:bg-se-primary-container">
               Follow this problem <Icon name="arrow_forward" className="text-[20px]" />
-            </Link>
+            </Link>}
             <button type="button" onClick={onReportAnother} className="h-14 px-6 border border-se-outline-variant font-se-code text-se-code uppercase tracking-wider hover:border-se-primary">
               Report another problem
             </button>
