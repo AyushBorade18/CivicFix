@@ -21,6 +21,8 @@ def real_admin(monkeypatch, real_database_url):
         yield admin
     finally:
         with conn.cursor() as cur:
+            # Its close/route/release actions were on test issues that are gone; keep them out of the real audit log.
+            cur.execute("DELETE FROM audit_log WHERE actor_user_id = %s", (admin.id,))
             cur.execute("DELETE FROM users WHERE id = %s", (admin.id,))
         conn.commit()
         conn.close()

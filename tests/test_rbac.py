@@ -106,6 +106,21 @@ def test_admin_promotes_and_scopes_user_with_audit(client, org, as_):
     assert mine[0]["actor_user_id"] == org["users"]["admin"].id
 
 
+def test_no_op_changes_write_no_audit_rows(client, org, as_, db_conn):
+    uid, issue = org["users"]["amc"].id, org["issues"]["w1"]
+    worker = create_user(db_conn, f"test|crew|{org['tag']}", "field_worker")
+    org["users"]["crew"] = worker  # cleaned up with the others
+    same = {"ward_office_ids": [org["offices"]["A"]]}
+    assert client.put(f"/api/admin/users/{uid}/scope", json=same, headers=as_("admin")).status_code == 200
+    assert client.patch(f"/api/admin/users/{uid}", json={"role": "ward_officer"}, headers=as_("admin")).status_code == 200
+    for _ in range(2):
+        assert client.post(f"/api/issues/{issue}/assign", json={"worker_user_id": worker.id},
+                           headers=as_("admin")).status_code == 200
+    log = client.get("/api/admin/audit", headers=as_("admin")).json()
+    assert [e for e in log if e["target_type"] == "user" and e["target_id"] == str(uid)] == []
+    assert len([e for e in log if e["action"] == "issue.assign_worker" and e["target_id"] == str(issue)]) == 1
+
+
 def test_admin_cannot_lock_themselves_out(client, org, as_):
     uid = org["users"]["admin"].id
     for body in ({"role": "ward_officer"}, {"is_active": False}):

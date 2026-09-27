@@ -118,6 +118,9 @@ def update_scope(user_id: int, payload: UserScopeRequest, db=Depends(get_db),
     """Replace the user's whole scope. Ward officers normally get a ward
     office, zonal commissioners a zone, department officers a department."""
     before = _load_user(db, user_id)
+    scope_keys = ("ward_ids", "ward_office_ids", "zone_ids", "departments")
+    if all(sorted(set(getattr(payload, k))) == sorted(getattr(before, k)) for k in scope_keys):
+        return before  # nothing changed: no write, no audit row
     try:
         set_scope(db, user_id, payload.ward_ids, payload.ward_office_ids, payload.zone_ids, payload.departments)
     except ValueError as e:

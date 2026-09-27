@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { api, ApiError } from "../../api/client";
 import { useApi } from "../../hooks/useApi";
-import type { OrgResponse, StaffUser, UserScope } from "../../api/types";
-import { Card, Icon, Page, SectionLabel, Skeleton, fmtTime } from "../components/ws";
+import type { AuditEntry, OrgResponse, StaffUser, UserScope } from "../../api/types";
+import { Card, Icon, Page, SectionLabel, Skeleton, fmtTime, issueCode } from "../components/ws";
 import { ROLE_TITLES, useMe } from "../components/StaffGate";
 
 // system_admin only (the API refuses everyone else). Grants PMC roles and
@@ -213,18 +214,65 @@ function UserEditor({ user, org, onSaved }: { user: StaffUser; org: OrgResponse;
   );
 }
 
-const ACTION_LABELS: Record<string, string> = {
-  "user.update": "Changed account",
-  "user.scope": "Changed scope",
-  "issue.close": "Closed issue",
-  "issue.route": "Routed issue",
-  "issue.assign_worker": "Assigned field worker",
-  "report.release_held": "Released held report",
-};
+type Names = { user: (id: unknown) => string; org: OrgResponse | null };
+
+function scopeWords(scope: Partial<UserScope> | undefined, org: OrgResponse | null): string {
+  if (!scope) return "nothing";
+  const offices = org?.zones.flatMap((z) => z.ward_offices) ?? [];
+  const parts = [
+    ...(scope.zone_ids ?? []).map((id) => org?.zones.find((z) => z.id === id)?.name ?? `zone ${id}`),
+    ...(scope.ward_office_ids ?? []).map((id) => offices.find((o) => o.id === id)?.name ?? `ward office ${id}`),
+    ...(scope.departments ?? []),
+    ...((scope.ward_ids ?? []).length ? [`prabhag ${scope.ward_ids!.join(", ")}`] : []),
+  ];
+  return parts.join(", ") || "nothing";
+}
+
+const IssueLink = ({ id }: { id: unknown }) => (
+  <Link to={`/issues/${id}`} className="font-semibold text-ws-blue hover:underline">{issueCode(Number(id))}</Link>
+);
+
+/** One plain sentence per entry, with names instead of ids. */
+function describe(e: AuditEntry, n: Names): React.ReactNode {
+  const d = e.details as Record<string, any>;
+  switch (e.action) {
+    case "user.update": {
+      const who = <b>{n.user(e.target_id)}</b>;
+      const parts: React.ReactNode[] = [];
+      if (d.role) parts.push(<>role {ROLE_TITLES[d.role.from] ?? d.role.from} → <b>{ROLE_TITLES[d.role.to] ?? d.role.to}</b></>);
+      if (d.is_active) parts.push(d.is_active.to ? "reactivated the account" : "deactivated the account");
+      return <>Changed {who}: {parts.map((p, i) => <span key={i}>{i > 0 && "; "}{p}</span>)}</>;
+    }
+    case "user.scope":
+      return <>Changed scope of <b>{n.user(e.target_id)}</b>: {scopeWords(d.from, n.org)} → <b>{scopeWords(d.to, n.org)}</b></>;
+    case "issue.close":
+      return <>Closed <IssueLink id={e.target_id} /></>;
+    case "issue.route":
+      return <>Routed <IssueLink id={e.target_id} /> to <b>{d.agency}</b></>;
+    case "issue.assign_worker":
+      return (
+        <>Assigned <IssueLink id={e.target_id} /> to crew <b>{n.user(d.worker_user_id)}</b>
+          {d.previous_worker_user_id != null && <> (was {n.user(d.previous_worker_user_id)})</>}</>
+      );
+    case "report.release_held":
+      return <>Released held report #{e.target_id} as <IssueLink id={d.issue_id} /></>;
+    default:
+      return <>{e.action} on {e.target_type} #{e.target_id}</>;
+  }
+}
 
 export function AuditLog() {
   const [type, setType] = useState("");
   const { data, loading, error } = useApi(() => api.auditLog({ limit: 200, target_type: type || undefined }), [type]);
+  const { data: users } = useApi(() => api.adminUsers().catch(() => []), []);
+  const { data: org } = useApi(() => api.org().catch(() => null), []);
+  const names: Names = {
+    user: (id) => {
+      const u = users?.find((x) => String(x.id) === String(id));
+      return u ? (u.display_name ?? u.email ?? u.external_auth_id) : `account #${id}`;
+    },
+    org: org ?? null,
+  };
   return (
     <Page>
       <Header title="Audit Log" right={
@@ -243,16 +291,14 @@ export function AuditLog() {
           {data && data.length > 0 && (
             <table className="w-full text-xs">
               <thead className="text-left text-[#535f74]">
-                <tr><th className="py-1">When</th><th>Who</th><th>Action</th><th>Target</th><th>Details</th></tr>
+                <tr><th className="py-1 w-40">When</th><th className="w-56">Who</th><th>What happened</th></tr>
               </thead>
               <tbody>
                 {data.map((e) => (
                   <tr key={e.id} className="border-t border-ws-surface-high align-top">
-                    <td className="py-1.5 whitespace-nowrap">{fmtTime(e.at)}</td>
-                    <td>{e.actor_name ?? (e.actor_user_id != null ? `user ${e.actor_user_id}` : "deleted user")}</td>
-                    <td>{ACTION_LABELS[e.action] ?? e.action}</td>
-                    <td className="font-ws-headline">{e.target_type} #{e.target_id}</td>
-                    <td className="font-ws-headline text-[11px] text-[#535f74] break-all">{JSON.stringify(e.details)}</td>
+                    <td className="py-2 whitespace-nowrap text-[#535f74]">{fmtTime(e.at)}</td>
+                    <td className="py-2">{e.actor_name ?? (e.actor_user_id != null ? names.user(e.actor_user_id) : "Removed account")}</td>
+                    <td className="py-2 font-ws-body text-sm">{describe(e, names)}</td>
                   </tr>
                 ))}
               </tbody>
