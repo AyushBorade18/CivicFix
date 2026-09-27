@@ -3,7 +3,7 @@ import { Camera, CheckCircle2, HardHat, ShieldCheck, Clock, AlertCircle } from "
 import { api, ApiError } from "../../api/client";
 import type { AlternativeVerification, EvidenceItem, EvidenceStatus, IssueDetailResponse, ReportInIssue } from "../../api/types";
 import { useApi } from "../../hooks/useApi";
-import { formatAccuracy, formatCoord, formatTime } from "../../evidence/EvidenceCamera";
+import { formatAccuracy, formatCoord, formatTime } from "../../evidence/EvidenceUpload";
 
 // Before -> Work -> After -> Review, built only from what the API returns.
 // Location evidence is a verification signal for human review: nothing here
@@ -114,8 +114,9 @@ function EvidenceCard({ item, issue, onChanged }: { item: EvidenceItem; issue: I
       <EvidencePhoto fileUrl={item.file_url} />
       <div className="space-y-1.5 text-xs font-mono text-gray-700">
         <Row k="Submitted by" v={`${item.actor_type === "worker" ? "Field worker" : "Citizen"} #${item.submitted_by}`} />
-        <Row k="Capture method" v="In-app camera" />
-        <Row k="Captured (device clock)" v={item.captured_at ? formatTime(item.captured_at) : "—"} />
+        <Row k="Capture method" v={item.capture_method === "upload" ? "Uploaded file" : "In-app camera"} />
+        <Row k={item.capture_method === "upload" ? "Uploaded (device clock)" : "Captured (device clock)"}
+          v={item.captured_at ? formatTime(item.captured_at) : "—"} />
         <Row
           k="Received (server)"
           v={
@@ -130,7 +131,16 @@ function EvidenceCard({ item, issue, onChanged }: { item: EvidenceItem; issue: I
             </>
           }
         />
-        <Row k="Device location" v={formatCoord(item.location.lat, item.location.lon)} />
+        <Row k="Device location" v={
+          <>
+            {formatCoord(item.location.lat, item.location.lon)}
+            {item.capture_method === "upload" && (
+              <span className="block text-[10px] font-normal text-amber-700">
+                Uploader's device at upload time, not where the photo was taken. Treat distance as unverified.
+              </span>
+            )}
+          </>
+        } />
         <Row k="Accuracy" v={formatAccuracy(item.accuracy_m)} />
         <Row
           k="Reported issue location"

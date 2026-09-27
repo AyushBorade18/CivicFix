@@ -6,7 +6,7 @@ import "leaflet/dist/leaflet.css";
 import { api, ApiError, mediaUrl, type EvidencePackage } from "../../api/client";
 import { useSignedIn } from "../../lib/auth";
 import { SignIn } from "../../components/SignIn";
-import { EvidenceCamera, formatTime } from "../../evidence/EvidenceCamera";
+import { EvidenceUpload, formatTime } from "../../evidence/EvidenceUpload";
 import { captureAndUpload, type UploadResult } from "../../evidence/pendingUploads";
 import { useApi } from "../../hooks/useApi";
 import { useSpeechRecognition } from "../../hooks/useSpeechRecognition";
@@ -224,7 +224,7 @@ export function ReportIssue() {
               )}
               <span className="absolute top-3 left-3 px-2 py-1 bg-black/70 text-white font-se-code text-se-caps uppercase flex items-center gap-1.5">
                 <span className={`w-1.5 h-1.5 rounded-full ${evidence ? "bg-emerald-400" : "bg-red-500 animate-pulse"}`} />
-                {evidence ? "Photo added" : "Camera"}
+                {evidence ? "Photo added" : "Photo"}
               </span>
               {evidence && (
                 <span className="absolute top-3 right-3 px-2 py-1 bg-black/70 text-white font-se-code text-se-caps uppercase">
@@ -246,7 +246,7 @@ export function ReportIssue() {
                 </p>
                 <div className="flex gap-1 shrink-0">
                   <button type="button" onClick={() => setCameraOpen(true)} className="px-3 py-2 bg-white text-se-on font-se-code text-se-caps uppercase flex items-center gap-1">
-                    <Icon name="photo_camera" className="text-[16px]" /> {evidence ? "Retake" : "Open camera"}
+                    <Icon name="upload" className="text-[16px]" /> {evidence ? "Change photo" : "Upload photo"}
                   </button>
                   {evidence && (
                     <button type="button" onClick={removeCapture} className="px-3 py-2 border border-white/60 text-white font-se-code text-se-caps uppercase">Remove</button>
@@ -327,7 +327,7 @@ export function ReportIssue() {
         <Stat label="Fixed" value={mapData ? issues.length - open : undefined} note="With a photo from the spot" />
       </section>
 
-      {cameraOpen && <EvidenceCamera title="Photo of the problem" onCancel={() => setCameraOpen(false)} onConfirm={keepCapture} />}
+      {cameraOpen && <EvidenceUpload title="Photo of the problem" onCancel={() => setCameraOpen(false)} onConfirm={keepCapture} />}
     </>
   );
 }

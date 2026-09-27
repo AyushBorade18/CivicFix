@@ -97,6 +97,8 @@ export interface EvidencePackage {
   longitude: number;
   accuracyM: number;
   capturedAt: string;
+  /** "upload" = picked from a file; location is the uploader's device at upload time. */
+  captureMethod?: "camera" | "upload";
   locationCapturedAt: string;
 }
 
@@ -182,6 +184,7 @@ export const api = {
     form.append("accuracy_m", String(pkg.accuracyM));
     form.append("captured_at", pkg.capturedAt);
     form.append("location_captured_at", pkg.locationCapturedAt);
+    if (pkg.captureMethod) form.append("capture_method", pkg.captureMethod);
     if (reportId !== undefined) form.append("report_id", String(reportId));
     return request<EvidenceItem>(`/api/issues/${issueId}/evidence`, { method: "POST", body: form });
   },

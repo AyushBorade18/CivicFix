@@ -38,7 +38,7 @@ def ev(world, db_conn, make_token, tmp_path, monkeypatch):
 
 
 def submit(client, headers, issue_id, report_id=None, lat=ISSUE_LAT + 0.001, lon=ISSUE_LON,
-           submission_id=None, body=JPEG, accuracy=8.5):
+           submission_id=None, body=JPEG, accuracy=8.5, capture_method=None):
     data = {
         "client_submission_id": submission_id or str(uuid.uuid4()),
         "latitude": str(lat), "longitude": str(lon), "accuracy_m": str(accuracy),
@@ -46,6 +46,8 @@ def submit(client, headers, issue_id, report_id=None, lat=ISSUE_LAT + 0.001, lon
     }
     if report_id is not None:
         data["report_id"] = str(report_id)
+    if capture_method is not None:
+        data["capture_method"] = capture_method
     if lat is None:
         del data["latitude"]
     return client.post(f"/api/issues/{issue_id}/evidence", headers=headers, data=data,
@@ -68,6 +70,17 @@ def test_citizen_evidence_stores_the_whole_capture_package(client, ev):
     assert 100 < e["distance_from_issue_m"] < 125  # 0.001 deg latitude ~ 111 m
     assert e["review_status"] == "pending_review"
     assert e["file_url"] == f"/api/evidence/{e['evidence_id']}/file"
+
+
+def test_uploaded_file_is_recorded_as_upload_not_camera(client, ev):
+    resp = submit(client, ev["as"]("alice"), ev["issues"]["road_w1"], ev["reports"]["alice"], capture_method="upload")
+    assert resp.status_code == 201, resp.text
+    assert resp.json()["capture_method"] == "upload"
+
+
+def test_unknown_capture_method_rejected(client, ev):
+    resp = submit(client, ev["as"]("alice"), ev["issues"]["road_w1"], ev["reports"]["alice"], capture_method="drone")
+    assert resp.status_code == 422
 
 
 def test_retry_with_same_submission_id_returns_the_first_row(client, ev, db_conn):

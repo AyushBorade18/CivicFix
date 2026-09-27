@@ -198,7 +198,7 @@ class EvidenceItem(BaseModel):
     submitted_by: int
     actor_type: str  # "citizen" | "worker"
     evidence_type: str  # "initial_report" | "resolution"
-    capture_method: str  # "camera"
+    capture_method: str  # "camera" or "upload"
     file_url: str  # authorized endpoint, never a public path
     mime_type: str
     byte_size: int

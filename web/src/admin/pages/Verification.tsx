@@ -11,7 +11,7 @@ import { Icon, Card, BandChip, issueCode, fmtTime, metres, bearing, SITE_ICON, P
 // WardSentry-UI-References/admin-stitch/wardsentry_location_verified_evidence_workspace
 // Every number is computed from GET /api/evidence and GET /api/issues/:id.
 
-/** Same bar the capture screen uses to warn the photographer (EvidenceCamera POOR_ACCURACY_M). */
+/** Same bar the capture screen uses to warn the photographer (EvidenceUpload POOR_ACCURACY_M). */
 const GPS_DRIFT_M = 100;
 /** Review threshold for "photo taken far from the reported location". A prompt for human review, not a verdict. */
 const DISTANCE_REVIEW_M = 50;

@@ -208,7 +208,7 @@ export function AssistantChat({ surface, variant, onClose }: {
           </button>
         )}
         <button type="submit" className="cfa-send" disabled={busy || !draft.trim()} aria-label="Send"><Icon name="send" /></button>
-        <input ref={fileInput} type="file" accept={PHOTO_TYPES.join(",")} capture="environment" hidden
+        <input ref={fileInput} type="file" accept={PHOTO_TYPES.join(",")} hidden
           onChange={(e) => { void attachPhoto(e.target.files?.[0]); e.target.value = ""; }} />
       </form>
       <p className="cfa-principle">AI understands · Evidence supports · Rules explain · Humans decide</p>

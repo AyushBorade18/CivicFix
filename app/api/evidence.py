@@ -17,7 +17,7 @@ import os
 import uuid
 from datetime import datetime
 from pathlib import Path
-from typing import Optional
+from typing import Literal, Optional
 
 import httpx
 import psycopg
@@ -233,6 +233,10 @@ def submit_evidence(
     captured_at: Optional[datetime] = Form(None),
     location_captured_at: Optional[datetime] = Form(None),
     report_id: Optional[int] = Form(None),
+    # 'upload': a file picked from disk; its location is the uploader's
+    # device at upload time. Defaults to 'camera' for packages queued offline
+    # by the old live-capture screen.
+    capture_method: Literal["camera", "upload"] = Form("camera"),
     db=Depends(get_db),
     user: CurrentUser = Depends(get_current_user),
 ):
@@ -307,10 +311,10 @@ def submit_evidence(
         with db.cursor() as cur:
             cur.execute(
                 """
-                INSERT INTO evidence (issue_id, report_id, submitted_by, actor_type, evidence_type, file_key,
+                INSERT INTO evidence (issue_id, report_id, submitted_by, actor_type, evidence_type, capture_method, file_key,
                                       mime_type, byte_size, sha256, geom, accuracy_m, captured_at,
                                       location_captured_at, distance_from_issue_m, client_submission_id, user_agent)
-                SELECT i.id, %(report_id)s, %(user_id)s, %(actor)s, %(etype)s, %(key)s, %(mime)s, %(size)s,
+                SELECT i.id, %(report_id)s, %(user_id)s, %(actor)s, %(etype)s, %(method)s, %(key)s, %(mime)s, %(size)s,
                        %(sha)s, p.pt, %(acc)s, %(cap)s, %(loc_cap)s,
                        ST_Distance(p.pt::geography, i.geom::geography), %(sid)s, %(ua)s
                 FROM issues i, (SELECT ST_SetSRID(ST_MakePoint(%(lon)s, %(lat)s), 4326) AS pt) p
@@ -319,7 +323,7 @@ def submit_evidence(
                 """,
                 {
                     "issue_id": issue_id, "report_id": report_id, "user_id": user.id, "actor": actor_type,
-                    "etype": evidence_type, "key": file_key, "mime": mime_type, "size": len(body),
+                    "etype": evidence_type, "method": capture_method, "key": file_key, "mime": mime_type, "size": len(body),
                     "sha": hashlib.sha256(body).hexdigest(), "lat": latitude, "lon": longitude,
                     "acc": accuracy_m, "cap": captured_at, "loc_cap": location_captured_at,
                     "sid": str(client_submission_id), "ua": (request.headers.get("user-agent") or "")[:300],

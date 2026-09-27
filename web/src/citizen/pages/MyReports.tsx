@@ -6,7 +6,7 @@ import { CATEGORY_LABELS } from "../../api/types";
 import { useApi } from "../../hooks/useApi";
 import { signOut, useSignedIn } from "../../lib/auth";
 import { SignIn } from "../../components/SignIn";
-import { EvidenceCamera, formatTime } from "../../evidence/EvidenceCamera";
+import { EvidenceUpload, formatTime } from "../../evidence/EvidenceUpload";
 import { captureAndUpload, listPending, uploadPending, type PendingUpload } from "../../evidence/pendingUploads";
 import { Icon } from "../../admin/components/ws";
 import { Kicker, SplitCTA } from "../Shell";
@@ -220,7 +220,7 @@ export function MyReports() {
       />
 
       {cameraFor && (
-        <EvidenceCamera title={`Photo for report #${cameraFor.report_id}`} onCancel={() => setCameraFor(null)} onConfirm={onCapture} />
+        <EvidenceUpload title={`Photo for report #${cameraFor.report_id}`} onCancel={() => setCameraFor(null)} onConfirm={onCapture} />
       )}
     </>
   );
@@ -303,7 +303,7 @@ function TrackedReport({ report, photoQueued, busy, onAddPhoto, onChanged }: {
               {report.photo_url ? <img src={mediaUrl(report.photo_url)} alt="Your photo of the problem" className="w-full h-full object-cover" />
                 : canAddPhoto ? (
                   <button type="button" onClick={onAddPhoto} disabled={busy} className="flex flex-col items-center gap-2 text-white disabled:opacity-50">
-                    <Icon name="photo_camera" className="text-[32px]" /><span className="font-se-code text-se-caps uppercase">Add a photo</span>
+                    <Icon name="upload" className="text-[32px]" /><span className="font-se-code text-se-caps uppercase">Add a photo</span>
                   </button>
                 ) : <Empty icon="no_photography" text={photoQueued ? "Saved on this device" : "No photo added"} />}
             </Pane>

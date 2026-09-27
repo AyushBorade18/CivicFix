@@ -169,7 +169,7 @@ export interface EvidenceItem {
   submitted_by: number;
   actor_type: "citizen" | "worker";
   evidence_type: "initial_report" | "resolution";
-  capture_method: "camera";
+  capture_method: "camera" | "upload";
   file_url: string;
   mime_type: string;
   byte_size: number;
