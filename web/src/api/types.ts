@@ -213,6 +213,17 @@ export interface MeResponse {
   departments: string[];
 }
 
+/** GET /api/held-reports: a report LLM triage held as likely spam, waiting for a human. */
+export interface HeldReport {
+  report_id: number;
+  issue_id: number;
+  raw_text: string;
+  translated_text: string | null;
+  reported_at: string;
+  ward_id: number | null;
+  triage: { verdict: string; category: string; reason: string; model: string | null; prompt_version: number };
+}
+
 export interface MyReport {
   report_id: number;
   raw_text: string;

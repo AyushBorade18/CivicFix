@@ -12,6 +12,7 @@ const NAV_ITEMS = [
   { path: "/wards", label: "Wards Directory", icon: "location_city" },
   { path: "/works", label: "Civil Works", icon: "engineering" },
   { path: "/verification", label: "Field Verification", icon: "verified" },
+  { path: "/held", label: "Held for Review", icon: "gpp_maybe" },
   { path: "/analytics", label: "Spatial Analytics", icon: "analytics" },
 ];
 

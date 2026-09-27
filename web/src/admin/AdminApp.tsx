@@ -11,6 +11,7 @@ import { PublicWorks } from "./pages/PublicWorks";
 import { WorkDetail } from "./pages/WorkDetail";
 import { Verification } from "./pages/Verification";
 import { Analytics } from "./pages/Analytics";
+import { HeldReports } from "./pages/HeldReports";
 import { StaffGate } from "./components/StaffGate";
 
 export function AdminApp() {
@@ -30,6 +31,7 @@ export function AdminApp() {
           <Route path="works/:workId" element={<WorkDetail />} />
           <Route path="verification" element={<Verification />} />
           <Route path="analytics" element={<Analytics />} />
+          <Route path="held" element={<HeldReports />} />
           {/* Catch-all redirect to CommandCenter */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>

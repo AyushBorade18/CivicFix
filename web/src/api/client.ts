@@ -1,5 +1,6 @@
 import { currentToken } from "../lib/auth";
 import type {
+  HeldReport,
   AlternativeVerification,
   EvidenceItem,
   FieldWorker,
@@ -184,6 +185,9 @@ export const api = {
     URL.createObjectURL(await (await raw(fileUrl)).blob()),
   reviewEvidence: (evidenceId: number, review_status: "verified" | "review_required", note?: string) =>
     post<EvidenceItem>(`/api/evidence/${evidenceId}/review`, { review_status, note: note || null }),
+  heldReports: () => request<HeldReport[]>("/api/held-reports"),
+  releaseHeldReport: (reportId: number) =>
+    post<{ report_id: number; issue_id: number; released: boolean }>(`/api/held-reports/${reportId}/release`),
   fieldWorkers: () => request<FieldWorker[]>("/api/field-workers"),
   assignIssue: (issueId: number, worker_user_id: number) =>
     post<{ issue_id: number; assigned_worker_id: number; assigned_at: string }>(
