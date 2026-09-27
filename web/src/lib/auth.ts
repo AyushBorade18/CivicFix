@@ -114,6 +114,24 @@ export async function verifyCode(email: string, code: string): Promise<void> {
   }
 }
 
+/** Email + password sign-in, or account creation. Sends no email as long as
+ * "Confirm email" is off in Supabase (Authentication -> Sign In / Providers
+ * -> Email); with it on, Supabase would email a confirmation link instead. */
+export async function passwordSignIn(email: string, password: string, create: boolean): Promise<void> {
+  if (!supabase) throw new Error("Sign-in isn't configured on this server.");
+  registering = true;
+  const { data, error } = create
+    ? await supabase.auth.signUp({ email, password })
+    : await supabase.auth.signInWithPassword({ email, password });
+  if (error || !data.session) {
+    registering = false;
+    throw error ?? new Error(
+      "Account created, but this server still requires email confirmation. Ask the administrator to turn off " +
+      "\"Confirm email\" in Supabase, then sign in with this email and password.",
+    );
+  }
+}
+
 /** Ends the post-verification hold; call once registration has settled. */
 export function finishSignIn(): void {
   registering = false;

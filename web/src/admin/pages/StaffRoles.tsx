@@ -39,7 +39,7 @@ export function StaffRoles() {
       <div className="px-6 py-4 grid lg:grid-cols-[minmax(0,1fr)_420px] gap-4 font-ws-label items-start">
         <Card className="p-4 flex flex-col gap-3">
           <div className="flex flex-wrap gap-2">
-            <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search name, email or account id"
+            <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search name, email or access key"
               className="flex-1 min-w-48 px-3 py-2 rounded border border-ws-surface-high text-sm" />
             <select value={role} onChange={(e) => setRole(e.target.value)}
               className="px-3 py-2 rounded border border-ws-surface-high text-sm">

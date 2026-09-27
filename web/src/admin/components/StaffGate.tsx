@@ -56,10 +56,16 @@ function RoleCheck({ children }: { children: React.ReactNode }) {
       <h1 className="text-xl font-bold">This account isn't municipal staff yet</h1>
       {error && <p className="text-red-600">{error}</p>}
       <p>
-        Signed in as {who?.email ?? "unknown"} {me && <>(role: {me.role})</>}. Ask a system administrator to
-        grant you a role and a ward office, zone or department on the Staff &amp; Roles page. Your account id:
+        Signed in as {who?.email ?? "unknown"} {me && <>(role: {me.role})</>}. Send your access key below to
+        the system administrator. They paste it into Staff &amp; Roles, check who you are, and assign your role
+        (field worker, ward officer, zonal commissioner or department officer).
       </p>
-      <pre className="p-3 bg-gray-100 rounded text-xs whitespace-pre-wrap break-all">{who?.sub}</pre>
+      <div className="flex items-stretch gap-2">
+        <pre className="flex-1 p-3 bg-gray-100 rounded text-xs whitespace-pre-wrap break-all">{who?.sub}</pre>
+        <button type="button" onClick={() => who && navigator.clipboard?.writeText(who.sub)}
+          className="px-3 rounded border border-gray-300 text-xs">Copy key</button>
+      </div>
+      <p className="text-xs text-gray-500">Once your role is assigned, reload this page.</p>
       <button type="button" onClick={() => signOut()} className="px-3 py-2 rounded border border-gray-300">
         Sign out
       </button>
