@@ -1,0 +1,401 @@
+issue_id,category,complaint_text,language,locality,context,severity_level,exposure_level,recurrence_pattern,report_count,issue_age_days,sensitive_site,is_synthetic
+SYN-PILOT-001,pothole_road,"Deep potholes along the entire stretch outside the society gate, two-wheelers skid here every morning during peak hours",en,Kothrud,residential road carrying heavy morning commuter traffic,high,high,recurring,11,210,none,true
+SYN-PILOT-002,pothole_road,"रस्त्यावर मोठे खड्डे पडले आहेत, सकाळी दुचाकी घसरून पडण्याची भीती वाटते",mr,Bibwewadi,residential road at a school entrance,high,moderate,occasional,3,65,school,true
+SYN-PILOT-003,pothole_road,Sadak par itne bade gadde hain ki auto wale is road se aate hi nahi hain,hi-rom,Hadapsar,link road used by shared autos,moderate,moderate,recurring,7,155,none,true
+SYN-PILOT-004,pothole_road,"Khadde far mothe ahet, kal ek scooter valyachi gadi ghasarli ani to padla",mr-rom,Warje,narrow internal lane with little through traffic,critical,low,first_report,1,3,none,true
+SYN-PILOT-005,pothole_road,"Road pe potholes ki halat bahut kharab hai, daily bike slip hone ka risk rehta hai office jate time",hinglish,Baner,arterial road with office commuter traffic,high,high,occasional,4,48,none,true
+SYN-PILOT-006,pothole_road,"सड़क पर गहरे गड्ढे हैं, बारिश में पानी भर जाता है और गड्ढा दिखता ही नहीं",hi,Yerwada,road that waterlogs during monsoon,high,moderate,recurring,9,240,none,true
+SYN-PILOT-007,pothole_road,A small pothole has appeared near the lane turning and it has been widening every week,en,Pashan,quiet residential lane,low,low,first_report,1,5,none,true
+SYN-PILOT-008,pothole_road,"Society समोरचा road पूर्ण खराब झाला आहे, potholes मुळे कालच एक accident झाला",mr-en,Kharadi,approach road to an IT park,critical,high,occasional,4,30,none,true
+SYN-PILOT-009,pothole_road,"School bus को रोज़ इस road से निकलने में दिक्कत होती है, गड्ढे बहुत गहरे हैं",hi-en,Kondhwa,school approach road,high,high,recurring,13,180,school,true
+SYN-PILOT-010,pothole_road,The resurfaced road has already developed potholes three months after the work was completed,en,Aundh,recently resurfaced residential road,moderate,moderate,occasional,3,92,none,true
+SYN-PILOT-011,pothole_road,"खड्ड्यांमुळे रुग्णवाहिकेला वेग कमी करावा लागतो, दवाखान्याकडे जाणारा रस्ता आहे",mr,Dhankawadi,hospital approach road,moderate,high,occasional,4,74,hospital,true
+SYN-PILOT-012,pothole_road,"Bahut purana problem hai, har baras bharti hai aur do mahine mein phir gadda ban jata hai",hi-rom,Katraj,road repeatedly patched and failing again,moderate,moderate,recurring,16,395,none,true
+SYN-PILOT-013,pothole_road,"Ratri khadda disat nahi karan pathdive pan band ahet, double problem ahe",mr-rom,Sinhagad Road,unlit stretch with potholes,high,moderate,occasional,5,58,none,true
+SYN-PILOT-014,pothole_road,"Broken edge of the road near the market crossing, handcart vendors keep tipping over there",en,Viman Nagar,busy market crossing,moderate,high,recurring,8,130,none,true
+SYN-PILOT-015,pothole_road,"Yahan pe road ka ek side pura dhas gaya hai, car ka tyre puri tarah andar chala jata hai",hinglish,Wakad,internal road with a collapsed shoulder,high,low,first_report,1,8,none,true
+SYN-PILOT-016,pothole_road,"गल्लीत छोटे खड्डे आहेत पण गेली दोन वर्षे तसेच आहेत, कोणी लक्ष देत नाही",mr,Erandwane,quiet residential gully,low,low,recurring,12,730,none,true
+SYN-PILOT-017,pothole_road,"मुख्य सड़क पर गड्ढा है, बस स्टॉप के पास ही है इसलिए वहां हमेशा भीड़ रहती है",hi,Shivajinagar,main road beside a crowded bus stop,moderate,high,first_report,1,6,none,true
+SYN-PILOT-018,pothole_road,"Internal road वर खड्डे आहेत, senior citizens चालताना तोल जातो",mr-en,Vadgaon Sheri,residential road with many elderly residents,moderate,moderate,occasional,2,40,none,true
+SYN-PILOT-019,pothole_road,Large crater has formed where the road was dug for a cable and never properly restored,en,Mundhwa,road cut left unrestored after utility work,critical,moderate,occasional,5,118,none,true
+SYN-PILOT-020,pothole_road,"Hospital के सामने road पर deep potholes हैं, ambulance को speed कम करनी पड़ती है",hi-en,Ghorpadi,hospital frontage road,critical,high,recurring,14,165,hospital,true
+SYN-PILOT-021,drainage_sewage,"गटाराचे झाकण तुटले आहे, शाळेच्या गेटजवळ उघडे गटार आहे",mr,Bibwewadi,open drain directly at a school gate,critical,high,first_report,1,2,school,true
+SYN-PILOT-022,drainage_sewage,Sewage is overflowing into the lane and entering ground floor homes whenever it rains,en,Kondhwa,drainage overflow reaching homes,critical,high,recurring,18,205,none,true
+SYN-PILOT-023,drainage_sewage,"Naali ka dhakkan toota hua hai, bacche khelte waqt gir sakte hain",hi-rom,Hadapsar,open drain in a lane where children play,high,moderate,occasional,3,22,none,true
+SYN-PILOT-024,drainage_sewage,"Drainage chocked ahe, sandas cha pani rastyavar yete, durgandhi sahan hot nahi",mr-rom,Dhayari,blocked sewer discharging onto the road,critical,moderate,recurring,9,140,none,true
+SYN-PILOT-025,drainage_sewage,"Manhole ka cover missing hai aur night mein bilkul dikhai nahi deta, koi bhi gir sakta hai",hinglish,Kharadi,uncovered manhole on an unlit dead-end stretch,critical,low,first_report,1,4,none,true
+SYN-PILOT-026,drainage_sewage,"नाले का गंदा पानी सीधे नदी में जा रहा है, बहुत बदबू आती है",hi,Yerwada,untreated discharge reaching a river,high,high,recurring,11,260,water_body,true
+SYN-PILOT-027,drainage_sewage,Storm water drain is silted and the water backs up onto the footpath outside the school,en,Baner,silted drain outside a school,moderate,moderate,occasional,4,80,school,true
+SYN-PILOT-028,drainage_sewage,"पावसाळ्यात गटार तुंबते आणि पाणी घरात शिरते, दरवर्षी हेच होते",mr,Warje,seasonal flooding into homes,high,moderate,recurring,15,380,none,true
+SYN-PILOT-029,drainage_sewage,"Drainage line चा overflow नदीच्या काठावर होत आहे, contamination चा धोका आहे",mr-en,Aundh,overflow beside a river bank,high,moderate,occasional,5,95,water_body,true
+SYN-PILOT-030,drainage_sewage,"Hospital के पीछे की गली में sewage जमा है, mosquitoes बहुत बढ़ गए हैं",hi-en,Bibwewadi,stagnant sewage behind a hospital,high,moderate,recurring,8,150,hospital,true
+SYN-PILOT-031,drainage_sewage,"There is a faint sewage smell in the lane for the last few days, no visible overflow yet",en,Pashan,residential lane with an early-stage smell report,low,low,first_report,1,7,none,true
+SYN-PILOT-032,drainage_sewage,"Purana problem hai, gutter ka pani sadak par bahta rehta hai, ab to aadat ho gayi hai",hi-rom,Katraj,chronic surface discharge on a residential road,moderate,moderate,recurring,20,420,none,true
+SYN-PILOT-033,drainage_sewage,"Gutar chya jhakanavar gadi gelyavar khup awaj yeto, jhakan sarkat ahe",mr-rom,Kothrud,loose drain cover on a residential road,low,moderate,recurring,9,150,none,true
+SYN-PILOT-034,drainage_sewage,Drain cover has sunk below road level at the market entrance and water pools all around it,en,Viman Nagar,market entrance,moderate,high,occasional,3,55,none,true
+SYN-PILOT-035,drainage_sewage,"Society ke bahar drainage ka pani road pe aa raha hai, bachche school jate waqt usme se nikalte hain",hinglish,Undri,children crossing standing sewage on the school route,high,high,occasional,4,44,school,true
+SYN-PILOT-036,drainage_sewage,खुला मैनहोल है और उसके आसपास कोई बैरिकेड भी नहीं लगाया गया,hi,Shivajinagar,uncovered manhole with no barricade,critical,moderate,first_report,1,1,none,true
+SYN-PILOT-037,drainage_sewage,"सांडपाणी थेट ओढ्यात सोडले जात आहे, पाण्याला दुर्गंधी येते आणि रंग बदलला आहे",mr,Mundhwa,wastewater discharged into a stream away from housing,high,low,occasional,3,110,water_body,true
+SYN-PILOT-038,drainage_sewage,"Manhole चे झाकण तुटलेले आहे, रात्री तिथून जाताना पाय आतमध्ये जाऊ शकतो",mr-en,Wanowrie,broken manhole cover on a dead-end lane,high,low,first_report,1,12,none,true
+SYN-PILOT-039,garbage_waste,"कचरा गाडी आठवडाभर आली नाही, कोपऱ्यावर कचऱ्याचा ढीग झाला आहे",mr,Kothrud,uncollected waste piling at a lane corner,moderate,moderate,recurring,9,120,none,true
+SYN-PILOT-040,garbage_waste,Garbage is being dumped in the open plot right next to the hospital boundary wall,en,Hadapsar,open dumping beside a hospital wall,high,moderate,recurring,12,175,hospital,true
+SYN-PILOT-041,garbage_waste,"Kachra gaadi char din se nahi aayi, badboo se ghar mein baithna mushkil hai",hi-rom,Kondhwa,missed collection in a dense residential lane,moderate,high,occasional,4,18,none,true
+SYN-PILOT-042,garbage_waste,"Shalechya gate samor kachra takla jato, mula tyach bajune shalet jatat",mr-rom,Dhankawadi,waste dumped at a school gate,high,high,recurring,10,135,school,true
+SYN-PILOT-043,garbage_waste,"Society ke pass wala garbage bin overflow ho raha hai daily, dogs poora kachra spread kar dete hain",hinglish,Baner,overflowing community bin,moderate,moderate,recurring,14,200,none,true
+SYN-PILOT-044,garbage_waste,"नदी किनारे कूड़ा जलाया जा रहा है, धुआं सीधे घरों में आता है",hi,Yerwada,waste burning near a river bank,high,high,occasional,5,68,water_body,true
+SYN-PILOT-045,garbage_waste,"Construction debris left on the roadside for over three months, it is narrowing the lane",en,Aundh,debris obstructing a residential lane,moderate,low,occasional,3,135,none,true
+SYN-PILOT-046,garbage_waste,"Market area मध्ये wet waste रस्त्यावरच टाकले जाते, खूप unhygienic आहे",mr-en,Viman Nagar,wet waste on a market road,high,high,recurring,16,230,none,true
+SYN-PILOT-047,garbage_waste,"खाली plot में garbage dump हो रहा है, गर्मी में उसमें आग लग जाती है",hi-en,Katraj,open plot dumping with fire risk,high,moderate,occasional,4,88,none,true
+SYN-PILOT-048,garbage_waste,"कोपऱ्यावर थोडासा कचरा साचला आहे, दोन दिवसांत गाडी आली नाही",mr,Warje,minor accumulation awaiting the next collection,low,low,first_report,1,2,none,true
+SYN-PILOT-049,garbage_waste,Biomedical looking waste bags dumped along with the regular garbage near the hospital lane,en,Bibwewadi,suspect waste mixed into domestic garbage,critical,moderate,first_report,1,3,hospital,true
+SYN-PILOT-050,garbage_waste,"Yahan pe roz shaam ko kachra jalate hain, bahut dhuan hota hai aur saans lene mein takleef hoti hai",hi-rom,Shivajinagar,evening waste burning in a residential area,high,moderate,recurring,11,190,none,true
+SYN-PILOT-051,garbage_waste,"Kachra kundi nahich ahe amchya bhagat, mhanun loka rastyavar takatat",mr-rom,Sus,no community bin provided in the area,moderate,moderate,recurring,8,300,none,true
+SYN-PILOT-052,garbage_waste,The garbage collection vehicle skips our lane roughly one day in three,en,Kharadi,irregular collection on an internal lane,low,moderate,recurring,19,270,none,true
+SYN-PILOT-053,garbage_waste,"School ke gate ke samne kachra ka dher hai, bacchon ko waha se hi jana padta hai",hinglish,Bibwewadi,waste heap at a school entrance,moderate,moderate,first_report,1,5,school,true
+SYN-PILOT-054,streetlight,"पथदिवा बंद आहे, रात्री रस्त्यावर पूर्ण अंधार असतो",mr,Pashan,unlit residential street at night,moderate,moderate,first_report,1,9,none,true
+SYN-PILOT-055,streetlight,Four consecutive street lights are out on the stretch people use to walk back from the bus stop,en,Kondhwa,unlit walking route from a bus stop,high,high,occasional,5,26,none,true
+SYN-PILOT-056,streetlight,"Street light band hai teen mahine se, shaam ke baad koi bahar nahi nikalta",hi-rom,Hadapsar,chronically unlit lane,high,moderate,recurring,9,95,none,true
+SYN-PILOT-057,streetlight,"Pathdiva band ahe ani baju la ughda gutar pan ahe, ratri khup dhoka ahe",mr-rom,Dhayari,unlit lane with an open drain alongside,critical,low,occasional,3,33,none,true
+SYN-PILOT-058,streetlight,"Ek light flicker kar rahi hai, raat bhar on off hoti rehti hai",hinglish,Wakad,single flickering fitting,low,low,first_report,1,4,none,true
+SYN-PILOT-059,streetlight,"अस्पताल के रास्ते पर लाइट नहीं है, रात में मरीज़ लाने में दिक्कत होती है",hi,Yerwada,unlit hospital approach,high,high,occasional,4,47,hospital,true
+SYN-PILOT-060,streetlight,"School च्या समोरचा light गेल्या महिन्यापासून बंद आहे, tuition वरून येणारी मुलं अंधारात असतात",mr-en,Bibwewadi,unlit school frontage used by evening tuition students,high,moderate,recurring,7,35,school,true
+SYN-PILOT-061,streetlight,"The pole is leaning and the wiring is exposed at the base, apart from the light being dead",en,Aundh,leaning pole with exposed wiring,critical,moderate,first_report,1,2,none,true
+SYN-PILOT-062,streetlight,"Lane की सारी lights काम कर रही हैं but timing गलत है, सुबह तक जलती रहती हैं",hi-en,Erandwane,lights burning through daylight hours,low,low,occasional,3,60,none,true
+SYN-PILOT-063,streetlight,"दिवे बंद असून दोन वर्षे झाली, आता तक्रार करूनही काहीच होत नाही",mr,Katraj,lights out for two years despite repeated complaints,moderate,low,recurring,17,750,none,true
+SYN-PILOT-064,streetlight,Nayi society ke bahar street light lagi hi nahi hai abhi tak,hi-rom,Kharadi,street lights never installed outside a new society,moderate,moderate,occasional,3,150,none,true
+SYN-PILOT-065,streetlight,"Pul chya khali ekhi light nahi, ratri tyatun chalayla bhiti vatate",mr-rom,Wanowrie,unlit underpass used by pedestrians,high,moderate,first_report,1,11,none,true
+SYN-PILOT-066,water_supply,"नळाला तीन दिवसांपासून पाणी आलेले नाही, टँकरही आला नाही",mr,Kothrud,no piped supply and no tanker for three days,high,moderate,first_report,1,3,none,true
+SYN-PILOT-067,water_supply,"Water comes for barely fifteen minutes at very low pressure, upper floors get nothing at all",en,Dhankawadi,chronic low pressure in a multi-storey area,moderate,moderate,recurring,13,220,none,true
+SYN-PILOT-068,water_supply,"Paani ka rang peela aa raha hai do din se, peene layak nahi lagta",hi-rom,Katraj,discoloured supply water,high,moderate,occasional,4,2,none,true
+SYN-PILOT-069,water_supply,"Pipeline phutli ahe, rastyavar sagla pani vaya jat ahe",mr-rom,Warje,burst pipeline wasting water onto the road,high,moderate,first_report,1,1,none,true
+SYN-PILOT-070,water_supply,"Water supply timing bilkul fix nahi hai, kabhi subah kabhi raat, plan karna mushkil ho jata hai",hinglish,Baner,irregular supply timings,low,moderate,recurring,10,290,none,true
+SYN-PILOT-071,water_supply,अस्पताल के वार्ड में पानी की सप्लाई बहुत कम आ रही है,hi,Shivajinagar,reduced supply reaching a hospital ward,high,high,occasional,3,6,hospital,true
+SYN-PILOT-072,water_supply,"Tanker वर पूर्ण अवलंबून आहोत, pipeline connection अजून आलेलं नाही",mr-en,Undri,area dependent on tankers with no piped connection,high,moderate,recurring,15,400,none,true
+SYN-PILOT-073,water_supply,"There is a slow leak at the roadside valve, a thin stream runs all day long",en,Pashan,persistent small leak at a roadside valve,low,low,recurring,7,160,none,true
+SYN-PILOT-074,water_supply,School में drinking water की supply दो हफ्ते से बंद है,hi-en,Kondhwa,school drinking water supply cut off,critical,moderate,occasional,4,15,school,true
+SYN-PILOT-075,water_supply,"Pani thodya velach yete pan dab barach kami ahe, terrace tank bharat nahi",mr-rom,Vadgaon Sheri,low pressure failing to fill overhead tanks,moderate,moderate,recurring,9,185,none,true
+SYN-PILOT-076,water_supply,नदी के पास वाले बोरवेल का पानी खारा हो गया है,hi,Mundhwa,borewell water turned saline near a river,moderate,low,occasional,3,240,water_body,true
+SYN-PILOT-077,footpath,"Footpath tiles have come loose along the hospital approach, elderly patients stumble on them",en,Erandwane,loose tiles on a hospital approach,moderate,high,occasional,4,62,hospital,true
+SYN-PILOT-078,footpath,"फूटपाथवरच्या टाइल्स उखडल्या आहेत, ज्येष्ठ नागरिक अडखळून पडतात",mr,Aundh,broken tiles causing falls among elderly pedestrians,high,moderate,recurring,8,160,none,true
+SYN-PILOT-079,footpath,"Footpath par hawker baith gaye hain, chalne ki jagah hi nahi bachi, log sadak par chalte hain",hi-rom,Shivajinagar,"footpath encroached, pedestrians pushed onto the road",high,high,recurring,12,250,none,true
+SYN-PILOT-080,footpath,"Footpath var moped park kartat, shalet janarya mulana rastyavarun chalava lagte",mr-rom,Bibwewadi,footpath parking forcing schoolchildren onto the carriageway,high,moderate,occasional,5,52,school,true
+SYN-PILOT-081,footpath,"Footpath ka ek slab toota hua hai aur uske neeche drain khula hai, dikhta hi nahi",hinglish,Kharadi,broken slab concealing an open drain below,critical,moderate,first_report,1,5,none,true
+SYN-PILOT-082,footpath,"The footpath simply ends midway and there is no ramp, wheelchair users cannot use it at all",en,Baner,discontinuous footpath with no accessible ramp,moderate,moderate,occasional,3,200,none,true
+SYN-PILOT-083,footpath,"Footpath वर बांधकामाचे material ठेवले आहे, pedestrians ला road वर उतरावे लागते",mr-en,Viman Nagar,construction material blocking the footpath,moderate,high,first_report,1,8,none,true
+SYN-PILOT-084,footpath,"फुटपाथ की ऊंचाई बहुत ज़्यादा है, बुज़ुर्गों को चढ़ने में दिक्कत होती है",hi,Yerwada,excessively high kerb,low,moderate,occasional,2,300,none,true
+SYN-PILOT-085,footpath,"Footpath पर पेड़ की जड़ों से tiles उठ गई हैं, रात में ठोकर लग जाती है",hi-en,Katraj,tree roots lifting footpath tiles,moderate,low,recurring,7,270,none,true
+SYN-PILOT-086,footpath,फूटपाथच नाही म्हणून मुलं रस्त्याच्या कडेने शाळेत जातात,mr,Wanowrie,no footpath at all on a school route,high,high,recurring,11,340,school,true
+SYN-PILOT-087,traffic_signage,The signal at the junction has been dead for a week and there is no traffic warden either,en,Kharadi,dead signal at a major junction,critical,high,occasional,5,7,none,true
+SYN-PILOT-088,traffic_signage,"सिग्नल बंद आहे, वाहतूक कोंडी होते आणि शाळेची बस अडकून राहते",mr,Kothrud,dead signal delaying school buses,high,high,occasional,4,10,school,true
+SYN-PILOT-089,traffic_signage,"Speed breaker par paint nahi hai, raat mein dikhta nahi aur gadi udti hai",hi-rom,Hadapsar,unmarked speed breaker,high,moderate,first_report,1,14,none,true
+SYN-PILOT-090,traffic_signage,"School zone cha board padla ahe, gadya bharat vegane jatat",mr-rom,Sinhagad Road,fallen school zone sign,high,high,first_report,1,6,school,true
+SYN-PILOT-091,traffic_signage,"No parking ka board hai but koi follow nahi karta, ambulance ko nikalne ki jagah nahi milti",hinglish,Wakad,ignored no-parking zone blocking ambulance access,high,high,recurring,14,210,hospital,true
+SYN-PILOT-092,traffic_signage,"एक तरफ का दिशा-संकेतक मुड़ गया है, उस पर लिखा पढ़ा नहीं जाता",hi,Shivajinagar,bent directional sign,low,moderate,first_report,1,20,none,true
+SYN-PILOT-093,traffic_signage,The zebra crossing paint has completely faded outside the school gate,en,Pashan,faded zebra crossing at a school gate,moderate,high,recurring,9,320,school,true
+SYN-PILOT-094,traffic_signage,"Junction वर signal timing खूप कमी आहे, pedestrians ला cross करायला वेळच मिळत नाही",mr-en,Ghorpadi,insufficient pedestrian crossing time,moderate,high,occasional,3,130,none,true
+SYN-PILOT-095,other,A large branch is hanging over the road after the storm and has not been cleared,en,Aundh,storm-damaged branch overhanging a road,high,moderate,first_report,1,2,none,true
+SYN-PILOT-096,other,"मोकाट कुत्र्यांचा त्रास वाढला आहे, मुलं शाळेत जाताना घाबरतात",mr,Bibwewadi,stray dog activity on a school route,moderate,high,recurring,10,180,school,true
+SYN-PILOT-097,other,Bijli ka khamba jhuk gaya hai aur taar neeche aa gaye hain,hi-rom,Kondhwa,leaning electric pole with sagging wires on a quiet lane,critical,low,first_report,1,1,none,true
+SYN-PILOT-098,other,"Bandhkam chalu ahe pan safety net nahi, dagad khali padtat",mr-rom,Dhayari,construction site operating without safety netting,high,moderate,occasional,3,25,none,true
+SYN-PILOT-099,other,River के किनारे illegal construction का debris डाला जा रहा है,hi-en,Yerwada,debris dumping on a river bank,moderate,low,occasional,4,135,water_body,true
+SYN-PILOT-100,other,"जुनी इमारत धोकादायक झाली आहे, plaster चे तुकडे footpath वर पडतात",mr-en,Erandwane,dilapidated building shedding plaster onto a footpath,critical,moderate,recurring,6,145,none,true
+SYN-PILOT-101,pothole_road,A cavity has opened at the edge of the road and a rickshaw's rear wheel got stuck in it last night,en,Dhayari,dead-end residential lane,critical,low,first_report,1,130,none,true
+SYN-PILOT-102,drainage_sewage,The drain slab at the rear boundary wall of the school has collapsed and the opening is nearly two feet across,en,Kirkatwadi,"rear service lane behind a school, used by staff and delivery vehicles",critical,low,first_report,1,165,school,true
+SYN-PILOT-103,other,Transformer ke paas paani jama ho gaya hai aur us paani se sparking dikhi thi,hinglish,Ambegaon,transformer enclosure on a narrow internal lane,critical,low,occasional,3,45,none,true
+SYN-PILOT-104,streetlight,"पथदिवे बंद असल्याने रात्री रस्त्याच्या कडेची खाच दिसत नाही, गेल्या महिन्यात दोन जण तिथे पडले",mr,Shivane,unlit stretch of internal road with a broken edge,critical,low,recurring,8,260,none,true
+SYN-PILOT-105,drainage_sewage,Drainage chamber चे झाकण उघडे आहे आणि आत सांडपाणी वाहताना दिसते,mr-en,Fursungi,open drainage chamber beside a stream bank away from housing,critical,low,occasional,4,120,water_body,true
+SYN-PILOT-106,water_supply,The borewell water has a strong chemical smell and families who used it reported stomach illness,en,Manjri,shared borewell on a fringe residential plot,critical,low,first_report,1,190,none,true
+SYN-PILOT-107,footpath,"Footpath ka slab toot gaya hai aur neeche ka gaddha khula hai, ek buzurg ka pair usme chala gaya tha",hinglish,Wadgaon Budruk,rear approach lane to a hospital used mainly by staff,critical,low,occasional,2,22,hospital,true
+SYN-PILOT-108,other,"झाड एका बाजूला खूप कललेले आहे, मुळं वर आली आहेत आणि trunk ला भेग पडली आहे",mr-en,Kalas,large leaning tree over a narrow internal lane,critical,low,recurring,9,9,none,true
+SYN-PILOT-109,drainage_sewage,मैनहोल का ढक्कन नहीं है और उसके अंदर तीन फुट पानी भरा हुआ है,hi,Lohegaon,uncovered manhole on a little-used riverside path,critical,low,first_report,1,215,water_body,true
+SYN-PILOT-110,pothole_road,"गल्लीच्या वळणावर रस्ता खचला आहे, खड्ड्याची खोली गुडघ्यापर्यंत आहे",mr,Hingne Khurd,collapsed road section on a dead-end gully,critical,low,occasional,3,70,none,true
+SYN-PILOT-111,other,School के पीछे वाली lane में बिजली का तार लटक कर दीवार को छू रहा है,hi-en,Bopodi,sagging electric cable in the lane behind a school compound wall,critical,low,recurring,7,12,school,true
+SYN-PILOT-112,streetlight,खंभे से light का casing निकल गया है और अंदर का wire खुला दिख रहा है,hi-en,Sopan Baug,exposed wiring at the base of a street light pole on a quiet lane,critical,low,first_report,1,240,none,true
+SYN-PILOT-113,drainage_sewage,The sewage chamber cover is broken and a dog fell into it yesterday evening,en,Karve Nagar,broken sewage chamber on a residential connector road,critical,moderate,occasional,4,38,none,true
+SYN-PILOT-114,pothole_road,The road has caved in around a burst water line and the hole is widening each day,en,Bavdhan,subsided road section on a two-way residential street,critical,moderate,first_report,1,5,none,true
+SYN-PILOT-115,water_supply,"पाणी आल्यावर त्यात काळसर गाळ येतो, उकळल्यावरही वास जात नाही",mr,Dhankawadi,piped supply serving about forty households,critical,moderate,recurring,11,14,none,true
+SYN-PILOT-116,other,Purani building ka balcony ka ek hissa gir chuka hai aur baaki portion jhuka hua dikh raha hai,hinglish,Rasta Peth,dilapidated building fronting a residential street,critical,moderate,occasional,5,140,none,true
+SYN-PILOT-117,drainage_sewage,Hospital च्या मागच्या रस्त्यावर मैला थेट वाहत आहे आणि डास प्रचंड वाढले आहेत,mr-en,Gultekdi,"sewage on a road behind a hospital, used by staff and visiting families",critical,moderate,recurring,14,16,hospital,true
+SYN-PILOT-118,traffic_signage,Signal ka pole jhuk kar road ki taraf aa gaya hai aur base ki concrete tooti hui hai,hinglish,Kasba Peth,leaning signal pole at a secondary junction,critical,moderate,first_report,1,270,none,true
+SYN-PILOT-119,footpath,A section of footpath has sunk over the storm drain and the slab underneath is cracked through,en,Salisbury Park,footpath on a school approach street,critical,moderate,occasional,3,62,school,true
+SYN-PILOT-120,streetlight,"बिजली के खंभे से तार लटक कर फुटपाथ तक आ गया है, बारिश में वहां पानी जमा रहता है",hi,Vishrantwadi,sagging live cable over a footpath on a residential street,critical,moderate,recurring,9,18,none,true
+SYN-PILOT-121,water_supply,"Tanker च्या पाण्यात किडे दिसले, दोन घरातल्या लहान मुलांना उलटी झाली",mr-en,Undri,tanker supply to a society with no piped connection,critical,moderate,first_report,1,300,none,true
+SYN-PILOT-122,other,स्कूल के गेट के सामने खुला बिजली का junction box है और उसका दरवाजा गायब है,hi,Anandnagar,open electrical junction box near a school gate,critical,moderate,occasional,4,55,school,true
+SYN-PILOT-123,drainage_sewage,"नदी किनारे का drain फूट गया है और सीवेज खेत से बह रहा है, पानी का रंग बदल गया है",hi-en,Mundhwa,burst drain discharging into a river channel,critical,moderate,recurring,8,21,water_body,true
+SYN-PILOT-124,pothole_road,"Ambulance ko is road par bilkul dheere chalna padta hai, gaddhe steering se sambhalte nahi",hinglish,Kondhwa,hospital approach road,critical,moderate,recurring,16,24,hospital,true
+SYN-PILOT-125,footpath,"फुटपाथवरचा लोखंडी खांब तुटून अर्धा भाग रस्त्यावर आला आहे, टोक वर आले आहे",mr,Parvati,broken railing post projecting onto a residential street,critical,moderate,first_report,1,330,none,true
+SYN-PILOT-126,other,Part of the construction site's boundary wall has come down and the rubble reaches the road,en,Dhanori,partially collapsed boundary wall on a residential road,critical,moderate,occasional,3,26,none,true
+SYN-PILOT-127,water_supply,"Hospital ला जाणारी pipeline फुटली आहे, दाब पूर्ण गेला आहे आणि रस्त्यावर पाणी साचले",mr-en,Wanowrie,supply line serving a hospital and adjoining homes,critical,moderate,first_report,1,360,hospital,true
+SYN-PILOT-128,streetlight,The pole fell across the lane during the storm and the broken fitting is still lying on the road,en,Kalyani Nagar,fallen street light pole on a residential connector,critical,moderate,occasional,2,18,none,true
+SYN-PILOT-129,drainage_sewage,"नाले का ढक्कन टूटा है और उसके पास नदी का पानी भी चढ़ आता है, बच्चे वहीं खेलते हैं",hi-en,Yerwada,broken drain cover near a river bank where children play,critical,moderate,recurring,10,26,water_body,true
+SYN-PILOT-130,pothole_road,"शाळेच्या रस्त्यावर खड्ड्यात पाणी साचून खोली दिसत नाही, काल एक सायकलस्वार पडला",mr,Warje,school route with a water-filled pit,critical,moderate,occasional,5,80,school,true
+SYN-PILOT-131,traffic_signage,The junction signal has been dead since the storm and vehicles from all four arms enter together,en,Shivajinagar,major four-arm junction,critical,high,occasional,5,9,none,true
+SYN-PILOT-132,drainage_sewage,मुख्य रस्त्यावरचे मैनहोल झाकण फुटले आहे आणि गाड्या त्याच्या बाजूने वळून जात आहेत,mr,Deccan,broken manhole cover on an arterial road,critical,high,first_report,1,395,none,true
+SYN-PILOT-133,pothole_road,"Bus stop ke saamne road pura ukhad gaya hai, bus rukne ki jagah hi badal di gayi hai",hinglish,Swargate,arterial road beside a busy bus terminus,critical,high,recurring,18,28,none,true
+SYN-PILOT-134,water_supply,"School मध्ये तीन दिवसांपासून पाणी नाही, स्वच्छतागृह वापरता येत नाही",mr-en,Bibwewadi,school serving around six hundred students,critical,high,first_report,1,3,school,true
+SYN-PILOT-135,other,Market ke andar wali gali mein bijli ke taar pani ke nal ke bilkul paas latak rahe hain,hi-rom,Market Yard,wholesale market lane with heavy foot traffic,critical,high,occasional,4,33,none,true
+SYN-PILOT-136,footpath,The footpath slab over the drain gave way and a man fell in up to his waist on Tuesday,en,Camp,footpath on a commercial high street,critical,high,first_report,1,2,none,true
+SYN-PILOT-137,drainage_sewage,"Hospital च्या मुख्य प्रवेशद्वारासमोर सांडपाणी साचले आहे, रुग्णांना त्यातून चालावे लागते",mr-en,Nana Peth,main entrance approach of a large hospital,critical,high,recurring,13,31,hospital,true
+SYN-PILOT-138,traffic_signage,स्कूल जोन का signal काम नहीं कर रहा और गाड़ियां वहां रुकती ही नहीं,hi-en,Erandwane,school zone crossing on a busy road,critical,high,occasional,3,12,school,true
+SYN-PILOT-139,pothole_road,A wide crack has opened across the bridge deck and it has been lengthening week by week,en,Sangamwadi,bridge deck over a river carrying through traffic,critical,high,occasional,5,70,water_body,true
+SYN-PILOT-140,streetlight,"Poore junction par ek bhi light kaam nahi kar rahi, raat ko pedestrians ko gaadiyan dikhti nahi",hinglish,Hadapsar,unlit major junction,critical,high,recurring,15,34,none,true
+SYN-PILOT-141,water_supply,अस्पताल की मुख्य पाइपलाइन फूट गई है और वार्ड में सप्लाई बंद है,hi,Ghorpadi,supply main serving a hospital,critical,high,first_report,1,420,hospital,true
+SYN-PILOT-142,other,"शाळेच्या gate जवळची विटांची भिंत कोसळली आहे, मुलं त्याच बाजूने जातात",mr-en,Kothrud,partially collapsed wall at a school gate,critical,high,occasional,4,20,school,true
+SYN-PILOT-143,drainage_sewage,घाट की सीढ़ियों पर sewage का पानी आ रहा है और लोग वहीं से पानी में उतरते हैं,hi-en,Shaniwar Peth,river ghat steps used daily by bathers,critical,high,recurring,11,11,water_body,true
+SYN-PILOT-144,footpath,"फुटपाथ पूर्ण बंद झाल्याने लोक मुख्य रस्त्यावरून चालत आहेत, दुचाकी अगदी जवळून जातात",mr,Bhavani Peth,blocked footpath on a congested main road,critical,high,recurring,17,15,none,true
+SYN-PILOT-145,pothole_road,A crater in the middle of the carriageway has caused three two-wheeler falls in the last fortnight,en,Vadgaon Sheri,arterial road with dense commuter flow,critical,high,occasional,5,28,none,true
+SYN-PILOT-146,pothole_road,The potholes in the inner gully are deep enough to scrape the underside of a car and nothing has been done in two months,en,Kirkatwadi,narrow internal gully serving a few houses,high,low,occasional,3,65,none,true
+SYN-PILOT-147,streetlight,Two poles at the end of the lane have been dark since last Diwali and the lane has no other lighting,en,Sus,unlit cul-de-sac at the end of a residential lane,high,low,recurring,7,320,none,true
+SYN-PILOT-148,drainage_sewage,नाली का पानी घर की नींव तक आ रहा है और दीवार में सीलन फैल गई है,hi,Ambegaon,blocked drain beside two houses on a dead-end lane,high,low,occasional,4,110,none,true
+SYN-PILOT-149,water_supply,"Nal se paani aata hi nahi, roz tanker mangwana padta hai aur kharcha badhta ja raha hai",hinglish,Manjri,fringe area with no working piped connection,high,low,recurring,12,19,none,true
+SYN-PILOT-150,footpath,शाळेच्या मागच्या बाजूला फुटपाथ पूर्ण उखडला आहे आणि लोखंडी सळ्या बाहेर आल्या आहेत,mr,Shivane,"footpath behind a school compound, little through movement",high,low,occasional,3,145,school,true
+SYN-PILOT-151,garbage_waste,"Hospital ke peeche wali service lane mein kachra teen hafte se pada hai, kutte usme ghuste hain",hi-rom,Wadgaon Budruk,service lane behind a hospital used by staff vehicles,high,low,recurring,8,95,hospital,true
+SYN-PILOT-152,other,"एक कुत्रा चावल्याची घटना झाली आहे, ती मोकाट कुत्री त्याच गल्लीत थांबतात",mr-en,Dhayari,stray dog pack on a quiet residential lane,high,low,occasional,5,40,none,true
+SYN-PILOT-153,drainage_sewage,The septic overflow is seeping into the stream and the water has turned grey for about thirty metres,en,Fursungi,septic overflow reaching a stream away from housing,high,low,recurring,9,23,water_body,true
+SYN-PILOT-154,pothole_road,"गली के अंदर सड़क पूरी तरह टूट गई है, रिक्शा वाले अंदर आने से मना कर देते हैं",hi,Hingne Khurd,broken internal road on a dead-end lane,high,low,recurring,11,27,none,true
+SYN-PILOT-155,streetlight,"Lane मधले सगळे दिवे बंद आहेत, रात्री mobile च्या torch वर चालावे लागते",mr-en,Kalas,unlit residential lane with no alternative route,high,low,first_report,1,455,none,true
+SYN-PILOT-156,water_supply,पानी का दबाव इतना कम है कि पहली मंज़िल तक भी पानी नहीं चढ़ता,hi-en,Kirkatwadi,low pressure affecting a small cluster of houses,high,low,occasional,4,190,none,true
+SYN-PILOT-157,garbage_waste,खाली प्लॉट में कचरा जलाया जाता है और धुआं सीधे दो घरों में जाता है,hi,Lohegaon,waste burning on a plot adjoining two houses,high,low,recurring,10,30,none,true
+SYN-PILOT-158,drainage_sewage,The drain on the river bank overflows and the standing water has started breeding mosquitoes,en,Fursungi,septic overflow reaching a stream away from housing,high,low,occasional,3,88,water_body,true
+SYN-PILOT-159,footpath,The footpath has collapsed into the drain along a fifteen metre stretch and the gap is not barricaded,en,Bopodi,collapsed footpath on a lane behind a hospital,high,low,first_report,1,490,hospital,true
+SYN-PILOT-160,other,"Bandhkamachya site varun vitachya tukdya khali padtat, khali safety net lavlela nahi",mr-rom,Sopan Baug,construction site without netting over a narrow lane,high,low,occasional,4,30,none,true
+SYN-PILOT-161,pothole_road,सड़क के किनारे का हिस्सा धंस गया है और कार का पहिया उसमें फंस जाता है,hi,Ambegaon,subsided road shoulder on a low-traffic lane,high,low,first_report,1,150,none,true
+SYN-PILOT-162,water_supply,"Pipeline गळत आहे आणि दिवसभर पाणी वाया जाते, तीन महिन्यांत दुरुस्ती झाली नाही",mr-en,Shivane,leaking supply line on a quiet residential stretch,high,low,recurring,6,90,none,true
+SYN-PILOT-163,garbage_waste,"Kachra kundi bharun ओसंडून वाहते, आजूबाजूला दुर्गंधी पसरली आहे",mr-en,Dhanori,overflowing bin at the end of a residential lane,high,low,recurring,9,13,none,true
+SYN-PILOT-164,streetlight,"शाळेच्या मागच्या गल्लीत एकही दिवा लागत नाही, संध्याकाळच्या वर्गाची मुलं तिथून जातात",mr,Kalas,unlit lane behind a school used by evening-class students,high,low,occasional,5,120,school,true
+SYN-PILOT-165,drainage_sewage,"Gutter ka pani ghar ke aangan tak aa gaya hai, farsh par kichad jam gaya hai",hi-rom,Manjri,drain backing into a house compound on a dead-end lane,high,low,first_report,1,205,none,true
+SYN-PILOT-166,other,"Power supply baar baar jaati hai, fridge aur pump dono kharab ho gaye",hinglish,Undri,repeated power interruptions in a small housing cluster,high,low,recurring,13,17,none,true
+SYN-PILOT-167,footpath,"झाडाच्या मुळांनी फुटपाथ पूर्ण उचलला आहे, रात्री तिथे ठेच लागते",mr,Wanowrie,tree roots lifting a footpath on a quiet stretch,high,low,occasional,3,250,none,true
+SYN-PILOT-168,water_supply,The water in the hospital's staff quarters line smells of sewage and has been like this for weeks,en,Bopodi,supply line to hospital staff quarters,high,low,recurring,7,60,hospital,true
+SYN-PILOT-169,garbage_waste,नदी किनारे मलबा डाला जा रहा है और अब वहां पानी का बहाव रुक गया है,hi,Kalas,debris dumping obstructing a stream channel,high,low,occasional,4,215,water_body,true
+SYN-PILOT-170,pothole_road,Gallitla rasta evadha kharab ahe ki ambulance aat yayla tayar nasate,mr-rom,Hingne Khurd,badly broken access lane in a small colony,high,low,recurring,14,22,none,true
+SYN-PILOT-171,pothole_road,There is a large hole in the middle of the road and two-wheelers move into the opposite lane to avoid it,en,Karve Nagar,two-way residential street with steady traffic,high,moderate,occasional,4,42,none,true
+SYN-PILOT-172,drainage_sewage,Manhole se pani ubal kar bahar aata hai jab bhi tez baarish hoti hai,hi-rom,Bavdhan,surcharging manhole on a residential connector,high,moderate,recurring,12,25,none,true
+SYN-PILOT-173,streetlight,"Society समोरचे चार दिवे बंद आहेत, रात्री महिला रिक्षा थांबेपर्यंत गेटच्या आत उभ्या राहतात",mr-en,Baner,unlit stretch outside a housing society,high,moderate,occasional,5,48,none,true
+SYN-PILOT-174,water_supply,पानी सिर्फ बीस मिनट आता है और उसमें भी दबाव इतना कम है कि टंकी आधी भरती है,hi,Dhankawadi,piped supply to a multi-storey cluster,high,moderate,recurring,15,29,none,true
+SYN-PILOT-175,footpath,Footpath par do jagah slab toota hai aur shaam ko chalne wale usme atak jaate hain,hinglish,Sahakar Nagar,footpath on a residential connector road,high,moderate,first_report,1,255,none,true
+SYN-PILOT-176,garbage_waste,The bin outside the school gate overflows by mid-morning and waste spreads across the entrance,en,Pashan,community bin at a school entrance,high,moderate,recurring,11,140,school,true
+SYN-PILOT-177,traffic_signage,"Speed breaker par paint nahi hai aur raat mein gaadi uchal jaati hai, teen din mein do log gire",hinglish,Vadgaon Sheri,unmarked speed breaker on a residential road,high,moderate,occasional,3,19,none,true
+SYN-PILOT-178,drainage_sewage,अस्पताल के रास्ते पर नाली का पानी बहता है और मरीज़ उसी से होकर जाते हैं,hi,Ghorpadi,drain overflow on a hospital approach road,high,moderate,recurring,13,175,hospital,true
+SYN-PILOT-179,pothole_road,खड्ड्यांमुळे बसचा वेग कमी होतो आणि थांब्यावर गर्दी वाढते,mr,Katraj,bus route through a residential area,high,moderate,occasional,5,85,none,true
+SYN-PILOT-180,other,"मोकाट कुत्र्यांची संख्या वाढली आहे, गेल्या महिन्यात तीन जणांना चावले आहे",mr-en,Dhanori,stray dogs on a residential connector street,high,moderate,recurring,9,55,none,true
+SYN-PILOT-181,water_supply,"Tanker aata hai par uska paani peene layak nahi lagta, do baar test karwane ko kaha tha",hi-rom,Undri,tanker-dependent society,high,moderate,occasional,4,115,none,true
+SYN-PILOT-182,streetlight,"सारे खंभे लगे हैं पर एक में भी बल्ब नहीं है, नया रास्ता है और अंधेरा रहता है",hi,Kalas,newly built road with poles but no fittings,high,moderate,first_report,1,310,none,true
+SYN-PILOT-183,footpath,"School चा रस्ता असूनही footpath वर वाहने उभी असतात, मुलं रस्त्यावरून चालतात",mr-en,Bibwewadi,footpath parking on a school route,high,moderate,recurring,10,165,school,true
+SYN-PILOT-184,drainage_sewage,Drain ka slab dhas gaya hai aur bike ka pahiya usme chala jata hai,hi-rom,Kondhwa,sunken drain slab on a residential road,high,moderate,occasional,5,36,none,true
+SYN-PILOT-185,garbage_waste,Wet waste रस्त्याच्या कडेला टाकले जाते आणि पावसात ते वाहून drain मध्ये जाते,mr-en,Warje,roadside waste dumping on a residential street,high,moderate,recurring,14,220,none,true
+SYN-PILOT-186,pothole_road,The patch laid last month has come off completely and the hole is deeper than before,en,Erandwane,repeatedly patched residential road,high,moderate,recurring,8,390,none,true
+SYN-PILOT-187,water_supply,"रुग्णालयाच्या वसतिगृहाला पाणी कमी येते, तीन दिवस टँकरवर काढले",mr,Wanowrie,supply to a hospital hostel block,high,moderate,occasional,3,25,hospital,true
+SYN-PILOT-188,traffic_signage,जेब्रा क्रॉसिंग का निशान मिट गया है और गाड़ियां क्रॉसिंग पर ही रुकती हैं,hi,Shivajinagar,faded crossing on a busy residential road,high,moderate,recurring,12,410,none,true
+SYN-PILOT-189,other,"नदी किनारे घाट की railing टूट गई है, पानी ज़्यादा हो तो सीढ़ी दिखती नहीं",hi-en,Sangamwadi,broken railing at river ghat steps,high,moderate,occasional,4,130,water_body,true
+SYN-PILOT-190,streetlight,Poore stretch mein light nahi hai aur wahi se log station tak paidal jaate hain,hi-rom,Bopodi,unlit walking route to a railway halt,high,moderate,recurring,11,195,none,true
+SYN-PILOT-191,footpath,Footpath ends abruptly at the hospital gate and pedestrians step onto the carriageway there,en,Salisbury Park,discontinuous footpath at a hospital gate,high,moderate,first_report,1,375,hospital,true
+SYN-PILOT-192,drainage_sewage,"शाळेच्या भिंतीलगत सांडपाणी साचून राहते, वास वर्गापर्यंत येतो",mr,Kothrud,standing sewage along a school boundary wall,high,moderate,recurring,9,105,school,true
+SYN-PILOT-193,pothole_road,Gaddhe itne hain ki auto rickshaw ke passenger utar kar chalte hain thodi door,hi-rom,Hadapsar,link road used by shared autos,high,moderate,occasional,5,73,none,true
+SYN-PILOT-194,garbage_waste,"Waste is burnt near the river bank and the smoke hangs around until afternoon, reaching the bus stop",en,Mundhwa,waste burning near a river bank close to a bus stop,high,moderate,recurring,10,180,water_body,true
+SYN-PILOT-195,water_supply,Supply do din se band hai aur borewell ka paani khara ho gaya hai,hi-rom,Katraj,area dependent on a single borewell during a supply cut,high,moderate,first_report,1,2,none,true
+SYN-PILOT-196,other,School ke saamne road par construction ka malba pada hai aur bacche usi par chadhte hain,hinglish,Dhankawadi,construction debris on a school frontage road,high,moderate,occasional,4,50,school,true
+SYN-PILOT-197,streetlight,लाइट का खंभा झुक गया है और तार खिंचा हुआ दिख रहा है,hi,Yerwada,leaning pole with taut cable on a residential street,high,moderate,first_report,1,440,none,true
+SYN-PILOT-198,footpath,"फुटपाथवर hawker बसल्याने चालायला जागा नाही, लोक रस्त्याच्या कडेने जातात",mr,Bhavani Peth,encroached footpath on a residential market street,high,moderate,recurring,13,300,none,true
+SYN-PILOT-199,drainage_sewage,"पावसाळ्यात गटार तुंबून पाणी घरात शिरते, या वर्षी दोन वेळा झाले",mr-en,Dhayari,seasonal drain backup entering homes,high,moderate,occasional,5,58,none,true
+SYN-PILOT-200,pothole_road,Hospital के सामने road पर गड्ढे हैं और ambulance को हर बार रुकना पड़ता है,hi-en,Ghorpadi,hospital frontage road,high,moderate,recurring,16,245,hospital,true
+SYN-PILOT-201,traffic_signage,The school zone sign has been lying face down in the drain since the monsoon began,en,Sinhagad Road,school zone signage on a residential road,high,moderate,occasional,3,78,school,true
+SYN-PILOT-202,garbage_waste,"कचरा गाड़ी हफ़्ते में एक दिन आती है, बाकी दिन कोने पर ढेर जमा रहता है",hi-en,Karve Nagar,irregular collection on a residential street,high,moderate,recurring,17,430,none,true
+SYN-PILOT-203,water_supply,"पाइपलाइन फूटी है और सड़क पर दिनभर पानी बहता है, दो दिन में मरम्मत नहीं हुई",hi,Parvati,burst supply line on a residential road,high,moderate,first_report,1,2,none,true
+SYN-PILOT-204,other,"Jhad padlyavar tyachya phandya rastyavar tashich ahet, ardha rasta band ahe",mr-rom,Bavdhan,fallen tree partially blocking a residential road,high,moderate,occasional,2,11,none,true
+SYN-PILOT-205,streetlight,Underpass mein ek bhi light nahi hai aur wahi se log dusri side jaate hain,hi-rom,Khadki,unlit pedestrian underpass,high,moderate,recurring,8,150,none,true
+SYN-PILOT-206,pothole_road,Potholes across the full width of the carriageway are forcing buses to crawl through the junction,en,Swargate,arterial road at a bus terminus junction,high,high,recurring,19,215,none,true
+SYN-PILOT-207,drainage_sewage,मुख्य बाजार की गली में नाली का पानी बहता रहता है और दुकानदार बोरी डालकर रास्ता बनाते हैं,hi,Market Yard,market lane with heavy foot traffic,high,high,recurring,16,190,none,true
+SYN-PILOT-208,streetlight,A kilometre of the main road is unlit and passengers wait in the dark at the stop,en,Sinhagad Road,unlit arterial stretch beside a bus stop,high,high,occasional,5,44,none,true
+SYN-PILOT-209,water_supply,School की टंकी में पानी नहीं चढ़ रहा और बच्चे घर से बोतल लाते हैं,hi,Kondhwa,school serving several hundred students,high,high,recurring,9,60,school,true
+SYN-PILOT-210,footpath,The footpath outside the hospital is broken along its whole length and patients walk on the road,en,Nana Peth,footpath on a major hospital frontage,high,high,recurring,14,230,hospital,true
+SYN-PILOT-211,traffic_signage,"Chowk ka signal band hai aur traffic police bhi nahi rehti, gaadiyan aamne saamne aa jaati hain",hinglish,Deccan,busy chowk without signal or warden,high,high,occasional,4,16,none,true
+SYN-PILOT-212,garbage_waste,स्कूल के गेट के सामने कचरे का ढेर है और बच्चे उसी के किनारे से अंदर जाते हैं,hi,Erandwane,waste heap at a school entrance on a busy road,high,high,recurring,12,125,school,true
+SYN-PILOT-213,drainage_sewage,घाटाच्या पायऱ्यांवर drainage चे पाणी येते आणि लोक त्याच पाण्यात पाय ठेवतात,mr-en,Shaniwar Peth,river ghat steps used daily,high,high,recurring,11,170,water_body,true
+SYN-PILOT-214,pothole_road,Hospital ke gate ke bahar road tut gaya hai aur ambulance ko har trip par rukna padta hai,hi-rom,Ghorpadi,hospital gate approach on a main road,high,high,recurring,18,260,hospital,true
+SYN-PILOT-215,footpath,"फुटपाथवर सगळीकडे दुकानांचे सामान आहे, शाळकरी मुलं रस्त्याच्या मधून चालतात",mr,Bhavani Peth,encroached footpath on a school route through a market,high,high,recurring,15,320,school,true
+SYN-PILOT-216,streetlight,"Junction ki saari lights band hain, raat mein crossing par kuch dikhta nahi",hi-rom,Hadapsar,unlit major junction,high,high,occasional,5,38,none,true
+SYN-PILOT-217,water_supply,अस्पताल के OPD ब्लॉक में पानी की सप्लाई घटी है और मरीज़ों की कतार लगी रहती है,hi,Shivajinagar,hospital OPD block,high,high,occasional,4,14,hospital,true
+SYN-PILOT-218,traffic_signage,School zone की पट्टी पूरी मिट गई है और गाड़ियां उस हिस्से में तेज़ निकलती हैं,hi-en,Kothrud,faded school zone marking on a busy road,high,high,recurring,10,350,school,true
+SYN-PILOT-219,drainage_sewage,A manhole on the main road has no cover and all the traffic swerves around it,en,Swargate,uncovered manhole on an arterial road,high,high,first_report,1,175,none,true
+SYN-PILOT-220,garbage_waste,River bridge ke neeche kachra jalaya jata hai aur dhuan pul ke traffic mein faila rehta hai,hinglish,Sangamwadi,waste burning under a river bridge carrying traffic,high,high,occasional,5,95,water_body,true
+SYN-PILOT-221,pothole_road,बस स्टॉप के ठीक सामने गड्ढा है और उतरने वाले यात्री उसी में पैर रखते हैं,hi,Camp,pothole at a busy bus stop,high,high,recurring,13,140,none,true
+SYN-PILOT-222,footpath,"Footpath चा मोठा भाग खोदून ठेवला आहे आणि barricade नाही, गर्दीत लोक त्यात पडतात",mr-en,Deccan,excavated footpath without barricading on a busy street,high,high,first_report,1,230,none,true
+SYN-PILOT-223,water_supply,Whole lane has been without supply for four days and the tanker comes only once,en,Bibwewadi,dense residential lane during a supply failure,high,high,occasional,5,4,none,true
+SYN-PILOT-224,streetlight,"शाळेच्या समोरचा संपूर्ण रस्ता अंधारात आहे, संध्याकाळचे वर्ग सुटल्यावर मुलं तिथे थांबतात",mr,Pashan,unlit school frontage on a through road,high,high,recurring,9,110,school,true
+SYN-PILOT-225,drainage_sewage,"Sewage overflow ho kar hospital ke parking tak aa gaya hai, staff usme se nikalta hai",hi-rom,Wanowrie,sewage reaching a hospital parking area,high,high,recurring,12,155,hospital,true
+SYN-PILOT-226,other,"आवारा कुत्तों का झुंड चौक में बैठा रहता है, स्कूल के बच्चे और यात्री दोनों रुक जाते हैं",hi-en,Katraj,stray dogs at a busy chowk on a main road,high,high,recurring,14,200,none,true
+SYN-PILOT-227,traffic_signage,सिग्नल की टाइमिंग इतनी कम है कि पैदल चलने वाले आधे रास्ते में फंस जाते हैं,hi,Shivajinagar,pedestrian crossing at a major junction,high,high,occasional,5,120,none,true
+SYN-PILOT-228,pothole_road,Nadi varchya pulavar khadde padle ahet ani ek lane band karavi lagli ahe,mr-rom,Yerwada,bridge over a river carrying through traffic,high,high,occasional,4,68,water_body,true
+SYN-PILOT-229,garbage_waste,The bin at the market entrance has not been cleared for nine days and waste blocks half the lane,en,Market Yard,market entrance with heavy movement,high,high,recurring,17,175,none,true
+SYN-PILOT-230,footpath,अस्पताल के सामने फुटपाथ की टाइलें उखड़ी हैं और बुज़ुर्ग मरीज़ वहीं गिरते हैं,hi,Ghorpadi,footpath at a hospital frontage,high,high,recurring,11,185,hospital,true
+SYN-PILOT-231,water_supply,"Shalechya panyachya tanki madhe gal sathla ahe, mulanna te pani pyayla detat",mr-rom,Warje,school water tank serving all students,high,high,occasional,3,22,school,true
+SYN-PILOT-232,streetlight,Bus stop ke paas ki dono lights band hain aur log andhere mein bus ka wait karte hain,hi-rom,Hadapsar,unlit bus stop on an arterial road,high,high,first_report,1,285,none,true
+SYN-PILOT-233,drainage_sewage,"Chowkat drainage tumbun pani sathla ahe, gaadya tyatun jatat ani pani udta",mr-rom,Kasba Peth,waterlogged junction on a busy road,high,high,recurring,15,145,none,true
+SYN-PILOT-234,other,Juni imarat rastyachya kadela ahe ani tyacha plaster footpath var padat ahe,mr-rom,Rasta Peth,dilapidated building fronting a busy street,high,high,occasional,5,105,none,true
+SYN-PILOT-235,pothole_road,Road surface has broken up across the market crossing and handcarts tip over when crossing,en,Bhavani Peth,market crossing with dense movement,high,high,recurring,16,290,none,true
+SYN-PILOT-236,pothole_road,"The lane surface is broken though few vehicles use it, and there has been no repair in two years",en,Kirkatwadi,broken surface on a quiet internal lane,moderate,low,recurring,9,700,none,true
+SYN-PILOT-237,garbage_waste,"Kachra kundi nahi hai is liye log corner par daal dete hain, roz thoda thoda jama hota hai",hinglish,Ambegaon,no community bin on a small residential lane,moderate,low,recurring,8,330,none,true
+SYN-PILOT-238,streetlight,एक खंभे की लाइट बंद है और गली के उस कोने में अंधेरा रहता है,hi,Shivane,single dark corner on a residential lane,moderate,low,occasional,3,85,none,true
+SYN-PILOT-239,footpath,"Footpath ची फरशी दोन ठिकाणी सरकली आहे, चालताना आवाज येतो",mr-en,Dhayari,loose footpath tiles on a quiet stretch,moderate,low,first_report,1,40,none,true
+SYN-PILOT-240,water_supply,"पाणी येण्याची वेळ रोज बदलते, कधी पहाटे कधी रात्री, planning करता येत नाही",mr-en,Manjri,irregular supply timing in a small cluster,moderate,low,recurring,11,290,none,true
+SYN-PILOT-241,drainage_sewage,शाळेच्या मागच्या नालीत कचरा अडकला आहे आणि पाणी हळू वाहते,mr,Kirkatwadi,partially blocked drain behind a school,moderate,low,occasional,4,150,school,true
+SYN-PILOT-242,garbage_waste,"Hospital ke peeche kachra do din se pada hai, gaadi us lane mein nahi aati",hi-rom,Bopodi,service lane behind a hospital,moderate,low,occasional,3,60,hospital,true
+SYN-PILOT-243,pothole_road,Road ke kinare ki mitti bah gayi hai aur kinara neeche ho gaya hai,hi-rom,Lohegaon,eroded road shoulder on a low-traffic lane,moderate,low,first_report,1,220,none,true
+SYN-PILOT-244,other,"गली के आवारा कुत्ते रात भर भौंकते रहते हैं, किसी को काटा नहीं है",hi-en,Kalas,stray dogs on a quiet residential lane,moderate,low,recurring,7,175,none,true
+SYN-PILOT-245,drainage_sewage,"ओढ्याच्या काठावर सांडपाणी सोडले जाते, पाण्याला हिरवा थर आला आहे",mr,Fursungi,wastewater discharge into a stream away from housing,moderate,low,recurring,6,260,water_body,true
+SYN-PILOT-246,streetlight,"Light आहे पण खूप कमी प्रकाश देते, रात्री रस्ता धूसर दिसतो",mr-en,Undri,dim street lighting on a residential lane,moderate,low,occasional,4,130,none,true
+SYN-PILOT-247,water_supply,नल में पानी का दबाव कम है और भरने में आधा घंटा लगता है,hi,Hingne Khurd,low pressure in a few households,moderate,low,recurring,8,240,none,true
+SYN-PILOT-248,footpath,"फुटपाथ अर्धवट बांधून सोडला आहे, पुढे मातीचा भाग आहे",mr,Sus,incomplete footpath on a fringe residential road,moderate,low,first_report,1,380,none,true
+SYN-PILOT-249,garbage_waste,"Debris has been dumped on the river bank, grass has grown over it and it has been left as it is",en,Kalas,debris dumped on a river bank,moderate,low,occasional,5,320,water_body,true
+SYN-PILOT-250,pothole_road,"शाळेच्या मागच्या रस्त्यावर खड्डे आहेत, तिथून फक्त शाळेची गाडी जाते",mr,Shivane,rear access road to a school,moderate,low,occasional,3,110,school,true
+SYN-PILOT-251,drainage_sewage,"Naali se halki badboo aati hai shaam ko, paani nazar nahi aata",hi-rom,Wadgaon Budruk,drain smell on a quiet lane,moderate,low,occasional,2,55,none,true
+SYN-PILOT-252,other,"Light baar baar jaati hai par thodi der mein aa jaati hai, koi appliance kharab nahi hua",hinglish,Dhanori,brief recurring power cuts in a small colony,moderate,low,recurring,10,200,none,true
+SYN-PILOT-253,streetlight,"Hospital ke staff gate ke paas light band hai, wahan raat ki shift wale aate hain",hi-rom,Wanowrie,unlit staff gate of a hospital,moderate,low,occasional,4,95,hospital,true
+SYN-PILOT-254,water_supply,"Valve se thoda paani rista hai din bhar, sadak par geeli patti ban gayi hai",hi-rom,Sopan Baug,slow valve leak on a quiet lane,moderate,low,recurring,7,280,none,true
+SYN-PILOT-255,footpath,फुटपाथ की ऊंचाई असमान है और जगह-जगह टाइल ऊपर उठी है,hi,Bavdhan,uneven footpath on a residential lane,moderate,low,occasional,3,165,none,true
+SYN-PILOT-256,garbage_waste,Construction चा मलबा रस्त्याच्या कडेला महिनाभर पडून आहे,mr-en,Kirkatwadi,debris narrowing a quiet residential lane,moderate,low,first_report,1,35,none,true
+SYN-PILOT-257,pothole_road,"Speed breaker ke dono taraf gaddhe ban gaye hain, gaadi hilti hai",hi-rom,Ambegaon,potholes flanking a speed breaker on a lane,moderate,low,occasional,4,190,none,true
+SYN-PILOT-258,drainage_sewage,"नदी के पास नाली का ढक्कन टूटा है, वहां आना-जाना कम है",hi,Mundhwa,broken drain cover on a river-side path,moderate,low,first_report,1,25,water_body,true
+SYN-PILOT-259,streetlight,"शाळेच्या कुंपणालगतचा दिवा बंद आहे, दिवसा वर्ग असतात",mr,Kothrud,"unlit lane along a school boundary, daytime school only",moderate,low,occasional,3,210,school,true
+SYN-PILOT-260,other,"पेड़ की डालियां तारों से रगड़ती हैं, हवा में आवाज़ आती है",hi-en,Bopodi,branches brushing overhead cables on a quiet lane,moderate,low,occasional,5,145,none,true
+SYN-PILOT-261,water_supply,"Do din se supply band thi, ab aa rahi hai par thodi kam pressure mein",hi-rom,Hingne Khurd,recently restored low-pressure supply,moderate,low,first_report,1,6,none,true
+SYN-PILOT-262,garbage_waste,"Kachryachi gaadi gallichya tondavar thambte, aatlya gharanna tithvar nyav lagte",mr-rom,Dhayari,collection vehicle not entering a narrow lane,moderate,low,recurring,9,420,none,true
+SYN-PILOT-263,footpath,"Footpath var don thikani khadda ahe, divsa disto ratri nahi",mr-rom,Kalas,small footpath pits on a quiet stretch,moderate,low,occasional,4,120,none,true
+SYN-PILOT-264,pothole_road,The unpaved shoulder turns to slush after rain and scooters skid where it meets the tar,en,Fursungi,unpaved shoulder on a fringe residential road,moderate,low,recurring,6,300,none,true
+SYN-PILOT-265,drainage_sewage,Gutter cha jhakan nahi pan te gharachya aat chya baajula ahe,mr-rom,Manjri,missing drain cover inside a housing compound,moderate,low,first_report,1,48,none,true
+SYN-PILOT-266,pothole_road,Small potholes run the length of the stretch and the vehicle shakes continuously while driving,en,Karve Nagar,residential connector with steady two-way traffic,moderate,moderate,recurring,9,270,none,true
+SYN-PILOT-267,drainage_sewage,Naali dhimi behti hai aur barish ke baad do din tak paani khada rehta hai,hi-rom,Bavdhan,slow-draining road section,moderate,moderate,occasional,4,160,none,true
+SYN-PILOT-268,streetlight,"दोन दिवे बंद आहेत, रस्त्यावर मधला भाग अंधारात राहतो",mr,Sahakar Nagar,partially unlit residential street,moderate,moderate,first_report,1,17,none,true
+SYN-PILOT-269,water_supply,"Supply roz aati hai par time fix nahi hai, kabhi subah kabhi dopahar",hinglish,Dhankawadi,irregular supply timing on a residential street,moderate,moderate,recurring,12,340,none,true
+SYN-PILOT-270,footpath,Footpath ki tiles kai jagah dhili hain aur chalते waqt hilti hain,hi-rom,Erandwane,loose footpath tiles on a residential connector,moderate,moderate,occasional,3,125,none,true
+SYN-PILOT-271,garbage_waste,शाळेजवळची कचरा कुंडी दुपारपर्यंत भरते आणि कचरा बाहेर पडतो,mr,Pashan,community bin near a school on a residential street,moderate,moderate,recurring,10,150,school,true
+SYN-PILOT-272,traffic_signage,"Speed breaker ka paint halka pad gaya hai, din mein dikhta hai raat mein nahi",hi-rom,Vadgaon Sheri,faded speed breaker marking,moderate,moderate,occasional,4,230,none,true
+SYN-PILOT-273,drainage_sewage,अस्पताल के रास्ते पर नाली से हल्की बदबू आती रहती है,hi,Ghorpadi,drain odour on a hospital approach road,moderate,moderate,recurring,8,195,hospital,true
+SYN-PILOT-274,pothole_road,"खड्डे मोठे नाहीत पण संपूर्ण रस्त्यावर आहेत, बसचा वेग कमी होतो",mr,Katraj,bus route through a residential area,moderate,moderate,recurring,11,380,none,true
+SYN-PILOT-275,other,"मोकाट कुत्रे संध्याकाळी गर्दी करतात, कोणाला चावले नाही पण लोक वळून जातात",mr-en,Dhanori,stray dogs on a residential connector,moderate,moderate,occasional,5,140,none,true
+SYN-PILOT-276,water_supply,"Tanker समय पर आता है पर पर्याप्त पानी नहीं मिलता, दोघांना वाटून घ्यावा लागतो",hi-en,Undri,tanker-dependent society with insufficient volume,moderate,moderate,recurring,9,420,none,true
+SYN-PILOT-277,streetlight,नई सड़क पर खंभे लगे हैं पर आधे में ही लाइट जलती है,hi,Kalas,partially lit new road,moderate,moderate,first_report,1,210,none,true
+SYN-PILOT-278,footpath,"School च्या रस्त्यावर footpath अरुंद आहे, दोन मुलं एकत्र चालू शकत नाहीत",mr-en,Bibwewadi,narrow footpath on a school route,moderate,moderate,occasional,4,290,school,true
+SYN-PILOT-279,drainage_sewage,"Drain ka slab thoda dhas gaya hai, pahiya usme aadha chala jata hai",hi-rom,Kondhwa,slightly sunken drain slab on a residential road,moderate,moderate,occasional,3,115,none,true
+SYN-PILOT-280,garbage_waste,"Wet and dry waste are put out together, so collection takes longer and the lane stays blocked",en,Warje,unsegregated waste at a collection point,moderate,moderate,recurring,13,360,none,true
+SYN-PILOT-281,pothole_road,The patch is holding but the edges have started to break away again after six months,en,Erandwane,patched residential road,moderate,moderate,occasional,5,185,none,true
+SYN-PILOT-282,water_supply,"रुग्णालयाच्या बाहेरच्या नळाला पाणी कमी येते, नातेवाईक बाटली भरायला आत जातात",mr,Wanowrie,public tap outside a hospital,moderate,moderate,occasional,4,70,hospital,true
+SYN-PILOT-283,traffic_signage,सड़क पर लेन की पट्टियां मिट गई हैं और गाड़ियां तीन लेन में चलती हैं,hi,Shivajinagar,faded lane markings on a residential arterial,moderate,moderate,recurring,10,450,none,true
+SYN-PILOT-284,other,"Ghat ke paas ki railing ek jagah se mud gayi hai, seedhi safe hai par sahara nahi hai",hinglish,Sangamwadi,bent railing at river ghat steps,moderate,moderate,occasional,3,250,water_body,true
+SYN-PILOT-285,streetlight,"Stretch mein ek ke baad ek do light band hain, baki jal rahi hain",hi-rom,Bopodi,intermittently lit walking route,moderate,moderate,recurring,7,165,none,true
+SYN-PILOT-286,footpath,There is no ramp where the footpath meets the hospital gate and the step is about eight inches,en,Salisbury Park,footpath step without a ramp at a hospital gate,moderate,moderate,first_report,1,400,hospital,true
+SYN-PILOT-287,drainage_sewage,"शाळेच्या भिंतीजवळ नाली उघडी आहे, त्यावर झाकण कधीच बसवले नाही",mr,Kothrud,uncovered drain along a school boundary,moderate,moderate,recurring,9,520,school,true
+SYN-PILOT-288,pothole_road,Link road par gaddhe hain aur auto wale kiraya zyada maangte hain is wajah se,hi-rom,Hadapsar,link road used by shared autos,moderate,moderate,occasional,4,205,none,true
+SYN-PILOT-289,garbage_waste,"नदीजवळच्या जागेत कचरा टाकला जातो, पाणी त्यापासून थोड्या अंतरावर आहे",mr-en,Mundhwa,dumping near a river channel,moderate,moderate,recurring,8,300,water_body,true
+SYN-PILOT-290,water_supply,"Do din supply band rahi thi, ab aa rahi hai par pressure pehle jaisa nahi",hi-rom,Katraj,supply restored at reduced pressure,moderate,moderate,first_report,1,9,none,true
+SYN-PILOT-291,other,"School के सामने वाली सड़क पर धूल बहुत उड़ती है, बगल में construction चल रहा है",hi-en,Dhankawadi,dust from adjacent construction on a school frontage road,moderate,moderate,occasional,5,80,school,true
+SYN-PILOT-292,streetlight,"लाइट जलती है पर पेड़ की पत्तियों से ढकी है, रोशनी नीचे नहीं आती",hi,Yerwada,street light obscured by tree canopy,moderate,moderate,occasional,3,175,none,true
+SYN-PILOT-293,footpath,"फुटपाथवर दुचाकी उभ्या असतात, चालायला अर्धीच जागा उरते",mr,Bhavani Peth,partially blocked footpath on a residential street,moderate,moderate,recurring,12,390,none,true
+SYN-PILOT-294,drainage_sewage,The drain surcharges in rain but the water drains off within two hours and does not enter homes,en,Dhayari,drain that surcharges briefly in rain,moderate,moderate,recurring,7,310,none,true
+SYN-PILOT-295,pothole_road,"Hospital ke rasta par gaddhe chhote hain par lagatar hain, ambulance halti hai",hi-en,Ghorpadi,hospital approach road,moderate,moderate,recurring,9,265,hospital,true
+SYN-PILOT-296,traffic_signage,The school zone board is there but faded and the lettering cannot be read from a distance,en,Sinhagad Road,faded school zone board,moderate,moderate,occasional,4,330,school,true
+SYN-PILOT-297,garbage_waste,Kachra gaadi aati hai par kabhi kabhi ek din chhod kar aati hai,hinglish,Karve Nagar,occasionally skipped collection,moderate,moderate,recurring,11,470,none,true
+SYN-PILOT-298,water_supply,पाइपलाइन से रिसाव है और सड़क का एक हिस्सा हमेशा गीला रहता है,hi,Parvati,persistent supply line leak on a residential road,moderate,moderate,occasional,5,225,none,true
+SYN-PILOT-299,other,"Jhadachi ek phandi rastyavar jhukli ahe, uncha vahananna lagate",mr-rom,Bavdhan,low branch over a residential road,moderate,moderate,occasional,3,130,none,true
+SYN-PILOT-300,streetlight,"Underpass mein light hai par ek side ki band hai, doosri side chalti hai",hi-rom,Khadki,partially lit pedestrian underpass,moderate,moderate,recurring,8,200,none,true
+SYN-PILOT-301,drainage_sewage,"Nadi kadela drain madhe gal sathla ahe, pani halu halu jate",mr-rom,Kalas,silted drain near a river bank,moderate,moderate,occasional,4,240,water_body,true
+SYN-PILOT-302,footpath,"अस्पताल के सामने फुटपाथ पर दो टाइलें उखड़ी हैं, बाकी ठीक है",hi,Wanowrie,two broken tiles on a hospital frontage footpath,moderate,moderate,first_report,1,45,hospital,true
+SYN-PILOT-303,pothole_road,"शाळेच्या प्रवेशद्वारासमोर रस्त्याला भेगा पडल्या आहेत, अजून खड्डा झाला नाही",mr,Warje,cracking road surface at a school entrance,moderate,moderate,first_report,1,55,school,true
+SYN-PILOT-304,garbage_waste,Bin ke aas paas kachra girta hai kyunki dhakkan toota hai,hi-rom,Kasba Peth,bin with a broken lid on a residential street,moderate,moderate,occasional,4,155,none,true
+SYN-PILOT-305,water_supply,"Panyacha rang thoda dhusar yeto sakali, nantar saf hoto",mr-rom,Sahakar Nagar,morning discolouration in piped supply,moderate,moderate,recurring,6,95,none,true
+SYN-PILOT-306,pothole_road,The road has broken up at the market crossing and handcart pullers steer around the holes,en,Market Yard,market crossing with heavy foot traffic,moderate,high,recurring,12,230,none,true
+SYN-PILOT-307,footpath,The footpath is narrow at the junction and the crowd spills onto the carriageway at peak hours,en,Swargate,footpath at a bus terminus junction,moderate,high,occasional,5,190,none,true
+SYN-PILOT-308,traffic_signage,जेब्रा क्रॉसिंग की पेंट स्कूल गेट के सामने पूरी मिट गई है,hi,Erandwane,faded crossing at a school gate on a busy road,moderate,high,recurring,10,360,school,true
+SYN-PILOT-309,garbage_waste,Bus stop ke paas ka bin bhar kar overflow ho raha hai aur passengers usi ke bagal mein khade rehte hain,hinglish,Hadapsar,overflowing bin at a busy bus stop,moderate,high,recurring,11,175,none,true
+SYN-PILOT-310,drainage_sewage,अस्पताल के मुख्य गेट के बाहर नाली का पानी जमा रहता है,hi,Shivajinagar,standing drain water at a hospital main gate,moderate,high,recurring,9,145,hospital,true
+SYN-PILOT-311,streetlight,"चौकात एका बाजूचा दिवा बंद आहे, दुसऱ्या बाजूचा चालू आहे",mr-en,Deccan,partially lit busy chowk,moderate,high,occasional,4,60,none,true
+SYN-PILOT-312,water_supply,"School का पानी शुरू होता है पर दबाव कम रहता है, बीच में बंद भी हो जाता है",hi-en,Kondhwa,intermittent supply to a large school,moderate,high,recurring,8,120,school,true
+SYN-PILOT-313,pothole_road,"Bus stop ke aage road ka kinara tut gaya hai, bus rukne mein thodi door aage jaati hai",hi-rom,Camp,broken road edge at a busy bus stop,moderate,high,occasional,5,110,none,true
+SYN-PILOT-314,footpath,"फुटपाथवर फेरीवाले बसतात, चालायला निम्मीच जागा राहते",mr,Bhavani Peth,partly encroached footpath on a market street,moderate,high,recurring,13,420,none,true
+SYN-PILOT-315,drainage_sewage,"Ghat chya payryanjaval drain chi durgandhi yete, bhakt tithech thambatat",mr-rom,Shaniwar Peth,drain odour at busy river ghat steps,moderate,high,recurring,10,210,water_body,true
+SYN-PILOT-316,traffic_signage,The signal works but the pedestrian phase is short and people are still crossing when it changes,en,Shivajinagar,short pedestrian phase at a major junction,moderate,high,occasional,4,165,none,true
+SYN-PILOT-317,garbage_waste,"स्कूल के बाहर कचरा दोपहर तक पड़ा रहता है, गाड़ी शाम को आती है",hi,Pashan,late collection at a school frontage,moderate,high,recurring,9,135,school,true
+SYN-PILOT-318,streetlight,"Hospital ke gate ke bahar ek light band hai, baki stretch mein roshni hai",hi-rom,Ghorpadi,one dark fitting at a hospital gate,moderate,high,first_report,1,25,hospital,true
+SYN-PILOT-319,pothole_road,"Arterial road var chhote khadde sagli kade ahet, gadi satat halate",mr-rom,Sinhagad Road,arterial road with continuous minor potholes,moderate,high,recurring,14,400,none,true
+SYN-PILOT-320,water_supply,सार्वजनिक नल का दबाव कम है और लाइन लंबी लगती है,hi,Market Yard,public tap at a busy market,moderate,high,recurring,11,280,none,true
+SYN-PILOT-321,footpath,"Footpath var bandhkamacha material thevla ahe, gardichya veles lok rastyavar utartat",mr-rom,Deccan,material on a footpath on a busy street,moderate,high,first_report,1,12,none,true
+SYN-PILOT-322,drainage_sewage,"Pulakhalchya drain madhun pani halu jate, pavsat rasta bhijto",mr-rom,Sangamwadi,slow drain under a river bridge with traffic,moderate,high,occasional,5,190,water_body,true
+SYN-PILOT-323,other,"Chowk mein aawara kutte baithe rehte hain, log ghoom kar jaate hain par kaata nahi hai",hinglish,Katraj,stray dogs at a busy chowk,moderate,high,recurring,12,220,none,true
+SYN-PILOT-324,streetlight,"शाळेच्या समोरचे दोनपैकी एक दिवा बंद आहे, संध्याकाळी अर्धा रस्ता उजळतो",mr,Kothrud,one of two fittings out at a school frontage,moderate,high,occasional,4,90,school,true
+SYN-PILOT-325,traffic_signage,No entry ka board mud gaya hai aur gaadiyan ulti disha se aati hain,hi-rom,Kasba Peth,bent no-entry sign at a busy junction,moderate,high,occasional,5,150,none,true
+SYN-PILOT-326,garbage_waste,"Hospital ke saamne bin bhar jata hai dopahar tak, visitors wahin khade hote hain",hi-rom,Wanowrie,bin at a hospital frontage,moderate,high,recurring,10,160,hospital,true
+SYN-PILOT-327,pothole_road,"शाळेच्या रस्त्यावर खड्डे उघडे आहेत पण खोल नाहीत, मुलं चुकवून चालतात",mr,Bibwewadi,shallow potholes on a busy school route,moderate,high,recurring,11,250,school,true
+SYN-PILOT-328,footpath,The footpath tiles are uneven all along the hospital approach and people watch their step,en,Salisbury Park,uneven footpath on a hospital approach,moderate,high,occasional,5,200,hospital,true
+SYN-PILOT-329,water_supply,"Nadi kade cha sarvajanik nal kami dabane chalto, gardi hote sakali",mr-rom,Yerwada,public tap near a river bank with morning crowds,moderate,high,recurring,9,310,water_body,true
+SYN-PILOT-330,drainage_sewage,मुख्य सड़क की नाली का ढक्कन ऊपर उठा हुआ है और गाड़ियां उससे टकराती हैं,hi,Swargate,raised drain cover on an arterial road,moderate,high,occasional,4,85,none,true
+SYN-PILOT-331,streetlight,"Bus stop ki light jalti hai par bahut dhimi hai, log mobile se dekhte hain",hi-rom,Hadapsar,dim lighting at a busy bus stop,moderate,high,recurring,8,240,none,true
+SYN-PILOT-332,garbage_waste,"Chowkat kachra rastyachya kadela sathto, safai divsa ekda hote",mr-rom,Bhavani Peth,waste accumulating at a busy chowk,moderate,high,recurring,12,290,none,true
+SYN-PILOT-333,footpath,फुटपाथ का एक हिस्सा टूटा है और भीड़ में लोग वहीं ठोकर खाते हैं,hi,Camp,broken footpath section on a commercial street,moderate,high,occasional,5,130,none,true
+SYN-PILOT-334,pothole_road,"Junction madhe rasta khali khali zala ahe, gadya slow hotat ani rang lagto",mr-rom,Kasba Peth,worn road surface at a busy junction,moderate,high,recurring,13,340,none,true
+SYN-PILOT-335,traffic_signage,"स्कूल जोन का board है पर उस पर पेड़ की डाली आ गई है, दूर से दिखता नहीं",hi,Warje,school zone board obscured by a branch,moderate,high,occasional,4,105,school,true
+SYN-PILOT-336,streetlight,One light in the lane stays on during the day and appears to go off at night,en,Kirkatwadi,street light on during daytime on a quiet lane,low,low,occasional,3,140,none,true
+SYN-PILOT-337,footpath,"फुटपाथ की एक टाइल का कोना टूटा है, बाकी सतह ठीक है",hi,Ambegaon,single chipped footpath tile on a residential lane,low,low,first_report,1,30,none,true
+SYN-PILOT-338,garbage_waste,"Bin ka dhakkan nahi hai, par kachra andar hi rehta hai",hinglish,Shivane,bin without a lid on a quiet lane,low,low,occasional,4,220,none,true
+SYN-PILOT-339,pothole_road,"Rastyavar dagad thoda var aala ahe, gadi jatana awaj yeto",mr-rom,Dhayari,raised stone on a low-traffic lane,low,low,occasional,2,95,none,true
+SYN-PILOT-340,water_supply,"Nal se tapakta rehta hai band karne ke baad bhi, thoda paani jaata hai",hi-rom,Manjri,dripping public tap on a quiet lane,low,low,recurring,7,260,none,true
+SYN-PILOT-341,other,गल्लीच्या तोंडावरचा रस्त्याच्या नावाचा board पुसला गेला आहे,mr-en,Kalas,faded street name board on a residential lane,low,low,first_report,1,340,none,true
+SYN-PILOT-342,streetlight,"शाळेच्या मागच्या बाजूचा दिवा मंद प्रकाश देतो, दिवसा वर्ग असतात",mr,Kirkatwadi,dim light behind a daytime-only school,low,low,occasional,3,160,school,true
+SYN-PILOT-343,drainage_sewage,"Naali ke dhakkan par jung lag gaya hai, dhakkan apni jagah par hai",hi-rom,Lohegaon,rusted but seated drain cover on a quiet lane,low,low,first_report,1,180,none,true
+SYN-PILOT-344,footpath,Hospital ke peeche wale footpath par ghaas ug aayi hai tile ke beech mein,hi-rom,Bopodi,grass in footpath joints behind a hospital,low,low,occasional,3,290,hospital,true
+SYN-PILOT-345,garbage_waste,ओढ्याच्या काठावर थोडा प्लास्टिक कचरा अडकला आहे,mr,Fursungi,plastic litter caught on a stream bank,low,low,occasional,4,200,water_body,true
+SYN-PILOT-346,pothole_road,"Speed breaker का पेंट उतर गया है, breaker का आकार दिख जाता है",hi-en,Hingne Khurd,unpainted speed breaker on a quiet lane,low,low,first_report,1,270,none,true
+SYN-PILOT-347,water_supply,"पानी आता है पर मीटर की रीडिंग साफ नहीं दिखती, कांच धुंधला है",hi,Undri,fogged water meter glass on a residential lane,low,low,first_report,1,120,none,true
+SYN-PILOT-348,streetlight,"Ek pole ka paint utar gaya hai, light theek chal rahi hai",hi-rom,Sopan Baug,peeling paint on a working light pole,low,low,occasional,2,380,none,true
+SYN-PILOT-349,footpath,"फुटपाथची कड थोडी झिजली आहे, चालायला अडचण नाही",mr,Wadgaon Sheri,worn footpath edge on a quiet stretch,low,low,occasional,3,310,none,true
+SYN-PILOT-350,garbage_waste,"Hospital ke peeche bin thoda door rakha hai, log wahin tak jaate hain",hi-rom,Wanowrie,bin placed away from a hospital service gate,low,low,first_report,1,85,hospital,true
+SYN-PILOT-351,other,"Zhadachi kahi pane rastyavar padun rahtat, safai athvdyat ekda hote",mr-rom,Bavdhan,leaf litter on a quiet residential lane,low,low,recurring,6,240,none,true
+SYN-PILOT-352,drainage_sewage,नदी के पास नाली पर हल्की काई जम गई है,hi,Mundhwa,algae on a drain near a river bank,low,low,occasional,3,330,water_body,true
+SYN-PILOT-353,streetlight,Light chalu ahe pan tyachi disha rastyachya baheril baaju la ahe,mr-rom,Dhanori,misaligned street light on a residential lane,low,low,first_report,1,150,none,true
+SYN-PILOT-354,pothole_road,"शाळेच्या मागच्या रस्त्यावर डांबर थोडे उखडले आहे, खड्डा नाही",mr,Shivane,surface wear on a school rear access road,low,low,occasional,4,210,school,true
+SYN-PILOT-355,water_supply,"Valve ka handle tight ho gaya hai, ghumane mein zor lagta hai",hi-rom,Kirkatwadi,stiff valve handle on a residential lane,low,low,first_report,1,60,none,true
+SYN-PILOT-356,footpath,"Footpath var lavlela bench tutlela ahe, aadhi tithe koni basat nahi",mr-rom,Hingne Khurd,broken bench on a little-used footpath,low,low,occasional,2,400,none,true
+SYN-PILOT-357,garbage_waste,गली के कोने में सूखे पत्ते और कागज़ जमा हैं,hi,Ambegaon,dry litter at a lane corner,low,low,recurring,8,180,none,true
+SYN-PILOT-358,other,"Vij meter chya box cha jhakan sadhil zala ahe, tar aat ahe",mr-rom,Kalas,loose meter box lid on a quiet lane,low,low,first_report,1,105,none,true
+SYN-PILOT-359,drainage_sewage,"Gutar cha jaali var pale sathli ahet, pani jat ahe pan halu",mr-rom,Bopodi,leaf-clogged drain grating behind a hospital,low,low,occasional,3,135,hospital,true
+SYN-PILOT-360,streetlight,"Nadi kadelya vatevar ek light band ahe, divsa tithun lok jatat",mr-rom,Kalas,one dark fitting on a riverside path used by day,low,low,occasional,4,250,water_body,true
+SYN-PILOT-361,streetlight,Lane मधले दिवे सकाळी उशिरापर्यंत चालू असतात,mr-en,Karve Nagar,lights burning past dawn on a residential street,low,moderate,recurring,9,200,none,true
+SYN-PILOT-362,footpath,"Footpath ki tile ka rang ud gaya hai, surface samtal hai",hi-rom,Bavdhan,faded footpath tiles on a residential connector,low,moderate,first_report,1,240,none,true
+SYN-PILOT-363,garbage_waste,Bin bhar jata hai par gaadi usi din shaam ko utha leti hai,hi-rom,Sahakar Nagar,bin filling before same-day collection,low,moderate,recurring,8,170,none,true
+SYN-PILOT-364,pothole_road,"रस्त्यावर लहान भेगा दिसत आहेत, खड्डा अजून झाला नाही",mr,Dhankawadi,hairline cracking on a residential street,low,moderate,occasional,3,130,none,true
+SYN-PILOT-365,water_supply,The pressure has dropped slightly and the tank takes longer to fill,en,Erandwane,slightly reduced pressure on a residential street,low,moderate,recurring,7,290,none,true
+SYN-PILOT-366,other,"शाळेजवळच्या रस्त्यावर धूळ उडते, झाडणी दररोज होत नाही",mr,Pashan,dust on a school approach street,low,moderate,occasional,4,160,school,true
+SYN-PILOT-367,traffic_signage,Speed breaker par white patti thodi halki pad gayi hai,hi-rom,Vadgaon Sheri,partly faded breaker marking,low,moderate,first_report,1,220,none,true
+SYN-PILOT-368,drainage_sewage,"अस्पताल के रास्ते पर नाली का जाल थोड़ा टेढ़ा है, पानी जा रहा है",hi,Ghorpadi,bent drain grating on a hospital approach,low,moderate,occasional,3,110,hospital,true
+SYN-PILOT-369,streetlight,दिवा चालू होतो पण थोडा वेळ लुकलुकतो मग स्थिर होतो,mr,Katraj,flickering-then-steady light on a residential street,low,moderate,occasional,2,75,none,true
+SYN-PILOT-370,footpath,"Footpath var lavleli jaali ek thikani vakli ahe, chalayla adchan nahi",mr-rom,Dhanori,bent footpath grille on a residential connector,low,moderate,first_report,1,185,none,true
+SYN-PILOT-371,garbage_waste,"School ke bahar bin ka dhakkan gayab hai, kachra andar hi rehta hai",hi-rom,Bibwewadi,bin without a lid at a school frontage,low,moderate,occasional,4,145,school,true
+SYN-PILOT-372,water_supply,"Meter ke paas thodi nami rehti hai, paani behta nazar nahi aata",hi-rom,Kondhwa,damp patch near a water meter,low,moderate,first_report,1,95,none,true
+SYN-PILOT-373,pothole_road,"डांबराचा वरचा थर निघाला आहे, खाली खडी दिसते",mr,Warje,surface layer worn on a residential road,low,moderate,recurring,6,350,none,true
+SYN-PILOT-374,other,Road ke divider ka paint utar gaya hai,hinglish,Erandwane,faded divider paint on a residential road,low,moderate,occasional,3,280,none,true
+SYN-PILOT-375,streetlight,"Hospital ke rasta par ek light ka glass cover toota hai, light chal rahi hai",hi-rom,Wanowrie,cracked lamp cover on a hospital approach,low,moderate,occasional,3,125,hospital,true
+SYN-PILOT-376,footpath,"फुटपाथ पर पेड़ की जड़ थोड़ी ऊपर आई है, टाइल अभी समतल है",hi,Bhavani Peth,slight root heave under intact footpath tiles,low,moderate,occasional,4,260,none,true
+SYN-PILOT-377,drainage_sewage,"Nadi kadelya drain cha jhakan thoda sarkla ahe, pan jaga var ahe",mr-rom,Kalas,slightly shifted drain cover near a river bank,low,moderate,first_report,1,70,water_body,true
+SYN-PILOT-378,garbage_waste,"Kachryachi gaadi vel badalte, kadhi sakali kadhi dupari",mr-rom,Karve Nagar,varying collection time on a residential street,low,moderate,recurring,10,320,none,true
+SYN-PILOT-379,water_supply,स्कूल के बाहर वाले नल से पानी धीरे आता है,hi,Kothrud,slow public tap outside a school,low,moderate,occasional,3,155,school,true
+SYN-PILOT-380,streetlight,Poore lane mein light hai par ek pole ka number mit gaya hai,hi-rom,Bopodi,faded pole number on a lit lane,low,moderate,first_report,1,300,none,true
+SYN-PILOT-381,pothole_road,"Hospital ke rasta par road ka joint thoda uthaa hai, gaadi halti hai",hi-rom,Ghorpadi,raised road joint on a hospital approach,low,moderate,occasional,4,115,hospital,true
+SYN-PILOT-382,footpath,फुटपाथवर लावलेली रेलिंग एका जागी सुटली आहे,mr,Sahakar Nagar,loose railing section on a residential footpath,low,moderate,occasional,3,205,none,true
+SYN-PILOT-383,other,Shalejaval cha rasta jhadla jato pan dhul parat basate,mr-rom,Dhankawadi,recurring dust on a school approach street,low,moderate,recurring,7,175,school,true
+SYN-PILOT-384,garbage_waste,Bin ke neeche thoda paani jama ho jata hai safai ke baad,hi-rom,Kasba Peth,water pooling under a bin after cleaning,low,moderate,occasional,4,140,none,true
+SYN-PILOT-385,drainage_sewage,"Gutar madhun halka awaj yeto pani jatana, durgandhi nahi",mr-rom,Dhayari,noise from a drain on a residential street,low,moderate,first_report,1,50,none,true
+SYN-PILOT-386,other,The street name board at the bus stop has faded and people new to the area cannot read it,en,Swargate,faded name board at a busy bus stop,low,high,occasional,4,280,none,true
+SYN-PILOT-387,footpath,The tactile paving strip at the crossing is missing a few tiles though the surface is level,en,Shivajinagar,crossing at a busy junction,low,high,first_report,1,320,none,true
+SYN-PILOT-388,garbage_waste,"Market ke bin ka dhakkan gayab hai, kachra andar hi dala jata hai",hi-rom,Market Yard,lidless bin at a busy market,low,high,recurring,11,190,none,true
+SYN-PILOT-389,streetlight,शाळेच्या समोरचे दिवे सकाळी उशिरापर्यंत चालू असतात,mr,Erandwane,lights burning past dawn at a busy school frontage,low,high,recurring,9,230,school,true
+SYN-PILOT-390,traffic_signage,"Direction board par rang halka pad gaya hai, likhawat padhi jaati hai",hi-rom,Hadapsar,faded direction board at a busy junction,low,high,occasional,4,350,none,true
+SYN-PILOT-391,water_supply,"अस्पताल के बाहर वाले नल का हैंडल ढीला है, पानी आता है",hi,Ghorpadi,loose tap handle outside a hospital,low,high,first_report,1,60,hospital,true
+SYN-PILOT-392,footpath,"Crowded footpath par do tiles ka colour alag hai, pehle repair hua tha",hinglish,Camp,mismatched repair tiles on a busy footpath,low,high,occasional,3,400,none,true
+SYN-PILOT-393,pothole_road,Chowkat rastyavar patti pusat aali ahe pan lane samajte,mr-rom,Deccan,partly faded lane marking at a busy chowk,low,high,recurring,8,300,none,true
+SYN-PILOT-394,garbage_waste,"स्कूल के बाहर बिन का पेंट उतर गया है, इस्तेमाल हो रहा है",hi,Pashan,peeling paint on a bin at a school frontage,low,high,first_report,1,240,school,true
+SYN-PILOT-395,streetlight,Bus stop chi light chalu ahe pan tyacha cover dhusar zala ahe,mr-rom,Sinhagad Road,hazed lamp cover at a busy bus stop,low,high,occasional,4,170,none,true
+SYN-PILOT-396,other,"Ghat kade cha suchna phalak pusla gela ahe, bhakt roj tithun jatat",mr-rom,Shaniwar Peth,faded notice board at busy river ghat steps,low,high,occasional,3,290,water_body,true
+SYN-PILOT-397,footpath,अस्पताल के सामने फुटपाथ पर लगी बेंच का एक पाया ढीला है,hi,Wanowrie,loose bench leg on a hospital frontage footpath,low,high,first_report,1,80,hospital,true
+SYN-PILOT-398,traffic_signage,"School zone cha board ahe pan tyacha rang utarla ahe, akshare disatat",mr-rom,Kothrud,weathered but legible school zone board,low,high,occasional,4,260,school,true
+SYN-PILOT-399,water_supply,"Hospital ke bahar wale nal ke neeche ka platform toota hai, paani theek aata hai",hi-rom,Shivajinagar,cracked platform under a public tap at a hospital,low,high,occasional,3,135,hospital,true
+SYN-PILOT-400,garbage_waste,Chowkatlya bin var kachra vargikaranachi patti nahi,mr-rom,Bhavani Peth,missing segregation label on a bin at a busy chowk,low,high,first_report,1,210,none,true
