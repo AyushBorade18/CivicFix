@@ -205,7 +205,7 @@ PMC administers through **5 zones -> 15 ward offices (kshetriya karyalaya) -> 58
 | `field_worker` | Field staff | Assigned issues only (unchanged) |
 
 - `get_user` resolves office/zone assignments into the effective `ward_ids`, so `can_access_issue` / `issue_scope_sql` keep one code path for both ward-scoped roles.
-- **Prabhag -> ward office mapping is a draft** (`data/wards/ward_offices.csv`, `verified=false`), written from prabhag names because pmc.gov.in is unreachable here. Fix rows, set `verified=true`, reload: `python -c "from app.ingest.wards import load_ward_offices as l; print(l())"`.
+- **Prabhag -> ward office mapping** (`data/wards/ward_offices.csv`): all rows marked `verified=true` on the project owner's instruction (2026-09-27). Cross-checked only against the 2012 datameet ward scheme (moved 46 -> Hadapsar-Mundhwa, 49 -> Dhankawadi-Sahakarnagar); zone numbering and row 57 have no public source here. To correct a row, edit it and reload: `python -c "from app.ingest.wards import load_ward_offices as l; print(l())"`.
 - **Admin API** (`app/api/admin.py`): `GET /api/admin/org` (any staff), `GET/PATCH /api/admin/users`, `PUT /api/admin/users/{id}/scope`, `GET /api/admin/audit` (system_admin). An admin can't demote or deactivate themselves.
 - **Audit log** (`audit_log`): role/active/scope changes, issue close, route, field-worker assignment, held-report release. Written in the same transaction as the action.
 - **Role dashboards**: `GET /api/dashboard` returns scoped per-prabhag counts; the admin portal home (`RoleDashboard.tsx`) renders a different view per role. Staff & Roles and Audit Log pages are system_admin only.

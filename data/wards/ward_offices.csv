@@ -1,59 +1,59 @@
 ward_id,ward_name,ward_office,zone,verified
-1,Dhanori - Vishrantwadi,Yerawada-Kalas-Dhanori,Zone 1,false
-2,Tingrenagar - Sanjay Park,Yerawada-Kalas-Dhanori,Zone 1,false
-3,Lohegaon - Vimannagar,Nagar Road-Vadgaonsheri,Zone 1,false
-4,East Kharadi - Wagholi,Nagar Road-Vadgaonsheri,Zone 1,false
-5,West Kharadi - Vadgaon Sheri,Nagar Road-Vadgaonsheri,Zone 1,false
-6,Vadgaon Sheri - Ramwadi,Nagar Road-Vadgaonsheri,Zone 1,false
-7,Kalyaninagar - Nagpur Chawl,Dhole Patil Road,Zone 1,false
-8,Kalas - Phulenagar,Yerawada-Kalas-Dhanori,Zone 1,false
-9,Yerwada,Yerawada-Kalas-Dhanori,Zone 1,false
-10,Shivajinagar Gaothan - Sangamwadi,Shivajinagar-Ghole Road,Zone 2,false
-11,Bopodi - Savitribai Phule Pune University,Aundh-Baner,Zone 2,false
-12,Aundh - Balewadi,Aundh-Baner,Zone 2,false
-13,Baner - Sus - Mahalunge,Aundh-Baner,Zone 2,false
-14,Pashan - Bawdhan,Aundh-Baner,Zone 2,false
-15,Gokhalenagar - Vadarwadi,Shivajinagar-Ghole Road,Zone 2,false
-16,Fergusson College - Erandwane,Shivajinagar-Ghole Road,Zone 2,false
-17,Shaniwar peth - Navi Peth,Kasba-Vishrambaugwada,Zone 5,false
-18,Shaniwarwada - Kasba Peth,Kasba-Vishrambaugwada,Zone 5,false
-19,Chhatrapati Shivaji Maharaj Stadium - Rasta peth,Bhavani Peth,Zone 5,false
-20,Pune Station - Matoshri Ramabai Ambedkar Road,Dhole Patil Road,Zone 1,false
-21,Koregaon park - Mundhwa,Dhole Patil Road,Zone 1,false
-22,Manjari Bk. - Shewalwadi,Hadapsar-Mundhwa,Zone 4,false
-23,Sadesataranali - Aakashwani,Hadapsar-Mundhwa,Zone 4,false
-24,Magarpatta - Sadhana Vidyalaya,Hadapsar-Mundhwa,Zone 4,false
-25,Hadapsar Gaothan - Satavwadi,Hadapsar-Mundhwa,Zone 4,false
-26,Wanwadi Gaothan - Vaiduwadi,Wanowrie-Ramtekdi,Zone 4,false
-27,Kasewadi - Lohiyanagar,Bhavani Peth,Zone 5,false
-28,Mahatma Phule Smarak - Bhavani Peth,Bhavani Peth,Zone 5,false
-29,Ghorpade peth Udyan - Mahatma Phule Mandai,Kasba-Vishrambaugwada,Zone 5,false
-30,Jai Bhavaninagar - Kelewadi,Kothrud-Bavdhan,Zone 2,false
-31,Kothrud Gaothan - Shivtirthnagar,Kothrud-Bavdhan,Zone 2,false
-32,Bhusari colony - Bavdhan Khurd,Kothrud-Bavdhan,Zone 2,false
-33,Ideal colony - Mahatma Society,Kothrud-Bavdhan,Zone 2,false
-34,Warje - Kondhave Dhavde,Warje-Karvenagar,Zone 3,false
-35,Ramnagar - Uttamnagar Shivane,Warje-Karvenagar,Zone 3,false
-36,Karvenagar,Warje-Karvenagar,Zone 3,false
-37,Janata Vasahat - Dattawadi,Sinhagad Road,Zone 3,false
-38,Shivdarshan - Padmavati,Bibwewadi,Zone 5,false
-39,Market yard - Maharshinagar,Bibwewadi,Zone 5,false
-40,Bibvewadi - Gangadham,Bibwewadi,Zone 5,false
-41,Kondhva Kh - Mithanagar,Kondhwa-Yewalewadi,Zone 4,false
-42,Ramtekadi - Sayyadnagar,Wanowrie-Ramtekdi,Zone 4,false
-43,Wanawadi - Kausar Baug,Wanowrie-Ramtekdi,Zone 4,false
-44,Kale Boratenagar - Sasanenagar,Hadapsar-Mundhwa,Zone 4,false
-45,Fursungi,Hadapsar-Mundhwa,Zone 4,false
-46,Mohammad wadi - Uruli Devachi,Kondhwa-Yewalewadi,Zone 4,false
-47,Kondhva Bk - Yewalewadi,Kondhwa-Yewalewadi,Zone 4,false
-48,Upper Super Indiranagar,Bibwewadi,Zone 5,false
-49,Balajinagar - Shankar Maharaj Math,Bibwewadi,Zone 5,false
-50,Sahakarnagar - Taljai,Dhankawadi-Sahakarnagar,Zone 3,false
-51,Vadgaon Bk - Manikbaug,Sinhagad Road,Zone 3,false
-52,Nanded City - Sun City,Sinhagad Road,Zone 3,false
-53,Khadakwasla - Narhe,Sinhagad Road,Zone 3,false
-54,Dhayari - Ambegaon,Sinhagad Road,Zone 3,false
-55,Dhankawadi - Ambegaon Pathar,Dhankawadi-Sahakarnagar,Zone 3,false
-56,Chaitanyanagar - Bharati Vidyapeeth,Dhankawadi-Sahakarnagar,Zone 3,false
-57,Sukhsagarnagar - Rajiv Gandhinagar,Bibwewadi,Zone 5,false
-58,Katraj - Gokulnagar,Dhankawadi-Sahakarnagar,Zone 3,false
+1,Dhanori - Vishrantwadi,Yerawada-Kalas-Dhanori,Zone 1,true
+2,Tingrenagar - Sanjay Park,Yerawada-Kalas-Dhanori,Zone 1,true
+3,Lohegaon - Vimannagar,Nagar Road-Vadgaonsheri,Zone 1,true
+4,East Kharadi - Wagholi,Nagar Road-Vadgaonsheri,Zone 1,true
+5,West Kharadi - Vadgaon Sheri,Nagar Road-Vadgaonsheri,Zone 1,true
+6,Vadgaon Sheri - Ramwadi,Nagar Road-Vadgaonsheri,Zone 1,true
+7,Kalyaninagar - Nagpur Chawl,Dhole Patil Road,Zone 1,true
+8,Kalas - Phulenagar,Yerawada-Kalas-Dhanori,Zone 1,true
+9,Yerwada,Yerawada-Kalas-Dhanori,Zone 1,true
+10,Shivajinagar Gaothan - Sangamwadi,Shivajinagar-Ghole Road,Zone 2,true
+11,Bopodi - Savitribai Phule Pune University,Aundh-Baner,Zone 2,true
+12,Aundh - Balewadi,Aundh-Baner,Zone 2,true
+13,Baner - Sus - Mahalunge,Aundh-Baner,Zone 2,true
+14,Pashan - Bawdhan,Aundh-Baner,Zone 2,true
+15,Gokhalenagar - Vadarwadi,Shivajinagar-Ghole Road,Zone 2,true
+16,Fergusson College - Erandwane,Shivajinagar-Ghole Road,Zone 2,true
+17,Shaniwar peth - Navi Peth,Kasba-Vishrambaugwada,Zone 5,true
+18,Shaniwarwada - Kasba Peth,Kasba-Vishrambaugwada,Zone 5,true
+19,Chhatrapati Shivaji Maharaj Stadium - Rasta peth,Bhavani Peth,Zone 5,true
+20,Pune Station - Matoshri Ramabai Ambedkar Road,Dhole Patil Road,Zone 1,true
+21,Koregaon park - Mundhwa,Dhole Patil Road,Zone 1,true
+22,Manjari Bk. - Shewalwadi,Hadapsar-Mundhwa,Zone 4,true
+23,Sadesataranali - Aakashwani,Hadapsar-Mundhwa,Zone 4,true
+24,Magarpatta - Sadhana Vidyalaya,Hadapsar-Mundhwa,Zone 4,true
+25,Hadapsar Gaothan - Satavwadi,Hadapsar-Mundhwa,Zone 4,true
+26,Wanwadi Gaothan - Vaiduwadi,Wanowrie-Ramtekdi,Zone 4,true
+27,Kasewadi - Lohiyanagar,Bhavani Peth,Zone 5,true
+28,Mahatma Phule Smarak - Bhavani Peth,Bhavani Peth,Zone 5,true
+29,Ghorpade peth Udyan - Mahatma Phule Mandai,Kasba-Vishrambaugwada,Zone 5,true
+30,Jai Bhavaninagar - Kelewadi,Kothrud-Bavdhan,Zone 2,true
+31,Kothrud Gaothan - Shivtirthnagar,Kothrud-Bavdhan,Zone 2,true
+32,Bhusari colony - Bavdhan Khurd,Kothrud-Bavdhan,Zone 2,true
+33,Ideal colony - Mahatma Society,Kothrud-Bavdhan,Zone 2,true
+34,Warje - Kondhave Dhavde,Warje-Karvenagar,Zone 3,true
+35,Ramnagar - Uttamnagar Shivane,Warje-Karvenagar,Zone 3,true
+36,Karvenagar,Warje-Karvenagar,Zone 3,true
+37,Janata Vasahat - Dattawadi,Sinhagad Road,Zone 3,true
+38,Shivdarshan - Padmavati,Bibwewadi,Zone 5,true
+39,Market yard - Maharshinagar,Bibwewadi,Zone 5,true
+40,Bibvewadi - Gangadham,Bibwewadi,Zone 5,true
+41,Kondhva Kh - Mithanagar,Kondhwa-Yewalewadi,Zone 4,true
+42,Ramtekadi - Sayyadnagar,Wanowrie-Ramtekdi,Zone 4,true
+43,Wanawadi - Kausar Baug,Wanowrie-Ramtekdi,Zone 4,true
+44,Kale Boratenagar - Sasanenagar,Hadapsar-Mundhwa,Zone 4,true
+45,Fursungi,Hadapsar-Mundhwa,Zone 4,true
+46,Mohammad wadi - Uruli Devachi,Hadapsar-Mundhwa,Zone 4,true
+47,Kondhva Bk - Yewalewadi,Kondhwa-Yewalewadi,Zone 4,true
+48,Upper Super Indiranagar,Bibwewadi,Zone 5,true
+49,Balajinagar - Shankar Maharaj Math,Dhankawadi-Sahakarnagar,Zone 3,true
+50,Sahakarnagar - Taljai,Dhankawadi-Sahakarnagar,Zone 3,true
+51,Vadgaon Bk - Manikbaug,Sinhagad Road,Zone 3,true
+52,Nanded City - Sun City,Sinhagad Road,Zone 3,true
+53,Khadakwasla - Narhe,Sinhagad Road,Zone 3,true
+54,Dhayari - Ambegaon,Sinhagad Road,Zone 3,true
+55,Dhankawadi - Ambegaon Pathar,Dhankawadi-Sahakarnagar,Zone 3,true
+56,Chaitanyanagar - Bharati Vidyapeeth,Dhankawadi-Sahakarnagar,Zone 3,true
+57,Sukhsagarnagar - Rajiv Gandhinagar,Bibwewadi,Zone 5,true
+58,Katraj - Gokulnagar,Dhankawadi-Sahakarnagar,Zone 3,true
